@@ -54,7 +54,9 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
       val isRight = rightTeam.entities.contains(entity)
 
       val isTurn = (isLeft && isLeftTeamTurn) || (isRight && !isLeftTeamTurn)
-      isTurn && !actionsTaken.contains(entity)
+
+      // Entity must be Alive to act (gets outline)
+      isTurn && !actionsTaken.contains(entity) && entity.isAlive
     }
 
     fun onActionCompleted(source: Entity) {
@@ -63,7 +65,11 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
       }
 
       val activeTeamEntities = if (isLeftTeamTurn) leftTeam.entities else rightTeam.entities
-      if (actionsTaken.containsAll(activeTeamEntities)) {
+
+      // Filter actions check to only care about ALIVE entities
+      val aliveTeamEntities = activeTeamEntities.filter { it.isAlive }
+
+      if (actionsTaken.containsAll(aliveTeamEntities)) {
         actionsTaken.clear()
         isLeftTeamTurn = !isLeftTeamTurn
       }
@@ -108,7 +114,7 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
               rect.contains(dragCurrent)
             }?.key
 
-            if (target != null && target != source) {
+            if (target != null && target != source && target.isAlive) {
               if (canEntityAct(source)) {
                 handleCardInteraction(source, target, rightTeam.entities)
                 onActionCompleted(source)
@@ -230,5 +236,4 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
       )
     }
   }
-
 }

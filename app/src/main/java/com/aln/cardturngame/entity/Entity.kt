@@ -2,9 +2,10 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,13 +17,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,14 +36,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withTimeout
+import com.aln.cardturngame.R
 
 abstract class Entity(
   val name: String,
@@ -48,6 +51,13 @@ abstract class Entity(
   val passiveAbility: Ability,
   val activeAbility: Ability
 ) {
+
+  init {
+    stats.entity = this
+  }
+
+  val isAlive: Boolean
+    get() = stats.health > 0
 
   @Composable
   fun CharacterCard(
@@ -73,15 +83,23 @@ abstract class Entity(
           if (canAct) Modifier.border(2.dp, Color.White, CardDefaults.shape)
           else Modifier
         )
-        .combinedClickable(
-          onClick = {
-          },
-          onDoubleClick = { onDoubleTap(this) },
-          onLongClick = {
-            onPressStatus(this, true)
-
-          },
-        )
+        .pointerInput(Unit) {
+          detectTapGestures(
+            onDoubleTap = {
+              // Prevent double tap if not alive
+              if (this@Entity.isAlive) {
+                onDoubleTap(this@Entity)
+              }
+            },
+            onLongPress = {
+              onPressStatus(this@Entity, true)
+            },
+            onPress = {
+              tryAwaitRelease()
+              onPressStatus(this@Entity, false)
+            }
+          )
+        }
         .pointerInput(Unit) {
           detectDragGestures(
             onDragStart = { offset ->
@@ -109,13 +127,13 @@ abstract class Entity(
       ) {
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Avatar
         Box(
           modifier = Modifier
             .fillMaxWidth(0.75f)
             .aspectRatio(1f)
             .clip(CircleShape)
-            .background(this@Entity.color)
+            // Visual feedback: Dim color if dead
+            .background(if (this@Entity.isAlive) this@Entity.color else Color.Gray)
             .border(2.dp, Color.White, CircleShape),
           contentAlignment = Alignment.Center
         ) {
@@ -168,7 +186,11 @@ abstract class Entity(
     Box(
       modifier = Modifier
         .fillMaxSize()
-        .background(Color.Black.copy(alpha = 0.7f)),
+        .background(Color.Black.copy(alpha = 0.7f))
+        .clickable(
+          interactionSource = remember { MutableInteractionSource() },
+          indication = null
+        ) {},
       contentAlignment = Alignment.Center
     ) {
       Card(
@@ -188,12 +210,24 @@ abstract class Entity(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
           ) {
-            Text(
-              text = this@Entity.name,
-              color = Color.White,
-              fontSize = 24.sp,
-              fontWeight = FontWeight.Bold
-            )
+            Row(
+              horizontalArrangement = Arrangement.Start
+            ) {
+              Text(
+                text = this@Entity.name,
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+              )
+              if (!this@Entity.isAlive) {
+                Icon(
+                  painter = painterResource(id = R.drawable.dead),
+                  contentDescription = "Damage",
+                  tint = Color.White,
+                  modifier = Modifier.size(28.dp)
+                )
+              }
+            }
             this@Entity.stats.StatsView()
           }
           Spacer(modifier = Modifier.height(16.dp))

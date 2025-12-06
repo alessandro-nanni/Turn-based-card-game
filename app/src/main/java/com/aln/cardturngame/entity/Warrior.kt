@@ -6,9 +6,8 @@ import com.aln.cardturngame.R
 class Warrior : Entity(
   name = "Warrior",
   stats = Stats(
-    health = 150f,
     maxHealth = 150f,
-    damage = 10f
+    damage = 200f
   ),
   color = Color(0xFFD32F2F),
 
@@ -17,13 +16,9 @@ class Warrior : Entity(
     descriptionRes = R.string.heavy_strike_desc
   ) {
     override fun effect(source: Entity, target: Entity) {
-      val baseDamage = source.stats.damage
+      source.stats.applyDamage(target)
 
-      val totalDamage = baseDamage * 1.5f
-
-      target.stats.health -= totalDamage
-
-      println("${source.name} hit ${target.name} for $totalDamage!")
+      println("${source.name} hit ${target.name}!")
     }
   },
   passiveAbility = object : Ability(

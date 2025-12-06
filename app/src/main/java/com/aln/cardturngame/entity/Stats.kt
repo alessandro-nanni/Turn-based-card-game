@@ -20,13 +20,22 @@ import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
 
 class Stats(
-  health: Float,
-  maxHealth: Float = health,
+  maxHealth: Float,
+  health: Float = maxHealth,
   damage: Float
 ) {
+  lateinit var entity: Entity
   var health by mutableFloatStateOf(health)
   var maxHealth by mutableFloatStateOf(maxHealth)
   var damage by mutableFloatStateOf(damage)
+
+  fun applyDamage(target: Entity, amount: Float = damage){
+    target.stats.receiveDamage(amount)
+  }
+
+  fun receiveDamage(amount: Float) {
+    health = (health - amount).coerceAtLeast(0f)
+  }
 
   @Composable
   fun StatsView() {
