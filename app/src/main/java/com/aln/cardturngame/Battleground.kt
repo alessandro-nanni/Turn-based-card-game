@@ -4,9 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -28,187 +26,172 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.entity.Entity
-import com.aln.cardturngame.entity.Warrior
+import com.aln.cardturngame.entity.Team
 
-@Composable
-fun BattleScreen() {
+class Battleground(val leftTeam: Team, val rightTeam: Team) {
 
-  val teamPlayer = remember {
-    listOf<Entity>(
-      Warrior(), Warrior(), Warrior(),
-    )
-  }
+  @Composable
+  fun BattleScreen() {
 
-  val teamEnemy = remember {
-    listOf<Entity>(
-      Warrior(), Warrior(),
-    )
-  }
+    // Drag & Drop State
+    var draggingSource by remember { mutableStateOf<Entity?>(null) }
+    var dragStart by remember { mutableStateOf(Offset.Zero) }
+    var dragCurrent by remember { mutableStateOf(Offset.Zero) }
 
-  // Drag & Drop State
-  var draggingSource by remember { mutableStateOf<Entity?>(null) }
-  var dragStart by remember { mutableStateOf(Offset.Zero) }
-  var dragCurrent by remember { mutableStateOf(Offset.Zero) }
+    // Info Dialog State
+    var showInfoDialog by remember { mutableStateOf(false) }
+    var selectedEntity by remember { mutableStateOf<Entity?>(null) }
 
-  val cardBounds = remember { mutableStateMapOf<Entity, Rect>() }
+    val cardBounds = remember { mutableStateMapOf<Entity, Rect>() }
 
-  BoxWithConstraints(
-    modifier = Modifier
-      .fillMaxSize()
-      .background(Color(0xFF1E1E1E))
-  ) {
-    val heightLimit = this.maxHeight / 3.4f
-    val widthLimit = this.maxWidth / 2.5f
-    val aspectRatio = 0.7f
-    val heightFromWidth = widthLimit / aspectRatio
-    val finalCardHeight = min(heightLimit, heightFromWidth)
-    val finalCardWidth = finalCardHeight * aspectRatio
+    BoxWithConstraints(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(Color(0xFF1E1E1E))
+    ) {
+      val heightLimit = this.maxHeight / 3.4f
+      val widthLimit = this.maxWidth / 2.5f
+      val aspectRatio = 0.7f
+      val heightFromWidth = widthLimit / aspectRatio
+      val finalCardHeight = min(heightLimit, heightFromWidth)
+      val finalCardWidth = finalCardHeight * aspectRatio
 
-    BattleLayout(
-      finalCardHeight = finalCardHeight,
-      finalCardWidth = finalCardWidth,
-      teamPlayer = teamPlayer,
-      teamEnemy = teamEnemy,
-      onCardPositioned = { char, rect ->
-        cardBounds[char] = rect
-      },
-      onDragStart = { char, offset ->
-        draggingSource = char
-        // Calculate global start position based on the card's top-left + touch offset
-        val cardTopLeft = cardBounds[char]?.topLeft ?: Offset.Zero
-        val globalStart = cardTopLeft + offset
-        dragStart = globalStart
-        dragCurrent = globalStart
-      },
-      onDrag = { change ->
-        dragCurrent += change
-      },
-      onDragEnd = {
-        draggingSource?.let { source ->
-          // Find which card is under dragCurrent
-          val target = cardBounds.entries.firstOrNull { (_, rect) ->
-            rect.contains(dragCurrent)
-          }?.key
+      BattleLayout(
+        finalCardHeight = finalCardHeight,
+        finalCardWidth = finalCardWidth,
+        leftTeam = leftTeam,
+        rightTeam = rightTeam,
+        onCardPositioned = { char, rect ->
+          cardBounds[char] = rect
+        },
+        onDragStart = { char, offset ->
+          draggingSource = char
+          val cardTopLeft = cardBounds[char]?.topLeft ?: Offset.Zero
+          val globalStart = cardTopLeft + offset
+          dragStart = globalStart
+          dragCurrent = globalStart
+        },
+        onDrag = { change ->
+          dragCurrent += change
+        },
+        onDragEnd = {
+          draggingSource?.let { source ->
+            val target = cardBounds.entries.firstOrNull { (_, rect) ->
+              rect.contains(dragCurrent)
+            }?.key
 
-          if (target != null && target != source) {
-            handleCardInteraction(source, target, teamPlayer, teamEnemy)
+            if (target != null && target != source) {
+              handleCardInteraction(source, target, rightTeam.entities)
+            }
+          }
+          draggingSource = null
+        },
+        onDoubleTap = { entity ->
+          entity.passiveAbility.effect(entity, entity)
+        },
+        onPressStatus = { entity, isPressed ->
+          if (isPressed) {
+            selectedEntity = entity
+            showInfoDialog = true
+          } else {
+            showInfoDialog = false
+            selectedEntity = null
           }
         }
-        draggingSource = null
-      }
-    )
+      )
 
-    if (draggingSource != null) {
-      Canvas(modifier = Modifier.fillMaxSize()) {
-        drawLine(
-          color = Color.Red,
-          start = dragStart,
-          end = dragCurrent,
-          strokeWidth = 8f
-        )
+      if (draggingSource != null) {
+        LineCanvas(dragStart, dragCurrent)
+      }
+
+      // Overlay for Info (Shown while holding)
+      if (showInfoDialog && selectedEntity != null) {
+        selectedEntity!!.InfoCard()
       }
     }
   }
-}
 
-fun handleCardInteraction(
-  source: Entity,
-  target: Entity,
-  teamPlayer: List<Entity>,
-  teamEnemy: List<Entity>
-) {
-  // Determine teams
-  val sourceIsPlayer = teamPlayer.contains(source)
-  val targetIsPlayer = teamPlayer.contains(target)
 
-  // Check relationship
-  if (sourceIsPlayer == targetIsPlayer) {
-    source.passiveAbility.effect(source,target)
-  } else {
-    source.activeAbility.effect(source,target)
-
-  }
-}
-
-@Composable
-fun BattleLayout(
-  finalCardHeight: Dp,
-  finalCardWidth: Dp,
-  teamPlayer: List<Entity>,
-  teamEnemy: List<Entity>,
-  onCardPositioned: (Entity, Rect) -> Unit,
-  onDragStart: (Entity, Offset) -> Unit,
-  onDrag: (Offset) -> Unit,
-  onDragEnd: () -> Unit
-) {
-
-  Row(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(start = 40.dp, end = 10.dp),
-    horizontalArrangement = Arrangement.SpaceBetween,
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-    // LEFT TEAM
-    TeamColumn(
-      characters = teamPlayer,
-      alignment = Alignment.Start,
-      cardWidth = finalCardWidth,
-      cardHeight = finalCardHeight,
-      onCardPositioned = onCardPositioned,
-      onDragStart = onDragStart,
-      onDrag = onDrag,
-      onDragEnd = onDragEnd
-    )
-
-    // VS Text
-    Text(
-      text = "VS",
-      color = Color.Gray,
-      fontSize = 32.sp,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.alpha(0.5f)
-    )
-
-    // RIGHT TEAM
-    TeamColumn(
-      characters = teamEnemy,
-      alignment = Alignment.End,
-      cardWidth = finalCardWidth,
-      cardHeight = finalCardHeight,
-      onCardPositioned = onCardPositioned,
-      onDragStart = onDragStart,
-      onDrag = onDrag,
-      onDragEnd = onDragEnd
-    )
-  }
-}
-
-@Composable
-fun TeamColumn(
-  characters: List<Entity>,
-  alignment: Alignment.Horizontal,
-  cardWidth: Dp,
-  cardHeight: Dp,
-  onCardPositioned: (Entity, Rect) -> Unit,
-  onDragStart: (Entity, Offset) -> Unit,
-  onDrag: (Offset) -> Unit,
-  onDragEnd: () -> Unit
-) {
-  Column(
-    modifier = Modifier.fillMaxHeight(),
-    verticalArrangement = Arrangement.SpaceEvenly,
-    horizontalAlignment = alignment
-  ) {
-    characters.forEach { character ->
-      character.CharacterCard(
-        width = cardWidth,
-        height = cardHeight,
-        onCardPositioned = onCardPositioned,
-        onDragStart = onDragStart,
-        onDrag = onDrag,
-        onDragEnd = onDragEnd
+  @Composable
+  fun LineCanvas(dragStart: Offset, dragCurrent: Offset) {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+      drawLine(
+        color = Color.Red,
+        start = dragStart,
+        end = dragCurrent,
+        strokeWidth = 8f
       )
     }
   }
+
+  private fun handleCardInteraction(
+    source: Entity,
+    target: Entity,
+    ownTeam: List<Entity>,
+  ) {
+    val sourceIsPlayer = ownTeam.contains(source)
+    val targetIsPlayer = ownTeam.contains(target)
+
+    if (sourceIsPlayer == targetIsPlayer) {
+      source.passiveAbility.effect(source, target)
+    } else {
+      source.activeAbility.effect(source, target)
+    }
+  }
+
+  @Composable
+  fun BattleLayout(
+    finalCardHeight: Dp,
+    finalCardWidth: Dp,
+    leftTeam: Team,
+    rightTeam: Team,
+    onCardPositioned: (Entity, Rect) -> Unit,
+    onDragStart: (Entity, Offset) -> Unit,
+    onDrag: (Offset) -> Unit,
+    onDragEnd: () -> Unit,
+    onDoubleTap: (Entity) -> Unit,
+    onPressStatus: (Entity, Boolean) -> Unit
+  ) {
+
+    Row(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(start = 40.dp, end = 40.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      leftTeam.TeamColumn(
+        alignment = Alignment.Start,
+        cardWidth = finalCardWidth,
+        cardHeight = finalCardHeight,
+        onCardPositioned = onCardPositioned,
+        onDragStart = onDragStart,
+        onDrag = onDrag,
+        onDragEnd = onDragEnd,
+        onDoubleTap = onDoubleTap,
+        onPressStatus = onPressStatus
+      )
+
+      Text(
+        text = "VS",
+        color = Color.Gray,
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.alpha(0.5f)
+      )
+
+      rightTeam.TeamColumn(
+        alignment = Alignment.End,
+        cardWidth = finalCardWidth,
+        cardHeight = finalCardHeight,
+        onCardPositioned = onCardPositioned,
+        onDragStart = onDragStart,
+        onDrag = onDrag,
+        onDragEnd = onDragEnd,
+        onDoubleTap = onDoubleTap,
+        onPressStatus = onPressStatus
+      )
+    }
+  }
+
 }

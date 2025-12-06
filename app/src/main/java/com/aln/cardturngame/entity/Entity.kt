@@ -3,6 +3,7 @@ package com.aln.cardturngame.entity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,11 +30,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.withTimeout
 
 abstract class Entity(
   val name: String,
@@ -49,7 +54,9 @@ abstract class Entity(
     onCardPositioned: (Entity, Rect) -> Unit,
     onDragStart: (Entity, Offset) -> Unit,
     onDrag: (Offset) -> Unit,
-    onDragEnd: () -> Unit
+    onDragEnd: () -> Unit,
+    onDoubleTap: (Entity) -> Unit,
+    onPressStatus: (Entity, Boolean) -> Unit
   ) {
 
     Card(
@@ -58,6 +65,38 @@ abstract class Entity(
         .height(height)
         .onGloballyPositioned { coordinates ->
           onCardPositioned(this, coordinates.boundsInRoot())
+        }
+        .pointerInput(Unit) {
+          detectTapGestures(
+            onDoubleTap = { onDoubleTap(this@Entity) },
+            onPress = {
+              val isLongPress = try {
+                // Wait for 500ms. If released before that, it's a tap/double-tap.
+                withTimeout(500) {
+                  awaitRelease()
+                }
+                false // Released before timeout (Short press)
+              } catch (_: TimeoutCancellationException) {
+                true // Timeout reached (Long press)
+              } catch (_: CancellationException) {
+                false // Gesture cancelled (e.g., drag started)
+              }
+
+              if (isLongPress) {
+                // User held the card: Show Dialog
+                onPressStatus(this@Entity, true)
+                try {
+                  // Wait for the release now
+                  awaitRelease()
+                } catch (_: CancellationException) {
+                  // Handle Drag or other interruptions
+                } finally {
+                  // Hide Dialog immediately
+                  onPressStatus(this@Entity, false)
+                }
+              }
+            }
+          )
         }
         .pointerInput(Unit) {
           detectDragGestures(
@@ -135,6 +174,62 @@ abstract class Entity(
                 .background(barColor)
             )
           }
+        }
+      }
+    }
+  }
+
+  @Composable
+  fun InfoCard(){
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Black.copy(alpha = 0.7f)),
+      contentAlignment = Alignment.Center
+    ) {
+      Card(
+        modifier = Modifier
+          .fillMaxWidth(0.7f)
+          .fillMaxHeight()
+          .padding(16.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF333333))
+      ) {
+        Column(
+          modifier = Modifier.padding(24.dp),
+          horizontalAlignment = Alignment.Start
+        ) {
+          Text(
+            text = this@Entity.name,
+            color = Color.White,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+          )
+          Spacer(modifier = Modifier.height(16.dp))
+
+          // Active Ability
+          Text(
+            text = "Active: ${stringResource(this@Entity.activeAbility.nameRes)}",
+            color = Color(0xFF4CAF50),
+            fontWeight = FontWeight.Bold
+          )
+          Text(
+            text = stringResource(this@Entity.activeAbility.descriptionRes),
+            color = Color.LightGray
+          )
+
+          Spacer(modifier = Modifier.height(12.dp))
+
+          // Passive Ability
+          Text(
+            text = "Passive: ${stringResource(this@Entity.passiveAbility.nameRes)}",
+            color = Color(0xFF2196F3),
+            fontWeight = FontWeight.Bold
+          )
+          Text(
+            text = stringResource(this@Entity.passiveAbility.descriptionRes),
+            color = Color.LightGray
+          )
         }
       }
     }
