@@ -42,6 +42,7 @@ class Stats(
       Icon(
         painter = painterResource(id = R.drawable.health),
         contentDescription = "Damage",
+        tint = Color.White,
         modifier = Modifier.size(28.dp)
       )
 
@@ -58,6 +59,7 @@ class Stats(
       Icon(
         painter = painterResource(id = R.drawable.attack_damage),
         contentDescription = "Damage",
+        tint = Color.White,
         modifier = Modifier.size(28.dp)
       )
     }

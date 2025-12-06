@@ -2,6 +2,7 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -72,38 +73,15 @@ abstract class Entity(
           if (canAct) Modifier.border(2.dp, Color.White, CardDefaults.shape)
           else Modifier
         )
-        .pointerInput(Unit) {
-          detectTapGestures(
-            onDoubleTap = { onDoubleTap(this@Entity) },
-            onPress = {
-              val isLongPress = try {
-                // Wait for 500ms. If released before that, it's a tap/double-tap.
-                withTimeout(500) {
-                  awaitRelease()
-                }
-                false // Released before timeout (Short press)
-              } catch (_: TimeoutCancellationException) {
-                true // Timeout reached (Long press)
-              } catch (_: CancellationException) {
-                false // Gesture cancelled (e.g., drag started)
-              }
+        .combinedClickable(
+          onClick = {
+          },
+          onDoubleClick = { onDoubleTap(this) },
+          onLongClick = {
+            onPressStatus(this, true)
 
-              if (isLongPress) {
-                // User held the card: Show Dialog
-                onPressStatus(this@Entity, true)
-                try {
-                  // Wait for the release now
-                  awaitRelease()
-                } catch (_: CancellationException) {
-                  // Handle Drag or other interruptions
-                } finally {
-                  // Hide Dialog immediately
-                  onPressStatus(this@Entity, false)
-                }
-              }
-            }
-          )
-        }
+          },
+        )
         .pointerInput(Unit) {
           detectDragGestures(
             onDragStart = { offset ->
@@ -186,7 +164,7 @@ abstract class Entity(
   }
 
   @Composable
-  fun InfoCard(){
+  fun InfoCard() {
     Box(
       modifier = Modifier
         .fillMaxSize()
