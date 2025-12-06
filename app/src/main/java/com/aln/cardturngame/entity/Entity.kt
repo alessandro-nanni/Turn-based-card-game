@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -51,6 +52,7 @@ abstract class Entity(
   fun CharacterCard(
     width: Dp,
     height: Dp,
+    canAct: Boolean,
     onCardPositioned: (Entity, Rect) -> Unit,
     onDragStart: (Entity, Offset) -> Unit,
     onDrag: (Offset) -> Unit,
@@ -66,6 +68,10 @@ abstract class Entity(
         .onGloballyPositioned { coordinates ->
           onCardPositioned(this, coordinates.boundsInRoot())
         }
+        .then(
+          if (canAct) Modifier.border(2.dp, Color.White, CardDefaults.shape)
+          else Modifier
+        )
         .pointerInput(Unit) {
           detectTapGestures(
             onDoubleTap = { onDoubleTap(this@Entity) },
@@ -199,12 +205,19 @@ abstract class Entity(
           modifier = Modifier.padding(24.dp),
           horizontalAlignment = Alignment.Start
         ) {
-          Text(
-            text = this@Entity.name,
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-          )
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(
+              text = this@Entity.name,
+              color = Color.White,
+              fontSize = 24.sp,
+              fontWeight = FontWeight.Bold
+            )
+            this@Entity.stats.StatsView()
+          }
           Spacer(modifier = Modifier.height(16.dp))
 
           // Active Ability

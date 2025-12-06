@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +43,31 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
     var showInfoDialog by remember { mutableStateOf(false) }
     var selectedEntity by remember { mutableStateOf<Entity?>(null) }
 
+    // Turn State
+    var isLeftTeamTurn by remember { mutableStateOf(true) }
+    val actionsTaken = remember { mutableStateListOf<Entity>() }
+
     val cardBounds = remember { mutableStateMapOf<Entity, Rect>() }
+
+    val canEntityAct: (Entity) -> Boolean = { entity ->
+      val isLeft = leftTeam.entities.contains(entity)
+      val isRight = rightTeam.entities.contains(entity)
+
+      val isTurn = (isLeft && isLeftTeamTurn) || (isRight && !isLeftTeamTurn)
+      isTurn && !actionsTaken.contains(entity)
+    }
+
+    fun onActionCompleted(source: Entity) {
+      if (!actionsTaken.contains(source)) {
+        actionsTaken.add(source)
+      }
+
+      val activeTeamEntities = if (isLeftTeamTurn) leftTeam.entities else rightTeam.entities
+      if (actionsTaken.containsAll(activeTeamEntities)) {
+        actionsTaken.clear()
+        isLeftTeamTurn = !isLeftTeamTurn
+      }
+    }
 
     BoxWithConstraints(
       modifier = Modifier
@@ -61,15 +86,18 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         finalCardWidth = finalCardWidth,
         leftTeam = leftTeam,
         rightTeam = rightTeam,
+        canAct = canEntityAct,
         onCardPositioned = { char, rect ->
           cardBounds[char] = rect
         },
         onDragStart = { char, offset ->
-          draggingSource = char
-          val cardTopLeft = cardBounds[char]?.topLeft ?: Offset.Zero
-          val globalStart = cardTopLeft + offset
-          dragStart = globalStart
-          dragCurrent = globalStart
+          if (canEntityAct(char)) {
+            draggingSource = char
+            val cardTopLeft = cardBounds[char]?.topLeft ?: Offset.Zero
+            val globalStart = cardTopLeft + offset
+            dragStart = globalStart
+            dragCurrent = globalStart
+          }
         },
         onDrag = { change ->
           dragCurrent += change
@@ -81,13 +109,19 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
             }?.key
 
             if (target != null && target != source) {
-              handleCardInteraction(source, target, rightTeam.entities)
+              if (canEntityAct(source)) {
+                handleCardInteraction(source, target, rightTeam.entities)
+                onActionCompleted(source)
+              }
             }
           }
           draggingSource = null
         },
         onDoubleTap = { entity ->
-          entity.passiveAbility.effect(entity, entity)
+          if (canEntityAct(entity)) {
+            entity.passiveAbility.effect(entity, entity)
+            onActionCompleted(entity)
+          }
         },
         onPressStatus = { entity, isPressed ->
           if (isPressed) {
@@ -145,6 +179,7 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
     finalCardWidth: Dp,
     leftTeam: Team,
     rightTeam: Team,
+    canAct: (Entity) -> Boolean,
     onCardPositioned: (Entity, Rect) -> Unit,
     onDragStart: (Entity, Offset) -> Unit,
     onDrag: (Offset) -> Unit,
@@ -164,6 +199,7 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         alignment = Alignment.Start,
         cardWidth = finalCardWidth,
         cardHeight = finalCardHeight,
+        canAct = canAct,
         onCardPositioned = onCardPositioned,
         onDragStart = onDragStart,
         onDrag = onDrag,
@@ -184,6 +220,7 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         alignment = Alignment.End,
         cardWidth = finalCardWidth,
         cardHeight = finalCardHeight,
+        canAct = canAct,
         onCardPositioned = onCardPositioned,
         onDragStart = onDragStart,
         onDrag = onDrag,

@@ -19,6 +19,7 @@ class Team(
     alignment: Alignment.Horizontal,
     cardWidth: Dp,
     cardHeight: Dp,
+    canAct: (Entity) -> Boolean,
     onCardPositioned: (Entity, Rect) -> Unit,
     onDragStart: (Entity, Offset) -> Unit,
     onDrag: (Offset) -> Unit,
@@ -35,6 +36,7 @@ class Team(
         character.CharacterCard(
           width = cardWidth,
           height = cardHeight,
+          canAct = canAct(character),
           onCardPositioned = onCardPositioned,
           onDragStart = onDragStart,
           onDrag = onDrag,

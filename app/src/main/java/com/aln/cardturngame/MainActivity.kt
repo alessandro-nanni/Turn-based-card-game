@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.aln.cardturngame.ui.theme.CardTurnGameTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +36,9 @@ class MainActivity : ComponentActivity() {
     val mainView = MainView()
 
     setContent {
-      mainView.Content()
+      CardTurnGameTheme {
+        mainView.Content()
+      }
     }
   }
 }
