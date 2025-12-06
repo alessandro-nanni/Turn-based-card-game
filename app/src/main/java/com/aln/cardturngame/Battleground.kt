@@ -1,56 +1,56 @@
 package com.aln.cardturngame
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-
-data class GameCharacter(
-  val name: String,
-  val hp: Int,
-  val color: Color
-)
+import com.aln.cardturngame.character.AbstractCharacter
+import com.aln.cardturngame.character.Warrior
 
 @Composable
 fun BattleScreen() {
-  // Mock Data
-  val teamPlayer = listOf(
-    GameCharacter("Warrior", 30, Color(0xFF4CAF50)),
-    GameCharacter("Mage", 80, Color(0xFF2196F3)),
-    GameCharacter("Rogue", 90, Color(0xFFFFC107))
-  )
 
-  val teamEnemy = listOf(
-    GameCharacter("Orc", 10, Color(0xFFF44336)),
-    GameCharacter("Goblin", 60, Color(0xFFE91E63))
-  )
+  val teamPlayer = remember {
+    listOf<AbstractCharacter>(
+      Warrior(), Warrior(), Warrior(),
+    )
+  }
+
+  val teamEnemy = remember {
+    listOf<AbstractCharacter>(
+      Warrior(), Warrior(),
+    )
+  }
+
+  // Drag & Drop State
+  var draggingSource by remember { mutableStateOf<AbstractCharacter?>(null) }
+  var dragStart by remember { mutableStateOf(Offset.Zero) }
+  var dragCurrent by remember { mutableStateOf(Offset.Zero) }
+
+  val cardBounds = remember { mutableStateMapOf<AbstractCharacter, Rect>() }
 
   BoxWithConstraints(
     modifier = Modifier
@@ -64,7 +64,68 @@ fun BattleScreen() {
     val finalCardHeight = min(heightLimit, heightFromWidth)
     val finalCardWidth = finalCardHeight * aspectRatio
 
-    BattleLayout(finalCardHeight, finalCardWidth, teamPlayer, teamEnemy)
+    BattleLayout(
+      finalCardHeight = finalCardHeight,
+      finalCardWidth = finalCardWidth,
+      teamPlayer = teamPlayer,
+      teamEnemy = teamEnemy,
+      onCardPositioned = { char, rect ->
+        cardBounds[char] = rect
+      },
+      onDragStart = { char, offset ->
+        draggingSource = char
+        // Calculate global start position based on the card's top-left + touch offset
+        val cardTopLeft = cardBounds[char]?.topLeft ?: Offset.Zero
+        val globalStart = cardTopLeft + offset
+        dragStart = globalStart
+        dragCurrent = globalStart
+      },
+      onDrag = { change ->
+        dragCurrent += change
+      },
+      onDragEnd = {
+        draggingSource?.let { source ->
+          // Find which card is under dragCurrent
+          val target = cardBounds.entries.firstOrNull { (_, rect) ->
+            rect.contains(dragCurrent)
+          }?.key
+
+          if (target != null && target != source) {
+            handleCardInteraction(source, target, teamPlayer, teamEnemy)
+          }
+        }
+        draggingSource = null
+      }
+    )
+
+    if (draggingSource != null) {
+      Canvas(modifier = Modifier.fillMaxSize()) {
+        drawLine(
+          color = Color.Red,
+          start = dragStart,
+          end = dragCurrent,
+          strokeWidth = 8f
+        )
+      }
+    }
+  }
+}
+
+fun handleCardInteraction(
+  source: AbstractCharacter,
+  target: AbstractCharacter,
+  teamPlayer: List<AbstractCharacter>,
+  teamEnemy: List<AbstractCharacter>
+) {
+  // Determine teams
+  val sourceIsPlayer = teamPlayer.contains(source)
+  val targetIsPlayer = teamPlayer.contains(target)
+
+  // Check relationship
+  if (sourceIsPlayer == targetIsPlayer) {
+    source.passive(target)
+  } else {
+    source.active(target)
 
   }
 }
@@ -73,8 +134,12 @@ fun BattleScreen() {
 fun BattleLayout(
   finalCardHeight: Dp,
   finalCardWidth: Dp,
-  teamPlayer: List<GameCharacter>,
-  teamEnemy: List<GameCharacter>
+  teamPlayer: List<AbstractCharacter>,
+  teamEnemy: List<AbstractCharacter>,
+  onCardPositioned: (AbstractCharacter, Rect) -> Unit,
+  onDragStart: (AbstractCharacter, Offset) -> Unit,
+  onDrag: (Offset) -> Unit,
+  onDragEnd: () -> Unit
 ) {
 
   Row(
@@ -89,7 +154,11 @@ fun BattleLayout(
       characters = teamPlayer,
       alignment = Alignment.Start,
       cardWidth = finalCardWidth,
-      cardHeight = finalCardHeight
+      cardHeight = finalCardHeight,
+      onCardPositioned = onCardPositioned,
+      onDragStart = onDragStart,
+      onDrag = onDrag,
+      onDragEnd = onDragEnd
     )
 
     // VS Text
@@ -106,17 +175,25 @@ fun BattleLayout(
       characters = teamEnemy,
       alignment = Alignment.End,
       cardWidth = finalCardWidth,
-      cardHeight = finalCardHeight
+      cardHeight = finalCardHeight,
+      onCardPositioned = onCardPositioned,
+      onDragStart = onDragStart,
+      onDrag = onDrag,
+      onDragEnd = onDragEnd
     )
   }
 }
 
 @Composable
 fun TeamColumn(
-  characters: List<GameCharacter>,
+  characters: List<AbstractCharacter>,
   alignment: Alignment.Horizontal,
   cardWidth: Dp,
-  cardHeight: Dp
+  cardHeight: Dp,
+  onCardPositioned: (AbstractCharacter, Rect) -> Unit,
+  onDragStart: (AbstractCharacter, Offset) -> Unit,
+  onDrag: (Offset) -> Unit,
+  onDragEnd: () -> Unit
 ) {
   Column(
     modifier = Modifier.fillMaxHeight(),
@@ -124,87 +201,14 @@ fun TeamColumn(
     horizontalAlignment = alignment
   ) {
     characters.forEach { character ->
-      CharacterCard(
-        character = character,
+      character.CharacterCard(
         width = cardWidth,
-        height = cardHeight
+        height = cardHeight,
+        onCardPositioned = onCardPositioned,
+        onDragStart = onDragStart,
+        onDrag = onDrag,
+        onDragEnd = onDragEnd
       )
-    }
-
-  }
-}
-
-@Composable
-fun CharacterCard(
-  character: GameCharacter,
-  width: Dp,
-  height: Dp
-) {
-
-  Card(
-    modifier = Modifier
-      .width(width)
-      .height(height),
-    colors = CardDefaults.cardColors(containerColor = Color(0xFF2D2D2D)),
-    elevation = CardDefaults.cardElevation(8.dp)
-  ) {
-    Column(
-      modifier = Modifier.fillMaxSize(),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.Top
-    ) {
-      Spacer(modifier = Modifier.height(8.dp))
-
-      Box(
-        modifier = Modifier
-          .fillMaxWidth(0.75f)
-          .aspectRatio(1f)
-          .clip(CircleShape)
-          .background(character.color)
-          .border(2.dp, Color.White, CircleShape),
-        contentAlignment = Alignment.Center
-      ) {
-        Text(
-          text = character.name.first().toString(),
-          color = Color.White,
-          fontWeight = FontWeight.Bold,
-          fontSize = 20.sp
-        )
-      }
-
-      Spacer(modifier = Modifier.height(8.dp))
-
-
-      // Stats Section
-      Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-      ) {
-
-        val hpPercent = (character.hp / 100f).coerceIn(0f, 1f)
-
-        val barColor = when {
-          character.hp > 50 -> Color(0xFF4CAF50)
-          character.hp > 20 -> Color(0xFFFFC107)
-          else -> Color(0xFFF44336)
-        }
-
-        // 3. The Progress Bar UI
-        Box(
-          modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .height(8.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(Color.DarkGray)
-        ) {
-          Box(
-            modifier = Modifier
-              .fillMaxWidth(hpPercent)
-              .fillMaxHeight()
-              .background(barColor)
-          )
-        }
-      }
     }
   }
 }
