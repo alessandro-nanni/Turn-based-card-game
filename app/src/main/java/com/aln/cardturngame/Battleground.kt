@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +29,13 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entity.Team
+import kotlinx.coroutines.launch
 
 class Battleground(val leftTeam: Team, val rightTeam: Team) {
 
   @Composable
   fun BattleScreen() {
+    val scope = rememberCoroutineScope()
 
     // Drag & Drop State
     var draggingSource by remember { mutableStateOf<Entity?>(null) }
@@ -46,6 +49,8 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
     // Turn State
     var isLeftTeamTurn by remember { mutableStateOf(true) }
     val actionsTaken = remember { mutableStateListOf<Entity>() }
+    // Lock state to prevent interactions during animations
+    var isActionPlaying by remember { mutableStateOf(false) }
 
     val cardBounds = remember { mutableStateMapOf<Entity, Rect>() }
 
@@ -56,7 +61,8 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
       val isTurn = (isLeft && isLeftTeamTurn) || (isRight && !isLeftTeamTurn)
 
       // Entity must be Alive to act (gets outline)
-      isTurn && !actionsTaken.contains(entity) && entity.isAlive
+      // AND no action should be currently playing
+      isTurn && !actionsTaken.contains(entity) && entity.isAlive && !isActionPlaying
     }
 
     fun onActionCompleted(source: Entity) {
@@ -72,6 +78,18 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
       if (actionsTaken.containsAll(aliveTeamEntities)) {
         actionsTaken.clear()
         isLeftTeamTurn = !isLeftTeamTurn
+      }
+    }
+
+    // Helper to launch suspend functions with lock
+    fun executeInteraction(source: Entity, target: Entity, ownTeam: List<Entity>) {
+      if (isActionPlaying) return
+
+      scope.launch {
+        isActionPlaying = true // Lock input
+        handleCardInteraction(source, target, ownTeam)
+        onActionCompleted(source)
+        isActionPlaying = false // Unlock input
       }
     }
 
@@ -116,8 +134,7 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
 
             if (target != null && target != source && target.isAlive) {
               if (canEntityAct(source)) {
-                handleCardInteraction(source, target, rightTeam.entities)
-                onActionCompleted(source)
+                executeInteraction(source, target, rightTeam.entities)
               }
             }
           }
@@ -125,8 +142,12 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         },
         onDoubleTap = { entity ->
           if (canEntityAct(entity)) {
-            entity.passiveAbility.effect(entity, entity)
-            onActionCompleted(entity)
+            scope.launch {
+              isActionPlaying = true // Lock input
+              entity.passiveAbility.effect(entity, entity)
+              onActionCompleted(entity)
+              isActionPlaying = false // Unlock input
+            }
           }
         },
         onPressStatus = { entity, isPressed ->
@@ -164,7 +185,7 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
     }
   }
 
-  private fun handleCardInteraction(
+  private suspend fun handleCardInteraction(
     source: Entity,
     target: Entity,
     ownTeam: List<Entity>,

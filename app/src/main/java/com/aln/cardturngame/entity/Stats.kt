@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
+import kotlinx.coroutines.delay
 
 class Stats(
   maxHealth: Float,
@@ -29,12 +30,47 @@ class Stats(
   var maxHealth by mutableFloatStateOf(maxHealth)
   var damage by mutableFloatStateOf(damage)
 
-  fun applyDamage(target: Entity, amount: Float = damage){
-    target.stats.receiveDamage(amount)
+  suspend fun applyDamage(
+    target: Entity,
+    amount: Float = damage,
+    repeats: Int = 1,
+    delay: Long = 400
+  ) {
+    repeat(repeats) {
+      // Stop the sequence if the target dies
+      if (!target.isAlive) return
+
+      target.stats.receiveDamage(amount)
+
+      if (repeats > 1) {
+        delay(delay)
+      }
+    }
+  }
+
+  suspend fun heal(
+    amount: Float,
+    repeats: Int = 1,
+    delay: Long = 400
+  ) {
+    repeat(repeats) {
+      this.health = (this.health + amount).coerceAtMost(this.maxHealth)
+
+      if (::entity.isInitialized) {
+        entity.addPopup(amount, Color.Green)
+      }
+
+      if (repeats > 1) {
+        delay(delay)
+      }
+    }
   }
 
   fun receiveDamage(amount: Float) {
-    health = (health - amount).coerceAtLeast(0f)
+    this.health = (this.health - amount).coerceAtLeast(0f)
+    if (::entity.isInitialized) {
+      entity.addPopup(amount)
+    }
   }
 
   @Composable
