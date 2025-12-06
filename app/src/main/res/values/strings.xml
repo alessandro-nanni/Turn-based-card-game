@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CardTurnGame</string>
+    <string name="heavy_strike_name">Heavy Strike</string>
+    <string name="heavy_strike_desc">Deals 150% damage</string>
 </resources>

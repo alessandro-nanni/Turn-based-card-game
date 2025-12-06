@@ -1,4 +1,4 @@
-package com.aln.cardturngame.character
+package com.aln.cardturngame.entity
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf

@@ -1,4 +1,4 @@
-package com.aln.cardturngame.character
+package com.aln.cardturngame.entity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,20 +34,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-abstract class AbstractCharacter(
+abstract class Entity(
   val name: String,
   val stats: Stats,
-  val color: Color
+  val color: Color,
+  val passiveAbility: Ability,
+  val activeAbility: Ability
 ) {
-  abstract fun passive(target: AbstractCharacter)
-  abstract fun active(target: AbstractCharacter)
 
   @Composable
   fun CharacterCard(
     width: Dp,
     height: Dp,
-    onCardPositioned: (AbstractCharacter, Rect) -> Unit,
-    onDragStart: (AbstractCharacter, Offset) -> Unit,
+    onCardPositioned: (Entity, Rect) -> Unit,
+    onDragStart: (Entity, Offset) -> Unit,
     onDrag: (Offset) -> Unit,
     onDragEnd: () -> Unit
   ) {
@@ -62,7 +62,7 @@ abstract class AbstractCharacter(
         .pointerInput(Unit) {
           detectDragGestures(
             onDragStart = { offset ->
-              onDragStart(this@AbstractCharacter, offset)
+              onDragStart(this@Entity, offset)
             },
             onDrag = { change, dragAmount ->
               change.consume()
@@ -92,12 +92,12 @@ abstract class AbstractCharacter(
             .fillMaxWidth(0.75f)
             .aspectRatio(1f)
             .clip(CircleShape)
-            .background(this@AbstractCharacter.color)
+            .background(this@Entity.color)
             .border(2.dp, Color.White, CircleShape),
           contentAlignment = Alignment.Center
         ) {
           Text(
-            text = this@AbstractCharacter.name.first().toString(),
+            text = this@Entity.name.first().toString(),
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
@@ -111,8 +111,8 @@ abstract class AbstractCharacter(
           horizontalAlignment = Alignment.CenterHorizontally,
           modifier = Modifier.fillMaxWidth()
         ) {
-          val hp = this@AbstractCharacter.stats.health
-          val hpPercent = (hp / this@AbstractCharacter.stats.maxHealth).coerceIn(0f, 1f)
+          val hp = this@Entity.stats.health
+          val hpPercent = (hp / this@Entity.stats.maxHealth).coerceIn(0f, 1f)
 
           val barColor = when {
             hpPercent > 0.5f -> Color(0xFF4CAF50)

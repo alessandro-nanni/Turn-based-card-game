@@ -27,30 +27,30 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import com.aln.cardturngame.character.AbstractCharacter
-import com.aln.cardturngame.character.Warrior
+import com.aln.cardturngame.entity.Entity
+import com.aln.cardturngame.entity.Warrior
 
 @Composable
 fun BattleScreen() {
 
   val teamPlayer = remember {
-    listOf<AbstractCharacter>(
+    listOf<Entity>(
       Warrior(), Warrior(), Warrior(),
     )
   }
 
   val teamEnemy = remember {
-    listOf<AbstractCharacter>(
+    listOf<Entity>(
       Warrior(), Warrior(),
     )
   }
 
   // Drag & Drop State
-  var draggingSource by remember { mutableStateOf<AbstractCharacter?>(null) }
+  var draggingSource by remember { mutableStateOf<Entity?>(null) }
   var dragStart by remember { mutableStateOf(Offset.Zero) }
   var dragCurrent by remember { mutableStateOf(Offset.Zero) }
 
-  val cardBounds = remember { mutableStateMapOf<AbstractCharacter, Rect>() }
+  val cardBounds = remember { mutableStateMapOf<Entity, Rect>() }
 
   BoxWithConstraints(
     modifier = Modifier
@@ -112,10 +112,10 @@ fun BattleScreen() {
 }
 
 fun handleCardInteraction(
-  source: AbstractCharacter,
-  target: AbstractCharacter,
-  teamPlayer: List<AbstractCharacter>,
-  teamEnemy: List<AbstractCharacter>
+  source: Entity,
+  target: Entity,
+  teamPlayer: List<Entity>,
+  teamEnemy: List<Entity>
 ) {
   // Determine teams
   val sourceIsPlayer = teamPlayer.contains(source)
@@ -123,9 +123,9 @@ fun handleCardInteraction(
 
   // Check relationship
   if (sourceIsPlayer == targetIsPlayer) {
-    source.passive(target)
+    source.passiveAbility.effect(source,target)
   } else {
-    source.active(target)
+    source.activeAbility.effect(source,target)
 
   }
 }
@@ -134,10 +134,10 @@ fun handleCardInteraction(
 fun BattleLayout(
   finalCardHeight: Dp,
   finalCardWidth: Dp,
-  teamPlayer: List<AbstractCharacter>,
-  teamEnemy: List<AbstractCharacter>,
-  onCardPositioned: (AbstractCharacter, Rect) -> Unit,
-  onDragStart: (AbstractCharacter, Offset) -> Unit,
+  teamPlayer: List<Entity>,
+  teamEnemy: List<Entity>,
+  onCardPositioned: (Entity, Rect) -> Unit,
+  onDragStart: (Entity, Offset) -> Unit,
   onDrag: (Offset) -> Unit,
   onDragEnd: () -> Unit
 ) {
@@ -186,12 +186,12 @@ fun BattleLayout(
 
 @Composable
 fun TeamColumn(
-  characters: List<AbstractCharacter>,
+  characters: List<Entity>,
   alignment: Alignment.Horizontal,
   cardWidth: Dp,
   cardHeight: Dp,
-  onCardPositioned: (AbstractCharacter, Rect) -> Unit,
-  onDragStart: (AbstractCharacter, Offset) -> Unit,
+  onCardPositioned: (Entity, Rect) -> Unit,
+  onDragStart: (Entity, Offset) -> Unit,
   onDrag: (Offset) -> Unit,
   onDragEnd: () -> Unit
 ) {
