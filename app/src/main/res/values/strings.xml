@@ -2,4 +2,6 @@
     <string name="app_name">CardTurnGame</string>
     <string name="heavy_strike_name">Heavy Strike</string>
     <string name="heavy_strike_desc">Deals 150% damage</string>
+    <string name="poison_name">Weakening Poison</string>
+    <string name="poison_desc">Decreases damage by 5 and deals 10 damage per turn.</string>
 </resources>

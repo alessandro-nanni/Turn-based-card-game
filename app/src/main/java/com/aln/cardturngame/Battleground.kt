@@ -96,7 +96,6 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
 
       scope.launch {
         isActionPlaying = true
-        // handleCardInteraction is accessed from the outer Battleground class
         handleCardInteraction(source, target, rightTeam.entities)
 
         if (!actionsTaken.contains(source)) {
@@ -106,7 +105,11 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         val activeTeamEntities = if (isLeftTeamTurn) leftTeam.entities else rightTeam.entities
         if (actionsTaken.containsAll(activeTeamEntities.filter { it.isAlive })) {
           actionsTaken.clear()
+
           isLeftTeamTurn = !isLeftTeamTurn
+
+          val nextTeam = if (isLeftTeamTurn) leftTeam else rightTeam
+          processStartOfTurnEffects(nextTeam)
         }
 
         isActionPlaying = false
@@ -132,11 +135,12 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
 
       // Line Drawing
       state.dragState?.let { dragState ->
-        val lineEnd = if (state.hoveredTarget != null && state.cardBounds.contains(state.hoveredTarget)) {
-          state.cardBounds[state.hoveredTarget]!!.center
-        } else {
-          dragState.current
-        }
+        val lineEnd =
+          if (state.hoveredTarget != null && state.cardBounds.contains(state.hoveredTarget)) {
+            state.cardBounds[state.hoveredTarget]!!.center
+          } else {
+            dragState.current
+          }
         LineCanvas(dragState.start, lineEnd)
       }
 
@@ -188,6 +192,20 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         end = dragCurrent,
         strokeWidth = 8f
       )
+    }
+  }
+
+  private suspend fun processStartOfTurnEffects(team: Team) {
+    team.entities.filter { it.isAlive }.forEach { entity ->
+      val activeEffects = entity.statusEffects.toList()
+
+      activeEffects.forEach { effect ->
+        effect.onStartTurn(entity)
+
+        if (effect.tick()) {
+          entity.removeStatusEffect(effect)
+        }
+      }
     }
   }
 

@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
+import com.aln.cardturngame.effect.StatusEffect
 import kotlinx.coroutines.launch
 
 abstract class Entity(
@@ -68,6 +69,26 @@ abstract class Entity(
 
   init {
     stats.entity = this
+  }
+
+  val statusEffects = mutableStateListOf<StatusEffect>()
+
+  fun addStatusEffect(effect: StatusEffect) {
+    val existingEffect = statusEffects.find { it::class == effect::class }
+
+    if (existingEffect != null) {
+      // update the duration to the new one
+      existingEffect.duration = effect.duration
+    } else {
+      // add to list and trigger onApply
+      statusEffects.add(effect)
+      effect.onApply(this)
+    }
+  }
+
+  fun removeStatusEffect(effect: StatusEffect) {
+    effect.onVanish(this)
+    statusEffects.remove(effect)
   }
 
   // State for popups
@@ -195,43 +216,95 @@ abstract class Entity(
 
           Spacer(modifier = Modifier.height(8.dp))
 
-          // Stats Section
-          Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-          ) {
-            val hp = this@Entity.stats.health
-            val hpPercent = (hp / this@Entity.stats.maxHealth).coerceIn(0f, 1f)
+          Stats()
 
-            val barColor = when {
-              hpPercent > 0.5f -> Color(0xFF4CAF50)
-              hpPercent > 0.2f -> Color(0xFFFFC107)
-              else -> Color(0xFFF44336)
-            }
-
-            // HP Bar
-            Box(
-              modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(8.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(Color.DarkGray)
-            ) {
-              Box(
-                modifier = Modifier
-                  .fillMaxWidth(hpPercent)
-                  .fillMaxHeight()
-                  .background(barColor)
-              )
-            }
+          if (this@Entity.statusEffects.isNotEmpty()) {
+            ActiveEffects()
           }
+
         }
       }
+
 
       popups.forEach { popup ->
         key(popup.id) {
           PopupView(popup) {
             popups.remove(popup)
+          }
+        }
+      }
+    }
+  }
+
+  @Composable
+  fun Stats(){
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = Modifier.fillMaxWidth()
+    ) {
+      val hp = this@Entity.stats.health
+      val hpPercent = (hp / this@Entity.stats.maxHealth).coerceIn(0f, 1f)
+
+      val barColor = when {
+        hpPercent > 0.5f -> Color(0xFF4CAF50)
+        hpPercent > 0.2f -> Color(0xFFFFC107)
+        else -> Color(0xFFF44336)
+      }
+
+      // HP Bar
+      Box(
+        modifier = Modifier
+          .fillMaxWidth(0.8f)
+          .height(8.dp)
+          .clip(RoundedCornerShape(4.dp))
+          .background(Color.DarkGray)
+      ) {
+        Box(
+          modifier = Modifier
+            .fillMaxWidth(hpPercent)
+            .fillMaxHeight()
+            .background(barColor)
+        )
+      }
+    }
+  }
+  @Composable
+  fun ActiveEffects(){
+    Spacer(modifier = Modifier.height(8.dp))
+    Row(
+      horizontalArrangement = Arrangement.Center,
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier.fillMaxWidth()
+    ) {
+      this@Entity.statusEffects.forEach { effect ->
+        Box(
+          contentAlignment = Alignment.BottomEnd,
+          modifier = Modifier
+            .padding(2.dp)
+            .size(32.dp)
+        ) {
+          Icon(
+            painter = painterResource(id = effect.iconRes),
+            contentDescription = effect.nameRes.toString(),
+            tint = Color.White,
+            modifier = Modifier.fillMaxSize()
+          )
+
+          Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+              .align(Alignment.BottomEnd)
+              .size(14.dp)
+              .clip(CircleShape)
+              .background(Color.Black)
+          ) {
+            Text(
+              text = effect.duration.toString(),
+              color = Color.White,
+              fontSize = 8.sp,
+              fontWeight = FontWeight.Bold,
+              lineHeight = 8.sp
+            )
           }
         }
       }
@@ -340,6 +413,60 @@ abstract class Entity(
             text = stringResource(this@Entity.passiveAbility.descriptionRes),
             color = Color.LightGray
           )
+
+          if (statusEffects.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+              text = "Status Effects:",
+              color = Color.White,
+              fontSize = 18.sp,
+              fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            statusEffects.forEach { effect ->
+              Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(bottom = 8.dp)
+              ) {
+                // Icon
+                Icon(
+                  painter = painterResource(id = effect.iconRes),
+                  contentDescription = null,
+                  tint = Color.Unspecified,
+                  modifier = Modifier.size(32.dp)
+                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column {
+                  Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                      text = stringResource(effect.nameRes),
+                      color = Color(0xFFFFC107),
+                      fontWeight = FontWeight.Bold,
+                      fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                      text = "(${effect.duration} turns)",
+                      color = Color.Gray,
+                      fontSize = 12.sp
+                    )
+                  }
+
+                  Text(
+                    text = stringResource(effect.descriptionRes),
+                    color = Color.LightGray,
+                    fontSize = 14.sp
+                  )
+                }
+              }
+            }
+          }
         }
       }
     }
