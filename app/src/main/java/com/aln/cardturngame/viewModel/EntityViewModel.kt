@@ -1,5 +1,6 @@
 package com.aln.cardturngame.viewModel
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -29,14 +30,19 @@ class EntityViewModel(
 
   @StringRes
   val name: Int = entity.name
+
+  @DrawableRes
+  val icon: Int = entity.iconRes
   val color: Color get() = entity.color
 
   val traits: List<Trait> get() = entity.traits
 
   fun addStatusEffect(effect: StatusEffect) {
-    statusEffects.find { it::class == effect::class }?.let { existingEffect ->
-      existingEffect.duration = maxOf(existingEffect.duration, effect.duration)
-    } ?: run {
+    val existingEffect = statusEffects.find { it::class == effect::class }
+
+    if (existingEffect != null) {
+      existingEffect.duration = effect.duration
+    } else {
       statusEffects.add(effect)
       effect.onApply(this)
     }

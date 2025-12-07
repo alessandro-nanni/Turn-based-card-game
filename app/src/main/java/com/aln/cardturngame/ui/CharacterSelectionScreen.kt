@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -65,6 +66,7 @@ fun CharacterSelectionScreen(
   val p1Team = remember { mutableStateListOf<Entity>() }
   val p2Team = remember { mutableStateListOf<Entity>() }
 
+  // Updated reflection logic
   val availableCharacters = remember {
     Entity::class.sealedSubclasses.map { it.createInstance() }
   }
@@ -75,6 +77,7 @@ fun CharacterSelectionScreen(
       .background(Color(0xFF121212))
       .padding(16.dp)
   ) {
+    // Top Row: P1 Name - Start Button - P2 Name
     Row(
       modifier = Modifier
         .fillMaxWidth()
@@ -138,6 +141,7 @@ fun CharacterSelectionScreen(
       )
     }
 
+    // Split Screen Selection Area
     Row(
       modifier = Modifier.fillMaxSize(),
       horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -151,6 +155,7 @@ fun CharacterSelectionScreen(
         )
       }
 
+      // Vertical Divider
       VerticalDivider(
         modifier = Modifier.fillMaxHeight(),
         color = Color.Gray.copy(alpha = 0.3f),
@@ -178,6 +183,7 @@ fun PlayerGridSection(
   var infoCharacter by remember { mutableStateOf<Entity?>(null) }
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    // Grid View
     AnimatedVisibility(
       visible = infoCharacter == null,
       enter = fadeIn(),
@@ -213,6 +219,7 @@ fun PlayerGridSection(
       }
     }
 
+    // Info Card Overlay
     AnimatedVisibility(
       visible = infoCharacter != null,
       enter = fadeIn(),
@@ -224,6 +231,7 @@ fun PlayerGridSection(
 
           InfoCard(viewModel = tempViewModel)
 
+          // Close Button
           IconButton(
             onClick = { infoCharacter = null },
             modifier = Modifier
@@ -267,29 +275,23 @@ fun CharacterGridItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
       ) {
-        Box(
-          modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(entity.color),
-          contentAlignment = Alignment.Center
-        ) {
-          Text(
-            text = stringResource(entity.name).first().toString(),
-            color = Color.White,
-            fontWeight = FontWeight.Bold
-          )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
+        Icon(
+          painter = painterResource(id = entity.iconRes),
+          contentDescription = stringResource(id = entity.name),
+          modifier = Modifier.size(60.dp),
+          tint = entity.color
+        )
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
           text = stringResource(entity.name),
           color = if (isSelected) Color.White else Color.Gray,
-          fontSize = 12.sp,
+          fontSize = 16.sp,
           fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
           maxLines = 1
         )
       }
 
+      // Info Button
       IconButton(
         onClick = onInfo,
         modifier = Modifier
