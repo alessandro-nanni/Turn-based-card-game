@@ -8,6 +8,7 @@ import com.aln.cardturngame.trait.Trait
 sealed class Entity(
   @field:StringRes val name: Int,
   @field:DrawableRes val iconRes: Int,
+  val damageType : DamageType,
   val initialStats: Stats,
   val color: Color,
   val passiveAbility: Ability,

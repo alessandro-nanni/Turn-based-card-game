@@ -12,4 +12,7 @@
     <string name="trait_stone_skin_desc">Reduces incoming damage by 3</string>
     <string name="warrior_name">Warrior</string>
     <string name="mage_name">Mage</string>
+    <string name="damage_type_ranged">Ranged</string>
+    <string name="damage_type_magic">Magic</string>
+    <string name="damage_type_melee">Melee</string>
 </resources>

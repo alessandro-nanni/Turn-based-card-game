@@ -26,8 +26,8 @@ class Warrior : Entity(
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
       // Warrior Ult: Massive damage to single target
       source.applyDamage(target, amount = source.damage * 3)
-      println("${source.name} used Ultimate on ${target.name}!")
     }
   },
-  traits = listOf(BerserkerTrait(), StoneSkinTrait())
+  traits = listOf(BerserkerTrait(), StoneSkinTrait()),
+  damageType = DamageType.Melee
 )

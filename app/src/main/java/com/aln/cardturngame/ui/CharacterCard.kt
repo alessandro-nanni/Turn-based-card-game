@@ -33,6 +33,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
 import com.aln.cardturngame.effect.StatusEffect
+import com.aln.cardturngame.entity.DamageType
 import com.aln.cardturngame.entity.Popup
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlinx.coroutines.launch
@@ -383,6 +385,9 @@ fun InfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
+
+          DamageTypeChip(viewModel.damageType)
+
           Text(
             text = stringResource(viewModel.name),
             color = Color.White,
@@ -390,6 +395,7 @@ fun InfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
             fontWeight = FontWeight.Bold
           )
           StatsView(viewModel)
+
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -423,8 +429,9 @@ fun InfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
               "Ultimate",
               viewModel.entity.ultimateAbility.nameRes,
               viewModel.entity.ultimateAbility.descriptionRes,
-              Color(0xFFAB47BC)
+              Color(0xFFE91E63)
             )
+
           }
 
           val hasEffects = viewModel.statusEffects.isNotEmpty()
@@ -486,6 +493,18 @@ fun InfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
       }
     }
   }
+}
+
+@Composable
+fun DamageTypeChip(
+  damageType: DamageType,
+) {
+  Icon(
+    painter = painterResource(damageType.iconResId),
+    contentDescription = damageType.name,
+    tint = damageType.tintColor,
+    modifier = Modifier.size(20.dp)
+  )
 }
 
 @Composable

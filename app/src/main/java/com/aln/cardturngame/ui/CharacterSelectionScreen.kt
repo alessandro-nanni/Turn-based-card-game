@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -65,7 +64,6 @@ fun CharacterSelectionScreen(
   val p1Team = remember { mutableStateListOf<Entity>() }
   val p2Team = remember { mutableStateListOf<Entity>() }
 
-  // Updated reflection logic
   val availableCharacters = remember {
     Entity::class.sealedSubclasses.map { it.createInstance() }
   }
@@ -76,7 +74,6 @@ fun CharacterSelectionScreen(
       .background(Color(0xFF121212))
       .padding(16.dp)
   ) {
-    // Top Row: P1 Name - Start Button - P2 Name
     Row(
       modifier = Modifier
         .fillMaxWidth()
@@ -84,7 +81,6 @@ fun CharacterSelectionScreen(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-      // Player 1 Name Input
       OutlinedTextField(
         value = player1Name,
         onValueChange = { player1Name = it },
@@ -101,7 +97,6 @@ fun CharacterSelectionScreen(
         modifier = Modifier.weight(1f)
       )
 
-      // Start Game Button (Centered)
       Button(
         onClick = {
           onStartGame(player1Name, p1Team.toList(), player2Name, p2Team.toList())
@@ -122,7 +117,6 @@ fun CharacterSelectionScreen(
         )
       }
 
-      // Player 2 Name Input
       OutlinedTextField(
         value = player2Name,
         onValueChange = { player2Name = it },
@@ -140,12 +134,10 @@ fun CharacterSelectionScreen(
       )
     }
 
-    // Split Screen Selection Area
     Row(
       modifier = Modifier.fillMaxSize(),
       horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-      // Player 1 Grid
       Box(modifier = Modifier.weight(1f)) {
         PlayerGridSection(
           team = p1Team,
@@ -153,14 +145,12 @@ fun CharacterSelectionScreen(
         )
       }
 
-      // Vertical Divider
       VerticalDivider(
         modifier = Modifier.fillMaxHeight(),
         color = Color.Gray.copy(alpha = 0.3f),
         thickness = 1.dp
       )
 
-      // Player 2 Grid
       Box(modifier = Modifier.weight(1f)) {
         PlayerGridSection(
           team = p2Team,
@@ -180,7 +170,6 @@ fun PlayerGridSection(
   var infoCharacter by remember { mutableStateOf<Entity?>(null) }
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    // Grid View
     AnimatedVisibility(
       visible = infoCharacter == null,
       enter = fadeIn(),
@@ -205,7 +194,6 @@ fun PlayerGridSection(
               if (existing != null) {
                 team.remove(existing)
               } else {
-                // Reflectively create a new instance for the actual team member
                 val newInstance = entity::class.createInstance()
                 team.add(newInstance)
               }
@@ -216,7 +204,6 @@ fun PlayerGridSection(
       }
     }
 
-    // Info Card Overlay
     AnimatedVisibility(
       visible = infoCharacter != null,
       enter = fadeIn(),
@@ -228,13 +215,11 @@ fun PlayerGridSection(
 
           InfoCard(viewModel = tempViewModel)
 
-          // Close Button
           IconButton(
             onClick = { infoCharacter = null },
             modifier = Modifier
-              .align(Alignment.TopEnd)
-              .padding(16.dp)
-              .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+              .align(Alignment.BottomEnd)
+              .padding(8.dp)
           ) {
             Icon(
               imageVector = Icons.Default.Close,
@@ -288,7 +273,6 @@ fun CharacterGridItem(
         )
       }
 
-      // Info Button
       IconButton(
         onClick = onInfo,
         modifier = Modifier

@@ -26,7 +26,7 @@ class Mage : Entity(
       // Mage Ult: Massive Poison
       target.addStatusEffect(WeakeningPoison(10))
       target.receiveDamage(30f)
-      println("${source.name} cast Ultimate Poison on ${target.name}!")
     }
-  }
+  },
+  damageType = DamageType.Magic
 )

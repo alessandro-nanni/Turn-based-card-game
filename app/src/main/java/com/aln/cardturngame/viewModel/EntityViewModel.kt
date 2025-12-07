@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.aln.cardturngame.effect.StatusEffect
+import com.aln.cardturngame.entity.DamageType
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entity.Popup
 import com.aln.cardturngame.trait.Trait
@@ -28,6 +29,7 @@ class EntityViewModel(
 
   val name: Int = entity.name
   val color: Color = entity.color
+  val damageType: DamageType = entity.damageType
 
   val iconRes: Int = entity.iconRes
   val traits: List<Trait> get() = entity.traits
