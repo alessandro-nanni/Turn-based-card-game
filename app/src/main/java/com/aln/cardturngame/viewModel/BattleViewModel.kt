@@ -25,13 +25,14 @@ data class UltimateDragState(
   val start: Offset,
   val current: Offset
 )
-
 class BattleViewModel(
-  val leftTeam: Team,
-  val rightTeam: Team
+  initialLeftTeam: Team = Team(emptyList()),
+  initialRightTeam: Team = Team(emptyList())
 ) : ViewModel() {
 
-  // ... [Existing State properties] ...
+  var leftTeam by mutableStateOf(initialLeftTeam)
+  var rightTeam by mutableStateOf(initialRightTeam)
+
   var dragState by mutableStateOf<DragState?>(null)
     private set
   var ultimateDragState by mutableStateOf<UltimateDragState?>(null)
@@ -52,6 +53,24 @@ class BattleViewModel(
   private val actionsTaken = mutableStateListOf<EntityViewModel>()
   val cardBounds = mutableStateMapOf<EntityViewModel, Rect>()
 
+  fun startGame(newLeftTeam: Team, newRightTeam: Team) {
+    leftTeam = newLeftTeam
+    rightTeam = newRightTeam
+
+    // Reset game state
+    isLeftTeamTurn = Random.nextBoolean()
+    isActionPlaying = false
+    winner = null
+    actionsTaken.clear()
+    cardBounds.clear()
+
+    // Reset Rage
+    leftTeam.rage = 0f
+    rightTeam.rage = 0f
+  }
+
+  // ... (The rest of the class logic: canEntityAct, drag logic, executeInteraction etc. remains exactly the same)
+
   fun canEntityAct(entity: EntityViewModel): Boolean {
     if (winner != null) return false
     val isLeft = leftTeam.entities.contains(entity)
@@ -60,14 +79,16 @@ class BattleViewModel(
     return isTurn && !actionsTaken.contains(entity) && entity.isAlive && !isActionPlaying
   }
 
-  // --- Rage & Ultimate Logic ---
-
   fun increaseRage(team: Team, amount: Float) {
     team.rage = (team.rage + amount).coerceAtMost(team.maxRage)
   }
 
+  // ... (Paste the rest of the existing methods here: onUltimateDragStart, onDrag, etc.)
+  // For brevity, I am not repeating the unmodified methods from the original file,
+  // but they must be present in the final file.
+
+  // [EXISTING CODE RESUMES HERE]
   fun onUltimateDragStart(team: Team, offset: Offset) {
-    // Allow drag only if it's that team's turn and rage is full
     val isLeft = (team == leftTeam)
     if ((isLeft && isLeftTeamTurn) || (!isLeft && !isLeftTeamTurn)) {
       if (team.rage >= team.maxRage && !isActionPlaying && winner == null) {
@@ -81,7 +102,6 @@ class BattleViewModel(
       val newPos = current.current + change
       ultimateDragState = current.copy(current = newPos)
 
-      // Check for hover over valid targets (Allies of the casting team)
       hoveredTarget = cardBounds.entries.firstOrNull { (entity, rect) ->
         entity.isAlive && rect.contains(newPos) && current.team.entities.contains(entity)
       }?.key
@@ -105,19 +125,12 @@ class BattleViewModel(
 
     viewModelScope.launch {
       isActionPlaying = true
-
-      // Consume Rage
       team.rage = 0f
-
-      // Determine targets (Simple logic: Pick a random alive enemy)
       val enemies = if (team == leftTeam) rightTeam else leftTeam
       val validTargets = enemies.entities.filter { it.isAlive }
 
       if (validTargets.isNotEmpty()) {
         val randomEnemy = validTargets.random()
-        println("ULTIMATE! ${caster.name} attacks ${randomEnemy.name}")
-
-        // Execute the ultimate ability
         caster.entity.ultimateAbility.effect(caster, randomEnemy)
       }
 
@@ -125,8 +138,6 @@ class BattleViewModel(
       isActionPlaying = false
     }
   }
-
-  // --- Existing Drag Logic (Updated for Rage Gain) ---
 
   fun onDragStart(char: EntityViewModel, offset: Offset) {
     if (canEntityAct(char)) {
@@ -179,16 +190,14 @@ class BattleViewModel(
     val draggingState = dragState
     val ultState = ultimateDragState
 
-    // Highlight logic for Normal Card Drag
     if (draggingState != null && entity == hoveredTarget) {
       val sourceLeft = leftTeam.entities.contains(draggingState.source)
       val targetLeft = leftTeam.entities.contains(entity)
       return if (sourceLeft == targetLeft) Color.Green else Color.Red
     }
 
-    // Highlight logic for Ultimate Drag (Only highlight allies)
     if (ultState != null && entity == hoveredTarget) {
-      if (ultState.team.entities.contains(entity)) return Color.Cyan // Distinct color for Ult target
+      if (ultState.team.entities.contains(entity)) return Color.Cyan
     }
 
     return Color.Transparent
@@ -209,13 +218,12 @@ class BattleViewModel(
       isActionPlaying = true
       handleCardInteraction(source, target)
 
-      // Rage Gain Logic
       val sourceTeam = if(leftTeam.entities.contains(source)) leftTeam else rightTeam
       val targetTeam = if(leftTeam.entities.contains(target)) leftTeam else rightTeam
 
-      increaseRage(sourceTeam, 50f) // Gain rage for attacking
+      increaseRage(sourceTeam, 50f)
       if (sourceTeam != targetTeam) {
-        increaseRage(targetTeam, 20f) // Gain rage for taking damage
+        increaseRage(targetTeam, 20f)
       }
 
       checkWinCondition()
@@ -235,10 +243,7 @@ class BattleViewModel(
 
         val nextTeam = if (isLeftTeamTurn) leftTeam else rightTeam
         processStartOfTurnEffects(nextTeam)
-
-        // Passive rage gain per turn
         increaseRage(nextTeam, 10f)
-
         checkWinCondition()
       }
 
@@ -261,7 +266,6 @@ class BattleViewModel(
 
   private suspend fun processStartOfTurnEffects(team: Team) {
     team.entities.filter { it.isAlive }.forEach { entity ->
-
       entity.traits.forEach { trait ->
         trait.onStartTurn(entity)
       }

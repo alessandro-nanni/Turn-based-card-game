@@ -1,3 +1,4 @@
+// app/src/main/java/com/aln/cardturngame/MainActivity.kt
 package com.aln.cardturngame
 
 import android.content.pm.ActivityInfo
@@ -7,32 +8,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.aln.cardturngame.entity.Mage
 import com.aln.cardturngame.entity.Team
-import com.aln.cardturngame.entity.Warrior
+import com.aln.cardturngame.ui.CharacterSelectionScreen
 import com.aln.cardturngame.ui.theme.CardTurnGameTheme
 import com.aln.cardturngame.viewModel.BattleViewModel
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class MainActivity : ComponentActivity() {
 
-  private val battleViewModel: BattleViewModel by viewModels {
-    viewModelFactory {
-      initializer {
-        val leftEntities = listOf(Mage()).map { EntityViewModel(it) }
-        val rightEntities = listOf(Warrior(), Warrior(), Mage()).map { EntityViewModel(it) }
-
-        val leftTeam = Team(leftEntities)
-        val rightTeam = Team(rightEntities)
-        BattleViewModel(leftTeam, rightTeam)
-      }
-    }
-  }
+  private val battleViewModel: BattleViewModel by viewModels()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -50,7 +41,22 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       CardTurnGameTheme {
-        mainView.Content()
+        var isBattleStarted by remember { mutableStateOf(false) }
+
+        if (!isBattleStarted) {
+          CharacterSelectionScreen(
+            onStartGame = { p1Name, p1Entities, p2Name, p2Entities ->
+              val leftTeam = Team(p1Entities.map { EntityViewModel(it) })
+              val rightTeam = Team(p2Entities.map { EntityViewModel(it) })
+
+              battleViewModel.startGame(leftTeam, rightTeam)
+
+              isBattleStarted = true
+            }
+          )
+        } else {
+          mainView.Content()
+        }
       }
     }
   }
