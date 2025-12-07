@@ -38,6 +38,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
@@ -59,124 +60,8 @@ fun BattleScreen(viewModel: BattleViewModel) {
     )
     val finalCardWidth = finalCardHeight * 0.7f
 
-    // --- Main Layout ---
-    Row(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(horizontal = 20.dp),
-      horizontalArrangement = Arrangement.Center,
-      verticalAlignment = Alignment.CenterVertically
-    ) {
+    BattleLayout(viewModel, finalCardHeight, finalCardWidth)
 
-      // --- LEFT SECTION ---
-      // Row: [Bar] [Cards]
-      Row(
-        modifier = Modifier
-          .weight(1f)
-          .fillMaxHeight(),
-        horizontalArrangement = Arrangement.Start
-      ) {
-
-        // Left Cards (Fills remaining height/width)
-        Box(
-          modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight(),
-          contentAlignment = Alignment.CenterStart
-        ) {
-          viewModel.leftTeam.TeamColumn(
-            alignment = Alignment.Start,
-            cardWidth = finalCardWidth,
-            cardHeight = finalCardHeight,
-            canAct = viewModel::canEntityAct,
-            onCardPositioned = viewModel::onCardPositioned,
-            onDragStart = viewModel::onDragStart,
-            onDrag = viewModel::onDrag,
-            onDragEnd = viewModel::onDragEnd,
-            onDoubleTap = viewModel::onDoubleTap,
-            onPressStatus = viewModel::onPressStatus,
-            getHighlightColor = viewModel::getHighlightColor
-          )
-        }
-        // Left Rage Bar (Bottom Left)
-        Box(
-          modifier = Modifier
-            .align(Alignment.Bottom) // Aligns the bar to the bottom of the Row
-            .padding(end = 16.dp, bottom = 16.dp)
-        ) {
-          RageBar(
-            rage = viewModel.leftTeam.rage,
-            maxRage = viewModel.leftTeam.maxRage,
-            isTurn = viewModel.isLeftTeamTurn,
-            onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
-            onDrag = viewModel::onUltimateDrag,
-            onDragEnd = viewModel::onUltimateDragEnd
-          )
-        }
-      }
-
-      // --- VS SEPARATOR ---
-      Text(
-        text = "VS",
-        color = Color.Gray,
-        fontSize = 32.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-          .padding(horizontal = 16.dp)
-      )
-
-      // --- RIGHT SECTION ---
-      // Row: [Cards] [Bar]
-      Row(
-        modifier = Modifier
-          .weight(1f)
-          .fillMaxHeight(),
-        horizontalArrangement = Arrangement.End
-      ) {
-
-        // Right Rage Bar (Top Right)
-        Box(
-          modifier = Modifier
-            .align(Alignment.Top) // Aligns the bar to the top of the Row
-            .padding(start = 16.dp, top = 16.dp)
-        ) {
-          RageBar(
-            rage = viewModel.rightTeam.rage,
-            maxRage = viewModel.rightTeam.maxRage,
-            isTurn = !viewModel.isLeftTeamTurn,
-            onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
-            onDrag = viewModel::onUltimateDrag,
-            onDragEnd = viewModel::onUltimateDragEnd
-          )
-        }
-
-        // Right Cards (Fills remaining height/width)
-        Box(
-          modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight(),
-          contentAlignment = Alignment.CenterEnd
-        ) {
-          viewModel.rightTeam.TeamColumn(
-            alignment = Alignment.End,
-            cardWidth = finalCardWidth,
-            cardHeight = finalCardHeight,
-            canAct = viewModel::canEntityAct,
-            onCardPositioned = viewModel::onCardPositioned,
-            onDragStart = viewModel::onDragStart,
-            onDrag = viewModel::onDrag,
-            onDragEnd = viewModel::onDragEnd,
-            onDoubleTap = viewModel::onDoubleTap,
-            onPressStatus = viewModel::onPressStatus,
-            getHighlightColor = viewModel::getHighlightColor
-          )
-        }
-      }
-    }
-
-    // --- Overlay Layer: Drag Feedback ---
-
-    // 1. Line for Normal Card Drag
     viewModel.dragState?.let { dragState ->
       val lineEnd =
         if (viewModel.hoveredTarget != null && viewModel.cardBounds.contains(viewModel.hoveredTarget)) {
@@ -187,7 +72,6 @@ fun BattleScreen(viewModel: BattleViewModel) {
       LineCanvas(dragState.start, lineEnd, Color.White)
     }
 
-    // 2. Draggable Flame Icon for Ultimate (Floating Overlay)
     viewModel.ultimateDragState?.let { ultState ->
       val iconSize = 48.dp
       val density = androidx.compose.ui.platform.LocalDensity.current
@@ -223,6 +107,90 @@ fun BattleScreen(viewModel: BattleViewModel) {
 
     if (viewModel.winner != null) {
       Winner(viewModel)
+    }
+  }
+}
+
+@Composable
+fun BattleLayout(
+  viewModel: BattleViewModel,
+  finalCardHeight: Dp,
+  finalCardWidth: Dp
+) {
+  Row(
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(horizontal = 40.dp, vertical = 15.dp),
+    horizontalArrangement = Arrangement.SpaceBetween,
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+
+
+    Row(
+      verticalAlignment = Alignment.Top,
+      horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+      viewModel.leftTeam.TeamColumn(
+        alignment = Alignment.Start,
+        cardWidth = finalCardWidth,
+        cardHeight = finalCardHeight,
+        canAct = viewModel::canEntityAct,
+        onCardPositioned = viewModel::onCardPositioned,
+        onDragStart = viewModel::onDragStart,
+        onDrag = viewModel::onDrag,
+        onDragEnd = viewModel::onDragEnd,
+        onDoubleTap = viewModel::onDoubleTap,
+        onPressStatus = viewModel::onPressStatus,
+        getHighlightColor = viewModel::getHighlightColor
+      )
+
+      RageBar(
+        rage = viewModel.leftTeam.rage,
+        maxRage = viewModel.leftTeam.maxRage,
+        isTurn = viewModel.isLeftTeamTurn,
+        onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
+        onDrag = viewModel::onUltimateDrag,
+        onDragEnd = viewModel::onUltimateDragEnd
+      )
+
+    }
+
+    Text(
+      text = "VS",
+      color = Color.Gray,
+      fontSize = 32.sp,
+      fontWeight = FontWeight.Bold,
+      modifier = Modifier.alpha(0.5f)
+    )
+
+    Row(
+      verticalAlignment = Alignment.Bottom,
+      horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+      RageBar(
+        rage = viewModel.rightTeam.rage,
+        maxRage = viewModel.rightTeam.maxRage,
+        isTurn = !viewModel.isLeftTeamTurn,
+        onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
+        onDrag = viewModel::onUltimateDrag,
+        onDragEnd = viewModel::onUltimateDragEnd
+      )
+
+      viewModel.rightTeam.TeamColumn(
+        alignment = Alignment.End,
+        cardWidth = finalCardWidth,
+        cardHeight = finalCardHeight,
+        canAct = viewModel::canEntityAct,
+        onCardPositioned = viewModel::onCardPositioned,
+        onDragStart = viewModel::onDragStart,
+        onDrag = viewModel::onDrag,
+        onDragEnd = viewModel::onDragEnd,
+        onDoubleTap = viewModel::onDoubleTap,
+        onPressStatus = viewModel::onPressStatus,
+        getHighlightColor = viewModel::getHighlightColor
+      )
     }
   }
 }
