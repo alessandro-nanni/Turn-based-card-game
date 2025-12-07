@@ -62,8 +62,6 @@ fun BattleScreen(viewModel: BattleViewModel) {
     )
     val finalCardWidth = finalCardHeight * 0.7f
 
-    BattleLayout(viewModel, finalCardHeight, finalCardWidth)
-
     viewModel.dragState?.let { dragState ->
       val lineEnd =
         if (viewModel.hoveredTarget != null && viewModel.cardBounds.contains(viewModel.hoveredTarget)) {
@@ -73,6 +71,9 @@ fun BattleScreen(viewModel: BattleViewModel) {
         }
       LineCanvas(dragState.start, lineEnd, Color.White)
     }
+
+    BattleLayout(viewModel, finalCardHeight, finalCardWidth)
+
 
     viewModel.ultimateDragState?.let { ultState ->
       val iconSize = 48.dp
@@ -151,7 +152,7 @@ fun BattleLayout(
         rage = viewModel.leftTeam.rage,
         maxRage = viewModel.leftTeam.maxRage,
         isTurn = viewModel.isLeftTeamTurn,
-        isDragging = viewModel.ultimateDragState?.team == viewModel.leftTeam, // CHANGED: Pass drag state
+        isDragging = viewModel.ultimateDragState?.team == viewModel.leftTeam,
         onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
         onDrag = viewModel::onUltimateDrag,
         onDragEnd = viewModel::onUltimateDragEnd
@@ -176,7 +177,7 @@ fun BattleLayout(
         rage = viewModel.rightTeam.rage,
         maxRage = viewModel.rightTeam.maxRage,
         isTurn = !viewModel.isLeftTeamTurn,
-        isDragging = viewModel.ultimateDragState?.team == viewModel.rightTeam, // CHANGED: Pass drag state
+        isDragging = viewModel.ultimateDragState?.team == viewModel.rightTeam,
         onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
         onDrag = viewModel::onUltimateDrag,
         onDragEnd = viewModel::onUltimateDragEnd
@@ -234,7 +235,7 @@ fun RageBar(
   rage: Float,
   maxRage: Float,
   isTurn: Boolean,
-  isDragging: Boolean, // CHANGED: New parameter
+  isDragging: Boolean,
   onDragStart: (Offset) -> Unit,
   onDrag: (Offset) -> Unit,
   onDragEnd: () -> Unit
@@ -244,7 +245,6 @@ fun RageBar(
   val progress = (rage / maxRage).coerceIn(0f, 1f)
   val isFull = progress >= 1f
 
-  // Global position state for accurate drag start
   var iconCenterGlobal by remember { mutableStateOf(Offset.Zero) }
 
   Box(
@@ -253,7 +253,6 @@ fun RageBar(
       .width(barWidth)
       .height(barHeight)
   ) {
-    // 1. Background Track (Clipped)
     Box(
       modifier = Modifier
         .fillMaxSize()
@@ -261,26 +260,23 @@ fun RageBar(
         .background(Color.DarkGray)
         .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
     ) {
-      // 2. Filled Progress (Horizontal)
       Box(
         modifier = Modifier
           .fillMaxHeight()
           .fillMaxWidth(progress)
           .background(
             brush = Brush.horizontalGradient(
-              colors = listOf(Color(0xFFFF5722), Color(0xFFFFC107))
+              colors = listOf(Color(0xFFFF5722), Color(0xFFFF0741))
             )
           )
       )
     }
 
-    // 3. Static Anchor Icon (Draggable Source)
     if (isFull && isTurn) {
       Box(
         modifier = Modifier
-          .align(Alignment.CenterEnd)
-          .offset(x = 12.dp) // Pop out slightly to the right
-          .size(48.dp) // Touch target
+          .align(Alignment.Center)
+          .size(48.dp)
           .onGloballyPositioned { coordinates ->
             val size = coordinates.size
             val position = coordinates.positionInRoot()
@@ -292,7 +288,6 @@ fun RageBar(
           .pointerInput(Unit) {
             detectDragGestures(
               onDragStart = { _ ->
-                // Start drag from this icon's global center
                 onDragStart(iconCenterGlobal)
               },
               onDrag = { change, dragAmount ->
@@ -304,23 +299,13 @@ fun RageBar(
           },
         contentAlignment = Alignment.Center
       ) {
-        // Visual Circle
-        if (!isDragging) { // CHANGED: Hide visual when dragging
-          Box(
-            modifier = Modifier
-              .size(40.dp)
-              .clip(CircleShape)
-              .background(Color.Red)
-              .border(2.dp, Color.Red, CircleShape), // CHANGED: Yellow -> Red
-            contentAlignment = Alignment.Center
-          ) {
-            Icon(
-              painter = painterResource(id = R.drawable.ultimate),
-              contentDescription = "Ready Ultimate",
-              tint = Color.Black, // CHANGED: Yellow -> Black
-              modifier = Modifier.size(24.dp)
-            )
-          }
+        if (!isDragging) {
+          Icon(
+            painter = painterResource(id = R.drawable.ultimate),
+            contentDescription = "Ready Ultimate",
+            tint = Color.Black,
+            modifier = Modifier.size(24.dp)
+          )
         }
       }
     }
