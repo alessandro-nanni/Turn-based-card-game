@@ -12,6 +12,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -23,14 +24,14 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
@@ -57,6 +58,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
+import com.aln.cardturngame.effect.StatusEffect
 import com.aln.cardturngame.entity.Popup
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlinx.coroutines.launch
@@ -75,7 +77,7 @@ fun CharacterCard(
   onPressStatus: (EntityViewModel, Boolean) -> Unit,
   highlightColor: Color = Color.Transparent
 ) {
-    val cardShape = RoundedCornerShape(12.dp)
+  val cardShape = RoundedCornerShape(12.dp)
 
   Box(
     modifier = Modifier
@@ -212,7 +214,7 @@ fun StatsBar(viewModel: EntityViewModel) {
       modifier = Modifier
         .fillMaxWidth(0.8f)
         .height(8.dp)
-        .clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+        .clip(RoundedCornerShape(4.dp))
         .background(Color.DarkGray)
     ) {
       Box(
@@ -227,38 +229,52 @@ fun StatsBar(viewModel: EntityViewModel) {
 
 @Composable
 fun StatsView(viewModel: EntityViewModel) {
-  Row(verticalAlignment = Alignment.CenterVertically) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = Modifier.height(IntrinsicSize.Min)
+  ) {
     // Health
-    Text(
-      text = "${viewModel.health.toInt()}/${viewModel.maxHealth.toInt()}",
-      color = Color.White,
-      fontSize = 24.sp,
-      fontWeight = FontWeight.Bold
-    )
-    Spacer(modifier = Modifier.width(4.dp))
-    Icon(
-      painter = painterResource(id = R.drawable.health),
-      contentDescription = "Health",
-      tint = Color.White,
-      modifier = Modifier.size(28.dp)
-    )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Icon(
+        painter = painterResource(id = R.drawable.health),
+        contentDescription = "Health",
+        tint = Color(0xFFEF5350),
+        modifier = Modifier.size(16.dp)
+      )
+      Spacer(modifier = Modifier.width(4.dp))
+      Text(
+        text = "${viewModel.health.toInt()}/${viewModel.maxHealth.toInt()}",
+        color = Color.White,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold
+      )
+    }
 
-    Spacer(modifier = Modifier.width(16.dp))
+    // Vertical Separator
+    VerticalDivider(
+      modifier = Modifier
+        .padding(horizontal = 12.dp)
+        .fillMaxHeight(0.6f),
+      color = Color.Gray.copy(alpha = 0.5f),
+      thickness = 1.dp
+    )
 
     // Damage
-    Text(
-      text = "${viewModel.damage.toInt()}",
-      color = Color.White,
-      fontSize = 24.sp,
-      fontWeight = FontWeight.Bold
-    )
-    Spacer(modifier = Modifier.width(4.dp))
-    Icon(
-      painter = painterResource(id = R.drawable.attack_damage),
-      contentDescription = "Damage",
-      tint = Color.White,
-      modifier = Modifier.size(28.dp)
-    )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Icon(
+        painter = painterResource(id = R.drawable.attack_damage),
+        contentDescription = "Damage",
+        tint = Color(0xFFFFCA28),
+        modifier = Modifier.size(16.dp)
+      )
+      Spacer(modifier = Modifier.width(4.dp))
+      Text(
+        text = "${viewModel.damage.toInt()}",
+        color = Color.White,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold
+      )
+    }
   }
 }
 
@@ -307,8 +323,8 @@ fun ActiveEffects(viewModel: EntityViewModel) {
 
 @Composable
 fun PopupView(popup: Popup, onComplete: () -> Unit) {
-    val offsetY = remember { Animatable(0f) }
-    val alpha = remember { Animatable(1f) }
+  val offsetY = remember { Animatable(0f) }
+  val alpha = remember { Animatable(1f) }
 
   LaunchedEffect(Unit) {
     launch {
@@ -320,7 +336,7 @@ fun PopupView(popup: Popup, onComplete: () -> Unit) {
     }
   }
 
-    val sign = if (popup.color == Color.Green) "+" else "-"
+  val sign = if (popup.color == Color.Green) "+" else "-"
 
   Text(
     text = "$sign${popup.amount}",
@@ -335,10 +351,14 @@ fun PopupView(popup: Popup, onComplete: () -> Unit) {
 
 @Composable
 fun InfoCard(viewModel: EntityViewModel) {
+  val hasEffects = viewModel.statusEffects.isNotEmpty()
+  // Adjust width: wider if showing effects column
+  val cardWidth = if (hasEffects) 600.dp else 420.dp
+
   Box(
     modifier = Modifier
       .fillMaxSize()
-      .background(Color.Black.copy(alpha = 0.7f))
+      .background(Color.Black.copy(alpha = 0.6f))
       .clickable(
         interactionSource = remember { MutableInteractionSource() },
         indication = null
@@ -347,52 +367,132 @@ fun InfoCard(viewModel: EntityViewModel) {
   ) {
     Card(
       modifier = Modifier
-        .fillMaxWidth(0.7f)
-        .fillMaxHeight()
+        .width(cardWidth)
         .padding(16.dp),
-      shape = RoundedCornerShape(16.dp),
-      colors = CardDefaults.cardColors(containerColor = Color(0xFF333333))
+      shape = RoundedCornerShape(12.dp),
+      colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
+      elevation = CardDefaults.cardElevation(8.dp)
     ) {
       Column(
-        modifier = Modifier
-          .padding(24.dp)
-          .verticalScroll(rememberScrollState()),
+        modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.Start
       ) {
-
+        // Header Row: Name on Left, Stats on Right
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Row(horizontalArrangement = Arrangement.Start) {
-            Text(
-              text = viewModel.name,
-              color = Color.White,
-              fontSize = 24.sp,
-              fontWeight = FontWeight.Bold
+          Text(
+            text = viewModel.name,
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+          )
+          StatsView(viewModel)
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+        HorizontalDivider(thickness = 1.dp, color = Color.Gray.copy(alpha = 0.2f))
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Content Row: 2 or 3 Columns
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min),
+          horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+          // COL 1: Abilities
+          Column(
+            modifier = Modifier
+              .weight(1f)
+              .padding(end = 8.dp)
+          ) {
+            CompactAbility(
+              "Active",
+              viewModel.entity.activeAbility.nameRes,
+              viewModel.entity.activeAbility.descriptionRes,
+              Color(0xFF66BB6A)
             )
-            if (!viewModel.isAlive) {
-              Icon(
-                painter = painterResource(id = R.drawable.dead),
-                contentDescription = "Dead",
-                tint = Color.White,
-                modifier = Modifier.size(28.dp)
+            CompactAbility(
+              "Passive",
+              viewModel.entity.passiveAbility.nameRes,
+              viewModel.entity.passiveAbility.descriptionRes,
+              Color(0xFF42A5F5)
+            )
+            CompactAbility(
+              "Ultimate",
+              viewModel.entity.ultimateAbility.nameRes,
+              viewModel.entity.ultimateAbility.descriptionRes,
+              Color(0xFFAB47BC)
+            )
+          }
+
+          // Separator 1
+          VerticalDivider(
+            modifier = Modifier
+              .fillMaxHeight()
+              .padding(vertical = 4.dp),
+            color = Color.Gray.copy(alpha = 0.2f),
+            thickness = 1.dp
+          )
+
+          // COL 2: Traits
+          Column(
+            modifier = Modifier
+              .weight(1f)
+              .padding(horizontal = 8.dp)
+          ) {
+            Text(
+              text = "Traits",
+              color = Color.Gray,
+              fontSize = 11.sp,
+              fontWeight = FontWeight.Bold,
+              modifier = Modifier.padding(bottom = 6.dp)
+            )
+            if (viewModel.traits.isNotEmpty()) {
+              viewModel.traits.forEach { trait ->
+                CompactTrait(trait.nameRes, trait.descriptionRes)
+              }
+            } else {
+              Text(
+                text = "None",
+                color = Color.DarkGray,
+                fontSize = 12.sp,
+                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
               )
             }
           }
-          StatsView(viewModel)
-        }
-        Spacer(modifier = Modifier.height(16.dp))
 
-        Abilities(viewModel)
+          // COL 3: Effects (Conditional)
+          if (hasEffects) {
+            // Separator 2
+            VerticalDivider(
+              modifier = Modifier
+                .fillMaxHeight()
+                .padding(vertical = 4.dp),
+              color = Color.Gray.copy(alpha = 0.2f),
+              thickness = 1.dp
+            )
 
-        if (viewModel.traits.isNotEmpty()) {
-          Traits(viewModel)
-        }
-
-        if (viewModel.statusEffects.isNotEmpty()) {
-          StatusEffects(viewModel)
+            Column(
+              modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp)
+            ) {
+              Text(
+                text = "Effects",
+                color = Color.Gray,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 6.dp)
+              )
+              viewModel.statusEffects.forEach { effect ->
+                CompactEffect(effect)
+              }
+            }
+          }
         }
       }
     }
@@ -400,125 +500,85 @@ fun InfoCard(viewModel: EntityViewModel) {
 }
 
 @Composable
-fun Abilities(viewModel: EntityViewModel){
-  // active
-  Text(
-    text = "Active: ${stringResource(viewModel.entity.activeAbility.nameRes)}",
-    color = Color(0xFF4CAF50),
-    fontWeight = FontWeight.Bold
-  )
-  Text(
-    text = stringResource(viewModel.entity.activeAbility.descriptionRes),
-    color = Color.LightGray
-  )
-
-  Spacer(modifier = Modifier.height(12.dp))
-
-  // passive
-  Text(
-    text = "Passive: ${stringResource(viewModel.entity.passiveAbility.nameRes)}",
-    color = Color(0xFF2196F3),
-    fontWeight = FontWeight.Bold
-  )
-  Text(
-    text = stringResource(viewModel.entity.passiveAbility.descriptionRes),
-    color = Color.LightGray
-  )
-
-  Spacer(modifier = Modifier.height(12.dp))
-
-  // ultimate
-  Text(
-    text = "Ultimate: ${stringResource(viewModel.entity.ultimateAbility.nameRes)}",
-    color = Color(0xFFE91E63),
-    fontWeight = FontWeight.Bold
-  )
-  Text(
-    text = stringResource(viewModel.entity.ultimateAbility.descriptionRes),
-    color = Color.LightGray
-  )
-}
-
-@Composable
-fun Traits(viewModel: EntityViewModel){
-  Spacer(modifier = Modifier.height(16.dp))
-
-  Text(
-    text = "Traits:",
-    color = Color.White,
-    fontSize = 18.sp,
-    fontWeight = FontWeight.Bold
-  )
-  Spacer(modifier = Modifier.height(4.dp))
-
-  viewModel.traits.forEach { trait ->
-    Column(modifier = Modifier.padding(bottom = 8.dp)) {
+fun CompactAbility(label: String, nameRes: Int, descRes: Int, color: Color) {
+  Column(modifier = Modifier.padding(bottom = 12.dp)) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
       Text(
-        text = "• ${stringResource(trait.nameRes)}",
-        color = Color(0xFFFF9800), // Orange color for Traits
+        text = label,
+        color = color,
+        fontSize = 10.sp,
         fontWeight = FontWeight.Bold,
-        fontSize = 16.sp
+        modifier = Modifier
+          .background(color.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
+          .padding(horizontal = 6.dp, vertical = 2.dp)
       )
+      Spacer(modifier = Modifier.width(8.dp))
       Text(
-        text = stringResource(trait.descriptionRes),
-        color = Color.LightGray,
-        fontSize = 14.sp,
-        modifier = Modifier.padding(start = 12.dp)
+        text = stringResource(nameRes),
+        color = Color.White,
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Medium
       )
     }
+    Text(
+      text = stringResource(descRes),
+      color = Color.LightGray,
+      fontSize = 11.sp,
+      lineHeight = 14.sp,
+      modifier = Modifier.padding(top = 4.dp)
+    )
   }
 }
 
 @Composable
-fun StatusEffects(viewModel: EntityViewModel){
-  Spacer(modifier = Modifier.height(16.dp))
+fun CompactTrait(nameRes: Int, descRes: Int) {
+  Column(modifier = Modifier.padding(bottom = 8.dp)) {
+    Text(
+      text = "• ${stringResource(nameRes)}",
+      color = Color(0xFFFF9800),
+      fontSize = 12.sp,
+      fontWeight = FontWeight.Bold
+    )
+    Text(
+      text = stringResource(descRes),
+      color = Color.LightGray,
+      fontSize = 11.sp,
+      lineHeight = 13.sp,
+      modifier = Modifier.padding(start = 8.dp)
+    )
+  }
+}
 
-  Text(
-    text = "Status Effects:",
-    color = Color.White,
-    fontSize = 18.sp,
-    fontWeight = FontWeight.Bold
-  )
-  Spacer(modifier = Modifier.height(8.dp))
-
-  viewModel.statusEffects.forEach { effect ->
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(bottom = 8.dp)
-    ) {
+@Composable
+fun CompactEffect(effect: StatusEffect) {
+  Column(modifier = Modifier.padding(bottom = 8.dp)) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
       Icon(
         painter = painterResource(id = effect.iconRes),
         contentDescription = null,
         tint = Color.Unspecified,
-        modifier = Modifier.size(32.dp)
+        modifier = Modifier.size(16.dp)
       )
-
-      Spacer(modifier = Modifier.width(12.dp))
-
-      Column {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Text(
-            text = stringResource(effect.nameRes),
-            color = Color(0xFFFFC107),
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
-          )
-          Spacer(modifier = Modifier.width(8.dp))
-          Text(
-            text = "(${effect.duration} turns)",
-            color = Color.Gray,
-            fontSize = 12.sp
-          )
-        }
-
-        Text(
-          text = stringResource(effect.descriptionRes),
-          color = Color.LightGray,
-          fontSize = 14.sp
-        )
-      }
+      Spacer(modifier = Modifier.width(6.dp))
+      Text(
+        text = stringResource(effect.nameRes),
+        color = Color(0xFFFFC107),
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold
+      )
+      Spacer(modifier = Modifier.width(6.dp))
+      Text(
+        text = "x${effect.duration}",
+        color = Color.Gray,
+        fontSize = 10.sp
+      )
     }
+    Text(
+      text = stringResource(effect.descriptionRes),
+      color = Color.LightGray,
+      fontSize = 11.sp,
+      lineHeight = 13.sp,
+      modifier = Modifier.padding(start = 22.dp)
+    )
   }
 }
