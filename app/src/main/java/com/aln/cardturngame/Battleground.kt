@@ -22,6 +22,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -31,6 +35,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -53,7 +58,93 @@ fun BattleScreen(viewModel: BattleViewModel) {
     )
     val finalCardWidth = finalCardHeight * 0.7f
 
-    // Line Drawing
+    // --- Layer 1: The Teams (Centered) ---
+    Row(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(horizontal = 20.dp),
+      horizontalArrangement = Arrangement.Center,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      // LEFT TEAM
+      Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+        viewModel.leftTeam.TeamColumn(
+          alignment = Alignment.Start,
+          cardWidth = finalCardWidth,
+          cardHeight = finalCardHeight,
+          canAct = viewModel::canEntityAct,
+          onCardPositioned = viewModel::onCardPositioned,
+          onDragStart = viewModel::onDragStart,
+          onDrag = viewModel::onDrag,
+          onDragEnd = viewModel::onDragEnd,
+          onDoubleTap = viewModel::onDoubleTap,
+          onPressStatus = viewModel::onPressStatus,
+          getHighlightColor = viewModel::getHighlightColor
+        )
+      }
+
+      // VS Separator
+      Text(
+        text = "VS",
+        color = Color.Gray,
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.alpha(0.5f)
+      )
+
+      // RIGHT TEAM
+      Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+        viewModel.rightTeam.TeamColumn(
+          alignment = Alignment.End,
+          cardWidth = finalCardWidth,
+          cardHeight = finalCardHeight,
+          canAct = viewModel::canEntityAct,
+          onCardPositioned = viewModel::onCardPositioned,
+          onDragStart = viewModel::onDragStart,
+          onDrag = viewModel::onDrag,
+          onDragEnd = viewModel::onDragEnd,
+          onDoubleTap = viewModel::onDoubleTap,
+          onPressStatus = viewModel::onPressStatus,
+          getHighlightColor = viewModel::getHighlightColor
+        )
+      }
+    }
+
+    // --- Layer 2: Rage Bars (Corners) ---
+
+    // Left Team Rage Bar -> Bottom Left
+    Box(
+      modifier = Modifier
+        .align(Alignment.BottomStart)
+        .padding(24.dp)
+    ) {
+      RageBar(
+        rage = viewModel.leftTeam.rage,
+        maxRage = viewModel.leftTeam.maxRage,
+        isTurn = viewModel.isLeftTeamTurn,
+        onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
+        onDrag = viewModel::onUltimateDrag,
+        onDragEnd = viewModel::onUltimateDragEnd
+      )
+    }
+
+    // Right Team Rage Bar -> Top Right
+    Box(
+      modifier = Modifier
+        .align(Alignment.TopEnd)
+        .padding(24.dp)
+    ) {
+      RageBar(
+        rage = viewModel.rightTeam.rage,
+        maxRage = viewModel.rightTeam.maxRage,
+        isTurn = !viewModel.isLeftTeamTurn,
+        onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
+        onDrag = viewModel::onUltimateDrag,
+        onDragEnd = viewModel::onUltimateDragEnd
+      )
+    }
+
+    // --- Layer 3: Drag Lines ---
     viewModel.dragState?.let { dragState ->
       val lineEnd =
         if (viewModel.hoveredTarget != null && viewModel.cardBounds.contains(viewModel.hoveredTarget)) {
@@ -72,17 +163,12 @@ fun BattleScreen(viewModel: BattleViewModel) {
       }
       LineCanvas(ultState.start, lineEnd, Color(0xFFFF5722)) // Orange/Red line
     }
-    BattleLayout(
-      viewModel = viewModel, // Passed entire VM for simplicity with new rage logic
-      finalCardHeight = finalCardHeight,
-      finalCardWidth = finalCardWidth
-    )
 
+    // --- Layer 4: UI Overlays ---
     if (viewModel.showInfoDialog && viewModel.selectedEntity != null) {
       InfoCard(viewModel.selectedEntity!!)
     }
 
-    // Winner Overlay
     if (viewModel.winner != null) {
       Winner(viewModel)
     }
@@ -118,79 +204,6 @@ fun LineCanvas(dragStart: Offset, dragCurrent: Offset, color: Color) {
     )
   }
 }
-@Composable
-fun BattleLayout(
-  viewModel: BattleViewModel, // Changed params to just ViewModel to cleaner passing
-  finalCardHeight: Dp,
-  finalCardWidth: Dp
-) {
-  Row(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(start = 20.dp, end = 20.dp), // Reduced padding to fit bars
-    horizontalArrangement = Arrangement.SpaceBetween,
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-
-    // LEFT RAGE BAR
-    RageBar(
-      rage = viewModel.leftTeam.rage,
-      maxRage = viewModel.leftTeam.maxRage,
-      isTurn = viewModel.isLeftTeamTurn,
-      onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
-      onDrag = viewModel::onUltimateDrag,
-      onDragEnd = viewModel::onUltimateDragEnd
-    )
-
-    // LEFT TEAM
-    viewModel.leftTeam.TeamColumn(
-      alignment = Alignment.Start,
-      cardWidth = finalCardWidth,
-      cardHeight = finalCardHeight,
-      canAct = viewModel::canEntityAct,
-      onCardPositioned = viewModel::onCardPositioned,
-      onDragStart = viewModel::onDragStart,
-      onDrag = viewModel::onDrag,
-      onDragEnd = viewModel::onDragEnd,
-      onDoubleTap = viewModel::onDoubleTap,
-      onPressStatus = viewModel::onPressStatus,
-      getHighlightColor = viewModel::getHighlightColor
-    )
-
-    Text(
-      text = "VS",
-      color = Color.Gray,
-      fontSize = 32.sp,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.alpha(0.5f)
-    )
-
-    // RIGHT TEAM
-    viewModel.rightTeam.TeamColumn(
-      alignment = Alignment.End,
-      cardWidth = finalCardWidth,
-      cardHeight = finalCardHeight,
-      canAct = viewModel::canEntityAct,
-      onCardPositioned = viewModel::onCardPositioned,
-      onDragStart = viewModel::onDragStart,
-      onDrag = viewModel::onDrag,
-      onDragEnd = viewModel::onDragEnd,
-      onDoubleTap = viewModel::onDoubleTap,
-      onPressStatus = viewModel::onPressStatus,
-      getHighlightColor = viewModel::getHighlightColor
-    )
-
-    // RIGHT RAGE BAR
-    RageBar(
-      rage = viewModel.rightTeam.rage,
-      maxRage = viewModel.rightTeam.maxRage,
-      isTurn = !viewModel.isLeftTeamTurn, // Right team turn check
-      onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
-      onDrag = viewModel::onUltimateDrag,
-      onDragEnd = viewModel::onUltimateDragEnd
-    )
-  }
-}
 
 @Composable
 fun RageBar(
@@ -201,51 +214,68 @@ fun RageBar(
   onDrag: (Offset) -> Unit,
   onDragEnd: () -> Unit
 ) {
-  val barHeight = 300.dp
-  val barWidth = 24.dp
+  // Horizontal Dimensions
+  val barWidth = 300.dp
+  val barHeight = 24.dp
   val progress = (rage / maxRage).coerceIn(0f, 1f)
   val isFull = progress >= 1f
 
+  // Store global position for accurate drag start
+  var iconCenterGlobal by remember { mutableStateOf(Offset.Zero) }
+
   Box(
-    contentAlignment = Alignment.BottomCenter,
+    contentAlignment = Alignment.CenterStart, // Align contents to start for horizontal fill
     modifier = Modifier
-      .height(barHeight)
       .width(barWidth)
-      .clip(RoundedCornerShape(12.dp))
-      .background(Color.DarkGray)
-      .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
+      .height(barHeight)
+    // Note: We do NOT clip here. Clipping the parent hides the overflowing icon.
   ) {
-    // Fill
+    // 1. Background/Track (Clipped)
     Box(
       modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight(progress)
-        .background(
-          brush = Brush.verticalGradient(
-            colors = listOf(Color(0xFFFF5722), Color(0xFFFFC107))
+        .fillMaxSize()
+        .clip(RoundedCornerShape(12.dp))
+        .background(Color.DarkGray)
+        .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
+    ) {
+      // 2. Fill
+      Box(
+        modifier = Modifier
+          .fillMaxHeight()
+          .fillMaxWidth(progress) // Fill horizontally
+          .background(
+            brush = Brush.horizontalGradient( // Horizontal gradient
+              colors = listOf(Color(0xFFFF5722), Color(0xFFFFC107))
+            )
           )
-        )
-    )
+      )
+    }
 
-    // Draggable Fire Icon (Only appears at top when full and turn is active)
+    // 3. Draggable Fire Icon
+    // Only appears when full and it's the team's turn
     if (isFull && isTurn) {
       Box(
         modifier = Modifier
-          .align(Alignment.TopCenter)
-          .offset(y = (-15).dp) // Pop out slightly
-          .size(40.dp)
+          .align(Alignment.CenterEnd) // Position at the end of the bar
+          .offset(x = 15.dp) // Pop out to the right slightly
+          .size(48.dp) // Slightly larger touch target
           .clip(CircleShape)
           .background(Color.Red)
           .border(2.dp, Color.Yellow, CircleShape)
-          .onGloballyPositioned { _ ->
-            // Optional: Could store position if needed
+          .onGloballyPositioned { coordinates ->
+            // Capture the center of the icon in global coordinates
+            val size = coordinates.size
+            val position = coordinates.positionInRoot()
+            iconCenterGlobal = Offset(
+              x = position.x + size.width / 2f,
+              y = position.y + size.height / 2f
+            )
           }
           .pointerInput(Unit) {
             detectDragGestures(
-              onDragStart = { localOffset ->
-
-                onDragStart(localOffset)
-
+              onDragStart = { _ ->
+                // Use the global position we captured, NOT the local offset
+                onDragStart(iconCenterGlobal)
               },
               onDrag = { change, dragAmount ->
                 change.consume()
@@ -259,8 +289,8 @@ fun RageBar(
         Icon(
           painter = painterResource(id = R.drawable.ultimate),
           contentDescription = "Fire Icon",
-          tint = Color.Red,
-          modifier = Modifier.fillMaxSize()
+          tint = Color.Yellow,
+          modifier = Modifier.size(28.dp)
         )
       }
     }

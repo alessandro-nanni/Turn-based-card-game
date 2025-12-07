@@ -213,9 +213,9 @@ class BattleViewModel(
       val sourceTeam = if(leftTeam.entities.contains(source)) leftTeam else rightTeam
       val targetTeam = if(leftTeam.entities.contains(target)) leftTeam else rightTeam
 
-      increaseRage(sourceTeam, 15f) // Gain rage for attacking
+      increaseRage(sourceTeam, 50f) // Gain rage for attacking
       if (sourceTeam != targetTeam) {
-        increaseRage(targetTeam, 5f) // Gain rage for taking damage
+        increaseRage(targetTeam, 20f) // Gain rage for taking damage
       }
 
       checkWinCondition()
