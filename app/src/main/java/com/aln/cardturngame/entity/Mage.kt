@@ -7,7 +7,7 @@ import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Mage : Entity(
   name = R.string.mage_name,
-  iconRes = R.drawable.ic_launcher_foreground,
+  iconRes = R.drawable.mage,
   initialStats = Stats(maxHealth = 150f, damage = 20f),
   color = Color(0xFF2FC0D3),
   activeAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {

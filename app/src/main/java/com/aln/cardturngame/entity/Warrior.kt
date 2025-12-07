@@ -8,7 +8,7 @@ import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Warrior : Entity(
   name = R.string.warrior_name,
-  iconRes = R.drawable.attack_damage,
+  iconRes = R.drawable.warrior,
   initialStats = Stats(maxHealth = 150f, damage = 20f),
   color = Color(0xFFD32F2F),
   activeAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {

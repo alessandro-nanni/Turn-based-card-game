@@ -93,10 +93,10 @@ fun CharacterSelectionScreen(
         colors = OutlinedTextFieldDefaults.colors(
           focusedTextColor = Color.White,
           unfocusedTextColor = Color.White,
-          focusedBorderColor = Color(0xFFD32F2F),
+          focusedBorderColor = Color.White,
           unfocusedBorderColor = Color.Gray,
-          cursorColor = Color(0xFFD32F2F),
-          focusedLabelColor = Color(0xFFD32F2F)
+          cursorColor = Color.White,
+          focusedLabelColor = Color.White
         ),
         modifier = Modifier.weight(1f)
       )
@@ -131,10 +131,10 @@ fun CharacterSelectionScreen(
         colors = OutlinedTextFieldDefaults.colors(
           focusedTextColor = Color.White,
           unfocusedTextColor = Color.White,
-          focusedBorderColor = Color(0xFF2FC0D3),
+          focusedBorderColor = Color.White,
           unfocusedBorderColor = Color.Gray,
-          cursorColor = Color(0xFF2FC0D3),
-          focusedLabelColor = Color(0xFF2FC0D3)
+          cursorColor = Color.White,
+          focusedLabelColor = Color.White
         ),
         modifier = Modifier.weight(1f)
       )
@@ -150,7 +150,6 @@ fun CharacterSelectionScreen(
         PlayerGridSection(
           team = p1Team,
           available = availableCharacters,
-          color = Color(0xFFD32F2F)
         )
       }
 
@@ -166,7 +165,6 @@ fun CharacterSelectionScreen(
         PlayerGridSection(
           team = p2Team,
           available = availableCharacters,
-          color = Color(0xFF2FC0D3)
         )
       }
     }
@@ -177,7 +175,7 @@ fun CharacterSelectionScreen(
 fun PlayerGridSection(
   team: MutableList<Entity>,
   available: List<Entity>,
-  color: Color
+  color: Color = Color.White
 ) {
   var infoCharacter by remember { mutableStateOf<Entity?>(null) }
 
@@ -276,6 +274,7 @@ fun CharacterGridItem(
       ) {
         Icon(
           painter = painterResource(id = entity.iconRes),
+          tint = entity.color,
           contentDescription = stringResource(id = entity.name),
           modifier = Modifier.size(60.dp),
         )

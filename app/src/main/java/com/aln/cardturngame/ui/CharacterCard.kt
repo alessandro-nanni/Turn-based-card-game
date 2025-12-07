@@ -167,8 +167,8 @@ fun CharacterCard(
           modifier = Modifier
             .fillMaxWidth(0.75f)
             .aspectRatio(1f)
-            .clip(CircleShape)
-            .border(2.dp, Color.White, CircleShape),
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.DarkGray),
           contentAlignment = Alignment.Center
         ) {
           Icon(
