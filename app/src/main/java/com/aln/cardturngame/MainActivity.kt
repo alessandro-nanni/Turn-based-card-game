@@ -9,7 +9,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.ViewModelProvider
+import com.aln.cardturngame.entity.Mage
+import com.aln.cardturngame.entity.Team
+import com.aln.cardturngame.entity.Warrior
 import com.aln.cardturngame.ui.theme.CardTurnGameTheme
+import com.aln.cardturngame.viewModel.BattleViewModel
+import com.aln.cardturngame.viewModel.BattleViewModelFactory
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,23 +23,26 @@ class MainActivity : ComponentActivity() {
 
     // set horizontal layout
     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    // enable Edge-to-Edge (draw behind bars)
     enableEdgeToEdge()
 
-    // display app in camera cutout are
     window.attributes.layoutInDisplayCutoutMode =
       WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
 
-    // hide System Bars & Set "Immersive Sticky" Mode
     val windowInsetsController =
       WindowCompat.getInsetsController(window, window.decorView)
     windowInsetsController.systemBarsBehavior =
       WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-
-    // Hide both status bar and navigation bar
     windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
 
-    val mainView = MainView()
+    // Initialize Teams
+    val leftTeam = Team(listOf(Mage()))
+    val rightTeam = Team(listOf(Warrior(), Warrior(), Mage()))
+
+    // Initialize ViewModel
+    val factory = BattleViewModelFactory(leftTeam, rightTeam)
+    val battleViewModel = ViewModelProvider(this, factory)[BattleViewModel::class.java]
+
+    val mainView = MainView(battleViewModel)
 
     setContent {
       CardTurnGameTheme {
