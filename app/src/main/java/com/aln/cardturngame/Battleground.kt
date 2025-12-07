@@ -72,21 +72,26 @@ fun BattleScreen(viewModel: BattleViewModel) {
 
     // Winner Overlay
     if (viewModel.winner != null) {
-      Box(
-        modifier = Modifier
-          .fillMaxSize()
-          .background(Color.Black.copy(alpha = 0.85f))
-          .clickable(enabled = true) {},
-        contentAlignment = Alignment.Center
-      ) {
-        Text(
-          text = viewModel.winner!!,
-          color = Color.Yellow,
-          fontSize = 48.sp,
-          fontWeight = FontWeight.Bold
-        )
-      }
+      Winner(viewModel)
     }
+  }
+}
+
+@Composable
+fun Winner(viewModel: BattleViewModel){
+  Box(
+    modifier = Modifier
+      .fillMaxSize()
+      .background(Color.Black.copy(alpha = 0.85f))
+      .clickable(enabled = true) {},
+    contentAlignment = Alignment.Center
+  ) {
+    Text(
+      text = viewModel.winner!!,
+      color = Color.Yellow,
+      fontSize = 48.sp,
+      fontWeight = FontWeight.Bold
+    )
   }
 }
 
