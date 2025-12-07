@@ -45,7 +45,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -279,7 +278,6 @@ fun CharacterGridItem(
           painter = painterResource(id = entity.iconRes),
           contentDescription = stringResource(id = entity.name),
           modifier = Modifier.size(60.dp),
-          tint = entity.color
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(

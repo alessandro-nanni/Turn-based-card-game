@@ -1,7 +1,5 @@
 package com.aln.cardturngame.viewModel
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -28,13 +26,10 @@ class EntityViewModel(
   val isAlive: Boolean
     get() = health > 0
 
-  @StringRes
   val name: Int = entity.name
+  val color: Color = entity.color
 
-  @DrawableRes
-  val icon: Int = entity.iconRes
-  val color: Color get() = entity.color
-
+  val iconRes: Int = entity.iconRes
   val traits: List<Trait> get() = entity.traits
 
   fun addStatusEffect(effect: StatusEffect) {

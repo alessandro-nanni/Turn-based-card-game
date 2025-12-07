@@ -168,15 +168,16 @@ fun CharacterCard(
             .fillMaxWidth(0.75f)
             .aspectRatio(1f)
             .clip(CircleShape)
-            .background(if (viewModel.isAlive) viewModel.color else Color.Gray)
             .border(2.dp, Color.White, CircleShape),
           contentAlignment = Alignment.Center
         ) {
-          Text(
-            text = stringResource(viewModel.name).first().toString(),
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
+          Icon(
+            painter = painterResource(viewModel.iconRes),
+            tint = if (viewModel.isAlive) viewModel.color else Color.Gray,
+            contentDescription = viewModel.name.toString(),
+            modifier = Modifier
+              .fillMaxSize()
+              .padding(4.dp),
           )
         }
 
