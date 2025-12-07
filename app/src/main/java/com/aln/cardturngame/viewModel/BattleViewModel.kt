@@ -26,8 +26,8 @@ data class UltimateDragState(
   val current: Offset
 )
 class BattleViewModel(
-  initialLeftTeam: Team = Team(emptyList()),
-  initialRightTeam: Team = Team(emptyList())
+  initialLeftTeam: Team = Team("Blue", emptyList()),
+  initialRightTeam: Team = Team("Red", emptyList())
 ) : ViewModel() {
 
   var leftTeam by mutableStateOf(initialLeftTeam)
@@ -207,8 +207,8 @@ class BattleViewModel(
     val isLeftAlive = leftTeam.entities.any { it.isAlive }
     val isRightAlive = rightTeam.entities.any { it.isAlive }
 
-    if (!isLeftAlive) winner = "Right Team Wins!"
-    else if (!isRightAlive) winner = "Left Team Wins!"
+    if (!isLeftAlive) winner = "${rightTeam.name} Wins!"
+    else if (!isRightAlive) winner = "${leftTeam.name} Wins!"
   }
 
   private fun executeInteraction(source: EntityViewModel, target: EntityViewModel) {

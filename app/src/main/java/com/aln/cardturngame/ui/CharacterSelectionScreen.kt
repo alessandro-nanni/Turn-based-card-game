@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -281,14 +282,14 @@ fun CharacterGridItem(
           contentAlignment = Alignment.Center
         ) {
           Text(
-            text = entity.name.first().toString(),
+            text = stringResource(entity.name).first().toString(),
             color = Color.White,
             fontWeight = FontWeight.Bold
           )
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-          text = entity.name,
+          text = stringResource(entity.name),
           color = if (isSelected) Color.White else Color.Gray,
           fontSize = 12.sp,
           fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,

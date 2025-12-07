@@ -173,7 +173,7 @@ fun CharacterCard(
           contentAlignment = Alignment.Center
         ) {
           Text(
-            text = viewModel.name.first().toString(),
+            text = stringResource(viewModel.name).first().toString(),
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
@@ -387,7 +387,7 @@ fun InfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
           verticalAlignment = Alignment.CenterVertically
         ) {
           Text(
-            text = viewModel.name,
+            text = stringResource(viewModel.name),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold

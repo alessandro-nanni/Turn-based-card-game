@@ -1,4 +1,3 @@
-// alessandro-nanni/turn-based-card-game/Turn-based-card-game-master/app/src/main/java/com/aln/cardturngame/entity/Team.kt
 package com.aln.cardturngame.entity
 
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +17,7 @@ import com.aln.cardturngame.ui.CharacterCard
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Team(
+  val name: String,
   val entities: List<EntityViewModel>
 ) {
   var rage by mutableFloatStateOf(0f)

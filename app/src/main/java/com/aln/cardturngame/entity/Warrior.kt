@@ -7,7 +7,7 @@ import com.aln.cardturngame.trait.SpikyArmorTrait
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Warrior : Entity(
-  name = "Warrior",
+  name = R.string.warrior_name,
   initialStats = Stats(maxHealth = 150f, damage = 20f),
   color = Color(0xFFD32F2F),
   activeAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {

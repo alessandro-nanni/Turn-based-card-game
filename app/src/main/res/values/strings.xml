@@ -10,4 +10,6 @@
     <string name="trait_beserker_desc">Increases damage by 50% when below 30% health</string>
     <string name="trait_stone_skin_name">Stone Skin</string>
     <string name="trait_stone_skin_desc">Reduces incoming damage by 3</string>
+    <string name="warrior_name">Warrior</string>
+    <string name="mage_name">Mage</string>
 </resources>

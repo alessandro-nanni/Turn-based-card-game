@@ -46,8 +46,8 @@ class MainActivity : ComponentActivity() {
         if (!isBattleStarted) {
           CharacterSelectionScreen(
             onStartGame = { p1Name, p1Entities, p2Name, p2Entities ->
-              val leftTeam = Team(p1Entities.map { EntityViewModel(it) })
-              val rightTeam = Team(p2Entities.map { EntityViewModel(it) })
+              val leftTeam = Team(p1Name, p1Entities.map { EntityViewModel(it) })
+              val rightTeam = Team(p2Name, p2Entities.map { EntityViewModel(it) })
 
               battleViewModel.startGame(leftTeam, rightTeam)
 
