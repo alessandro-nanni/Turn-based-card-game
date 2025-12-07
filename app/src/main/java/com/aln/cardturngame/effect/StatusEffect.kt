@@ -11,7 +11,8 @@ abstract class StatusEffect(
   @field:StringRes val nameRes: Int,
   @field:StringRes val descriptionRes: Int,
   @field:DrawableRes val iconRes: Int,
-  initialDuration: Int
+  initialDuration: Int,
+  val isPositive: Boolean = false
 ) {
   var duration by mutableIntStateOf(initialDuration)
 

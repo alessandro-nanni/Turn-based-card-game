@@ -53,6 +53,7 @@ import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -62,6 +63,7 @@ import com.aln.cardturngame.effect.StatusEffect
 import com.aln.cardturngame.entity.Popup
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlinx.coroutines.launch
+import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun CharacterCard(
@@ -409,19 +411,19 @@ fun InfoCard(viewModel: EntityViewModel) {
               .weight(1f)
               .padding(end = 8.dp)
           ) {
-            CompactAbility(
+            Ability(
               "Active",
               viewModel.entity.activeAbility.nameRes,
               viewModel.entity.activeAbility.descriptionRes,
               Color(0xFF66BB6A)
             )
-            CompactAbility(
+            Ability(
               "Passive",
               viewModel.entity.passiveAbility.nameRes,
               viewModel.entity.passiveAbility.descriptionRes,
               Color(0xFF42A5F5)
             )
-            CompactAbility(
+            Ability(
               "Ultimate",
               viewModel.entity.ultimateAbility.nameRes,
               viewModel.entity.ultimateAbility.descriptionRes,
@@ -429,45 +431,34 @@ fun InfoCard(viewModel: EntityViewModel) {
             )
           }
 
-          // Separator 1
-          VerticalDivider(
-            modifier = Modifier
-              .fillMaxHeight()
-              .padding(vertical = 4.dp),
-            color = Color.Gray.copy(alpha = 0.2f),
-            thickness = 1.dp
-          )
-
-          // COL 2: Traits
-          Column(
-            modifier = Modifier
-              .weight(1f)
-              .padding(horizontal = 8.dp)
-          ) {
-            Text(
-              text = "Traits",
-              color = Color.Gray,
-              fontSize = 11.sp,
-              fontWeight = FontWeight.Bold,
-              modifier = Modifier.padding(bottom = 6.dp)
+          if (viewModel.traits.isNotEmpty()) {
+            VerticalDivider(
+              modifier = Modifier
+                .fillMaxHeight()
+                .padding(vertical = 4.dp),
+              color = Color.Gray.copy(alpha = 0.2f),
+              thickness = 1.dp
             )
-            if (viewModel.traits.isNotEmpty()) {
-              viewModel.traits.forEach { trait ->
-                CompactTrait(trait.nameRes, trait.descriptionRes)
-              }
-            } else {
+
+            Column(
+              modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 8.dp)
+            ) {
               Text(
-                text = "None",
-                color = Color.DarkGray,
-                fontSize = 12.sp,
-                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                text = "Traits",
+                color = Color.Gray,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 6.dp)
               )
+              viewModel.traits.forEach { trait ->
+                Trait(trait.nameRes, trait.descriptionRes)
+              }
             }
           }
 
-          // COL 3: Effects (Conditional)
           if (hasEffects) {
-            // Separator 2
             VerticalDivider(
               modifier = Modifier
                 .fillMaxHeight()
@@ -489,7 +480,7 @@ fun InfoCard(viewModel: EntityViewModel) {
                 modifier = Modifier.padding(bottom = 6.dp)
               )
               viewModel.statusEffects.forEach { effect ->
-                CompactEffect(effect)
+                Effect(effect)
               }
             }
           }
@@ -500,17 +491,23 @@ fun InfoCard(viewModel: EntityViewModel) {
 }
 
 @Composable
-fun CompactAbility(label: String, nameRes: Int, descRes: Int, color: Color) {
+fun Ability(label: String, nameRes: Int, descRes: Int, color: Color) {
   Column(modifier = Modifier.padding(bottom = 12.dp)) {
     Row(verticalAlignment = Alignment.CenterVertically) {
       Text(
         text = label,
         color = color,
-        fontSize = 10.sp,
+        fontSize = 12.sp,
         fontWeight = FontWeight.Bold,
+        lineHeight = 12.sp,
+        style = TextStyle(
+          platformStyle = PlatformTextStyle(
+            includeFontPadding = false
+          )
+        ),
         modifier = Modifier
-          .background(color.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-          .padding(horizontal = 6.dp, vertical = 2.dp)
+          .background(color.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+          .padding(horizontal = 6.dp, vertical = 3.dp)
       )
       Spacer(modifier = Modifier.width(8.dp))
       Text(
@@ -531,7 +528,7 @@ fun CompactAbility(label: String, nameRes: Int, descRes: Int, color: Color) {
 }
 
 @Composable
-fun CompactTrait(nameRes: Int, descRes: Int) {
+fun Trait(nameRes: Int, descRes: Int) {
   Column(modifier = Modifier.padding(bottom = 8.dp)) {
     Text(
       text = "• ${stringResource(nameRes)}",
@@ -550,8 +547,11 @@ fun CompactTrait(nameRes: Int, descRes: Int) {
 }
 
 @Composable
-fun CompactEffect(effect: StatusEffect) {
-  Column(modifier = Modifier.padding(bottom = 8.dp)) {
+fun Effect(effect: StatusEffect) {
+  Column(
+    modifier = Modifier.padding(bottom = 8.dp),
+    horizontalAlignment = Alignment.Start
+  ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
       Icon(
         painter = painterResource(id = effect.iconRes),
@@ -562,7 +562,7 @@ fun CompactEffect(effect: StatusEffect) {
       Spacer(modifier = Modifier.width(6.dp))
       Text(
         text = stringResource(effect.nameRes),
-        color = Color(0xFFFFC107),
+        color = if (effect.isPositive) Color(0xFF00D471) else Color(0xFFBD3BF5),
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold
       )
@@ -577,8 +577,7 @@ fun CompactEffect(effect: StatusEffect) {
       text = stringResource(effect.descriptionRes),
       color = Color.LightGray,
       fontSize = 11.sp,
-      lineHeight = 13.sp,
-      modifier = Modifier.padding(start = 22.dp)
+      lineHeight = 13.sp
     )
   }
 }
