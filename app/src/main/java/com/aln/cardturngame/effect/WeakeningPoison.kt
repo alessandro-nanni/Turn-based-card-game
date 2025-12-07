@@ -11,16 +11,13 @@ class WeakeningPoison(duration: Int) : StatusEffect(
 ) {
   override fun onApply(target: EntityViewModel) {
     target.damage -= 5f
-    println("${target.name} has been weakened! Damage -5")
   }
 
   override suspend fun onStartTurn(target: EntityViewModel) {
     target.receiveDamage(10f)
-    println("${target.name} took 10 poison damage.")
   }
 
   override fun onVanish(target: EntityViewModel) {
     target.damage += 5f
-    println("${target.name} is no longer weakened. Damage restored.")
   }
 }

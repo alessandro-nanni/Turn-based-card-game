@@ -50,8 +50,19 @@ class BattleViewModel(
   var winner by mutableStateOf<String?>(null)
     private set
 
+  var navigateToSelection by mutableStateOf(false)
+    private set
+
   private val actionsTaken = mutableStateListOf<EntityViewModel>()
   val cardBounds = mutableStateMapOf<EntityViewModel, Rect>()
+
+  fun onRestartClicked() {
+    navigateToSelection = true
+  }
+
+  fun onNavigatedToSelection() {
+    navigateToSelection = false
+  }
 
   fun startGame(newLeftTeam: Team, newRightTeam: Team) {
     leftTeam = newLeftTeam
@@ -69,8 +80,6 @@ class BattleViewModel(
     rightTeam.rage = 0f
   }
 
-  // ... (The rest of the class logic: canEntityAct, drag logic, executeInteraction etc. remains exactly the same)
-
   fun canEntityAct(entity: EntityViewModel): Boolean {
     if (winner != null) return false
     val isLeft = leftTeam.entities.contains(entity)
@@ -83,11 +92,6 @@ class BattleViewModel(
     team.rage = (team.rage + amount).coerceAtMost(team.maxRage)
   }
 
-  // ... (Paste the rest of the existing methods here: onUltimateDragStart, onDrag, etc.)
-  // For brevity, I am not repeating the unmodified methods from the original file,
-  // but they must be present in the final file.
-
-  // [EXISTING CODE RESUMES HERE]
   fun onUltimateDragStart(team: Team, offset: Offset) {
     val isLeft = (team == leftTeam)
     if ((isLeft && isLeftTeamTurn) || (!isLeft && !isLeftTeamTurn)) {

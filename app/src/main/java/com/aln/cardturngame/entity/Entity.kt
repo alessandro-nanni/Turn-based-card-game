@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.trait.Trait
 
 sealed class Entity(
-  @StringRes val name: Int,
+  @field:StringRes val name: Int,
   val initialStats: Stats,
   val color: Color,
   val passiveAbility: Ability,

@@ -65,7 +65,6 @@ fun CharacterSelectionScreen(
   val p1Team = remember { mutableStateListOf<Entity>() }
   val p2Team = remember { mutableStateListOf<Entity>() }
 
-  // Updated reflection logic
   val availableCharacters = remember {
     Entity::class.sealedSubclasses.map { it.createInstance() }
   }
@@ -76,7 +75,6 @@ fun CharacterSelectionScreen(
       .background(Color(0xFF121212))
       .padding(16.dp)
   ) {
-    // Top Row: P1 Name - Start Button - P2 Name
     Row(
       modifier = Modifier
         .fillMaxWidth()
@@ -140,7 +138,6 @@ fun CharacterSelectionScreen(
       )
     }
 
-    // Split Screen Selection Area
     Row(
       modifier = Modifier.fillMaxSize(),
       horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -154,7 +151,6 @@ fun CharacterSelectionScreen(
         )
       }
 
-      // Vertical Divider
       VerticalDivider(
         modifier = Modifier.fillMaxHeight(),
         color = Color.Gray.copy(alpha = 0.3f),
@@ -182,7 +178,6 @@ fun PlayerGridSection(
   var infoCharacter by remember { mutableStateOf<Entity?>(null) }
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    // Grid View
     AnimatedVisibility(
       visible = infoCharacter == null,
       enter = fadeIn(),
@@ -218,7 +213,6 @@ fun PlayerGridSection(
       }
     }
 
-    // Info Card Overlay
     AnimatedVisibility(
       visible = infoCharacter != null,
       enter = fadeIn(),
@@ -230,7 +224,6 @@ fun PlayerGridSection(
 
           InfoCard(viewModel = tempViewModel)
 
-          // Close Button
           IconButton(
             onClick = { infoCharacter = null },
             modifier = Modifier
@@ -297,7 +290,6 @@ fun CharacterGridItem(
         )
       }
 
-      // Info Button
       IconButton(
         onClick = onInfo,
         modifier = Modifier

@@ -8,7 +8,9 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,20 +94,19 @@ fun BattleScreen(viewModel: BattleViewModel) {
           }
           .size(iconSize)
           .clip(CircleShape)
-          .background(Color.Red.copy(alpha = 0.8f)) // Maintained Red background
-          .border(2.dp, Color.Red, CircleShape), // CHANGED: Yellow -> Red border
+          .background(Color.Red.copy(alpha = 0.8f))
+          .border(2.dp, Color.Red, CircleShape),
         contentAlignment = Alignment.Center
       ) {
         Icon(
           painter = painterResource(id = R.drawable.ultimate),
           contentDescription = "Dragging Ultimate",
-          tint = Color.Black, // CHANGED: Yellow -> Black
+          tint = Color.Black,
           modifier = Modifier.size(28.dp)
         )
       }
     }
 
-    // --- UI Overlays ---
     if (viewModel.showInfoDialog && viewModel.selectedEntity != null) {
       InfoCard(viewModel.selectedEntity!!)
     }
@@ -209,12 +212,24 @@ fun Winner(viewModel: BattleViewModel) {
       .clickable(enabled = true) {},
     contentAlignment = Alignment.Center
   ) {
-    Text(
-      text = viewModel.winner!!,
-      color = Color.Yellow,
-      fontSize = 48.sp,
-      fontWeight = FontWeight.Bold
-    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+      Text(
+        text = viewModel.winner!!,
+        color = Color.Yellow,
+        fontSize = 48.sp,
+        fontWeight = FontWeight.Bold
+      )
+      Spacer(modifier = Modifier.height(16.dp))
+      Button(
+        onClick = { viewModel.onRestartClicked() },
+        colors = ButtonDefaults.buttonColors(
+          containerColor = Color.White,
+          contentColor = Color.Black
+        )
+      ) {
+        Text("Restart")
+      }
+    }
   }
 }
 

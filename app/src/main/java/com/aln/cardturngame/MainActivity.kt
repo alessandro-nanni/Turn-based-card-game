@@ -1,4 +1,3 @@
-// app/src/main/java/com/aln/cardturngame/MainActivity.kt
 package com.aln.cardturngame
 
 import android.content.pm.ActivityInfo
@@ -8,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +42,13 @@ class MainActivity : ComponentActivity() {
     setContent {
       CardTurnGameTheme {
         var isBattleStarted by remember { mutableStateOf(false) }
+
+        LaunchedEffect(battleViewModel.navigateToSelection) {
+            if (battleViewModel.navigateToSelection) {
+                isBattleStarted = false
+                battleViewModel.onNavigatedToSelection()
+            }
+        }
 
         if (!isBattleStarted) {
           CharacterSelectionScreen(

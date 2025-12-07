@@ -238,7 +238,6 @@ fun StatsView(viewModel: EntityViewModel) {
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.height(IntrinsicSize.Min)
   ) {
-    // Health
     Row(verticalAlignment = Alignment.CenterVertically) {
       Icon(
         painter = painterResource(id = R.drawable.health),
@@ -255,7 +254,6 @@ fun StatsView(viewModel: EntityViewModel) {
       )
     }
 
-    // Vertical Separator
     VerticalDivider(
       modifier = Modifier
         .padding(horizontal = 12.dp)
@@ -264,7 +262,6 @@ fun StatsView(viewModel: EntityViewModel) {
       thickness = 1.dp
     )
 
-    // Damage
     Row(verticalAlignment = Alignment.CenterVertically) {
       Icon(
         painter = painterResource(id = R.drawable.attack_damage),
@@ -380,7 +377,6 @@ fun InfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
         modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.Start
       ) {
-        // Header Row: Name on Left, Stats on Right
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
@@ -399,14 +395,12 @@ fun InfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
         HorizontalDivider(thickness = 1.dp, color = Color.Gray.copy(alpha = 0.2f))
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Content Row: 2 or 3 Columns
         Row(
           modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
           horizontalArrangement = Arrangement.SpaceBetween
         ) {
-          // COL 1: Abilities
           Column(
             modifier = Modifier
               .weight(1f)

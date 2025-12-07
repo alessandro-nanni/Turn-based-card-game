@@ -19,7 +19,6 @@ class Mage : Entity(
       target.heal(amount = 20f, repeats = 3)
     }
   },
-  // New Ultimate
   ultimateAbility = object : Ability(R.string.poison_name, R.string.poison_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
       // Mage Ult: Massive Poison
