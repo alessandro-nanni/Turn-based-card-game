@@ -8,15 +8,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entity.Team
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 data class DragState(
-  val source: Entity,
+  val source: EntityViewModel,
   val start: Offset,
   val current: Offset
 )
@@ -29,10 +27,10 @@ class BattleViewModel(
   // State
   var dragState by mutableStateOf<DragState?>(null)
     private set
-  var hoveredTarget by mutableStateOf<Entity?>(null)
+  var hoveredTarget by mutableStateOf<EntityViewModel?>(null)
     private set
   var showInfoDialog by mutableStateOf(false)
-  var selectedEntity by mutableStateOf<Entity?>(null)
+  var selectedEntity by mutableStateOf<EntityViewModel?>(null)
 
   // Turn & Game State
   var isLeftTeamTurn by mutableStateOf(Random.nextBoolean())
@@ -42,11 +40,11 @@ class BattleViewModel(
   var winner by mutableStateOf<String?>(null)
     private set
 
-  private val actionsTaken = mutableStateListOf<Entity>()
-  val cardBounds = mutableStateMapOf<Entity, Rect>()
+  private val actionsTaken = mutableStateListOf<EntityViewModel>()
+  val cardBounds = mutableStateMapOf<EntityViewModel, Rect>()
 
   // Logic
-  fun canEntityAct(entity: Entity): Boolean {
+  fun canEntityAct(entity: EntityViewModel): Boolean {
     if (winner != null) return false
     val isLeft = leftTeam.entities.contains(entity)
     val isRight = rightTeam.entities.contains(entity)
@@ -55,7 +53,7 @@ class BattleViewModel(
     return isTurn && !actionsTaken.contains(entity) && entity.isAlive && !isActionPlaying
   }
 
-  fun onDragStart(char: Entity, offset: Offset) {
+  fun onDragStart(char: EntityViewModel, offset: Offset) {
     if (canEntityAct(char)) {
       val cardTopLeft = cardBounds[char]?.topLeft ?: Offset.Zero
       val globalStart = cardTopLeft + offset
@@ -86,16 +84,15 @@ class BattleViewModel(
     hoveredTarget = null
   }
 
-  fun onCardPositioned(entity: Entity, rect: Rect) {
+  fun onCardPositioned(entity: EntityViewModel, rect: Rect) {
     cardBounds[entity] = rect
   }
 
-  fun onDoubleTap(entity: Entity) {
-    // Optional: Add double tap logic here
+  fun onDoubleTap(entity: EntityViewModel) {
     println("Double tapped ${entity.name}")
   }
 
-  fun onPressStatus(entity: Entity, isPressed: Boolean) {
+  fun onPressStatus(entity: EntityViewModel, isPressed: Boolean) {
     if (isPressed) {
       selectedEntity = entity
       showInfoDialog = true
@@ -105,15 +102,15 @@ class BattleViewModel(
     }
   }
 
-  fun getHighlightColor(entity: Entity): androidx.compose.ui.graphics.Color {
-      val draggingState = dragState
-      return if (draggingState != null && entity == hoveredTarget) {
-          val sourceLeft = leftTeam.entities.contains(draggingState.source)
-          val targetLeft = leftTeam.entities.contains(entity)
-          if (sourceLeft == targetLeft) androidx.compose.ui.graphics.Color.Green else androidx.compose.ui.graphics.Color.Red
-      } else {
-          androidx.compose.ui.graphics.Color.Transparent
-      }
+  fun getHighlightColor(entity: EntityViewModel): androidx.compose.ui.graphics.Color {
+    val draggingState = dragState
+    return if (draggingState != null && entity == hoveredTarget) {
+      val sourceLeft = leftTeam.entities.contains(draggingState.source)
+      val targetLeft = leftTeam.entities.contains(entity)
+      if (sourceLeft == targetLeft) androidx.compose.ui.graphics.Color.Green else androidx.compose.ui.graphics.Color.Red
+    } else {
+      androidx.compose.ui.graphics.Color.Transparent
+    }
   }
 
   private fun checkWinCondition() {
@@ -127,7 +124,7 @@ class BattleViewModel(
     }
   }
 
-  private fun executeInteraction(source: Entity, target: Entity) {
+  private fun executeInteraction(source: EntityViewModel, target: EntityViewModel) {
     if (isActionPlaying || winner != null) return
 
     viewModelScope.launch {
@@ -159,18 +156,17 @@ class BattleViewModel(
     }
   }
 
-  private suspend fun handleCardInteraction(source: Entity, target: Entity) {
-      // Determine if source and target are on the same team
-      val sourceLeft = leftTeam.entities.contains(source)
-      val targetLeft = leftTeam.entities.contains(target)
-      
-      val onSameTeam = sourceLeft == targetLeft
+  private suspend fun handleCardInteraction(source: EntityViewModel, target: EntityViewModel) {
+    val sourceLeft = leftTeam.entities.contains(source)
+    val targetLeft = leftTeam.entities.contains(target)
 
-      if (onSameTeam) {
-          source.passiveAbility.effect(source, target)
-      } else {
-          source.activeAbility.effect(source, target)
-      }
+    val onSameTeam = sourceLeft == targetLeft
+
+    if (onSameTeam) {
+      source.entity.passiveAbility.effect(source, target)
+    } else {
+      source.entity.activeAbility.effect(source, target)
+    }
   }
 
   private suspend fun processStartOfTurnEffects(team: Team) {
@@ -183,18 +179,5 @@ class BattleViewModel(
         }
       }
     }
-  }
-}
-
-class BattleViewModelFactory(
-  private val leftTeam: Team,
-  private val rightTeam: Team
-) : ViewModelProvider.Factory {
-  override fun <T : ViewModel> create(modelClass: Class<T>): T {
-    if (modelClass.isAssignableFrom(BattleViewModel::class.java)) {
-      @Suppress("UNCHECKED_CAST")
-      return BattleViewModel(leftTeam, rightTeam) as T
-    }
-    throw IllegalArgumentException("Unknown ViewModel class")
   }
 }

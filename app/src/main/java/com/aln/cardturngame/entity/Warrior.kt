@@ -2,10 +2,11 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
+import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Warrior : Entity(
   name = "Warrior",
-  stats = Stats(
+  initialStats = Stats(
     maxHealth = 150f,
     damage = 20f
   ),
@@ -15,10 +16,8 @@ class Warrior : Entity(
     nameRes = R.string.heavy_strike_name,
     descriptionRes = R.string.heavy_strike_desc
   ) {
-    override suspend fun effect(source: Entity, target: Entity) {
-
-      source.stats.applyDamage(target, repeats = 3)
-
+    override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
+      source.applyDamage(target, repeats = 3)
       println("${source.name} hit ${target.name} multiple times!")
     }
   },
@@ -26,9 +25,8 @@ class Warrior : Entity(
     nameRes = R.string.heavy_strike_name,
     descriptionRes = R.string.heavy_strike_desc
   ) {
-    override suspend fun effect(source: Entity, target: Entity) {
-      target.stats.heal(amount = 20f, repeats = 3)
-
+    override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
+      target.heal(amount = 20f, repeats = 3)
       println("${source.name} kissed ${target.name} for the lols!")
     }
   }

@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
-import com.aln.cardturngame.entity.Entity
+import com.aln.cardturngame.viewModel.EntityViewModel
 
 abstract class StatusEffect(
   @field:StringRes val nameRes: Int,
@@ -15,9 +15,9 @@ abstract class StatusEffect(
 ) {
   var duration by mutableIntStateOf(initialDuration)
 
-  open fun onApply(target: Entity) {}
-  open suspend fun onStartTurn(target: Entity) {}
-  open fun onVanish(target: Entity) {}
+  open fun onApply(target: EntityViewModel) {}
+  open suspend fun onStartTurn(target: EntityViewModel) {}
+  open fun onVanish(target: EntityViewModel) {}
 
   fun tick(): Boolean {
     duration--

@@ -1,10 +1,11 @@
 package com.aln.cardturngame.entity
 
 import androidx.annotation.StringRes
+import com.aln.cardturngame.viewModel.EntityViewModel
 
 abstract class Ability(
-  @param:StringRes val nameRes: Int,
-  @param:StringRes val descriptionRes: Int
+  @field:StringRes val nameRes: Int,
+  @field:StringRes val descriptionRes: Int
 ) {
-  abstract suspend fun effect(source: Entity, target: Entity)
+  abstract suspend fun effect(source: EntityViewModel, target: EntityViewModel)
 }
