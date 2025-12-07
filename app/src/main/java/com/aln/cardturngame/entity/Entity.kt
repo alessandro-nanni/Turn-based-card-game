@@ -3,7 +3,7 @@ package com.aln.cardturngame.entity
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.trait.Trait
 
-abstract class Entity(
+sealed class Entity(
   val name: String,
   val initialStats: Stats,
   val color: Color,

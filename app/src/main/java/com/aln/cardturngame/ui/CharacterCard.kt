@@ -24,8 +24,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -54,6 +57,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -63,7 +67,6 @@ import com.aln.cardturngame.effect.StatusEffect
 import com.aln.cardturngame.entity.Popup
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlinx.coroutines.launch
-import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun CharacterCard(
@@ -352,13 +355,9 @@ fun PopupView(popup: Popup, onComplete: () -> Unit) {
 }
 
 @Composable
-fun InfoCard(viewModel: EntityViewModel) {
-  val hasEffects = viewModel.statusEffects.isNotEmpty()
-  // Adjust width: wider if showing effects column
-  val cardWidth = if (hasEffects) 600.dp else 420.dp
-
+fun InfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
   Box(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxSize()
       .background(Color.Black.copy(alpha = 0.6f))
       .clickable(
@@ -369,8 +368,10 @@ fun InfoCard(viewModel: EntityViewModel) {
   ) {
     Card(
       modifier = Modifier
-        .width(cardWidth)
-        .padding(16.dp),
+        .widthIn(max = 600.dp)
+        .fillMaxWidth()
+        .padding(16.dp)
+        .verticalScroll(rememberScrollState()),
       shape = RoundedCornerShape(12.dp),
       colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
       elevation = CardDefaults.cardElevation(8.dp)
@@ -430,6 +431,8 @@ fun InfoCard(viewModel: EntityViewModel) {
               Color(0xFFAB47BC)
             )
           }
+
+          val hasEffects = viewModel.statusEffects.isNotEmpty()
 
           if (viewModel.traits.isNotEmpty()) {
             VerticalDivider(
