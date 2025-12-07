@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 
 class Team(
@@ -25,7 +26,8 @@ class Team(
     onDrag: (Offset) -> Unit,
     onDragEnd: () -> Unit,
     onDoubleTap: (Entity) -> Unit,
-    onPressStatus: (Entity, Boolean) -> Unit
+    onPressStatus: (Entity, Boolean) -> Unit,
+    getHighlightColor: (Entity) -> Color
   ) {
     Column(
       modifier = Modifier.fillMaxHeight(),
@@ -42,7 +44,8 @@ class Team(
           onDrag = onDrag,
           onDragEnd = onDragEnd,
           onDoubleTap = onDoubleTap,
-          onPressStatus = onPressStatus
+          onPressStatus = onPressStatus,
+          highlightColor = getHighlightColor(character)
         )
       }
     }

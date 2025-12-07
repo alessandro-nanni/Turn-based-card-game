@@ -1,5 +1,6 @@
 package com.aln.cardturngame.entity
 
+import android.graphics.BlurMaskFilter
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -37,9 +38,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -51,7 +57,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
 import kotlinx.coroutines.launch
-
 
 abstract class Entity(
   val name: String,
@@ -87,21 +92,45 @@ abstract class Entity(
     onDrag: (Offset) -> Unit,
     onDragEnd: () -> Unit,
     onDoubleTap: (Entity) -> Unit,
-    onPressStatus: (Entity, Boolean) -> Unit
+    onPressStatus: (Entity, Boolean) -> Unit,
+    highlightColor: Color = Color.Transparent
   ) {
+    val cardShape = RoundedCornerShape(12.dp)
+
     Box(
       modifier = Modifier
         .width(width)
         .height(height)
+        .then(
+          if (highlightColor != Color.Transparent) {
+            Modifier.drawBehind {
+              val paint = Paint()
+              val frameworkPaint = paint.asFrameworkPaint()
+              frameworkPaint.color = highlightColor.toArgb()
+              frameworkPaint.maskFilter = BlurMaskFilter(
+                15.dp.toPx(),
+                BlurMaskFilter.Blur.NORMAL
+              )
+
+              drawIntoCanvas { canvas ->
+                canvas.drawOutline(
+                  outline = cardShape.createOutline(size, layoutDirection, this),
+                  paint = paint
+                )
+              }
+            }
+          } else Modifier
+        )
     ) {
       Card(
+        shape = cardShape,
         modifier = Modifier
           .fillMaxSize()
           .onGloballyPositioned { coordinates ->
             onCardPositioned(this@Entity, coordinates.boundsInRoot())
           }
           .then(
-            if (canAct) Modifier.border(2.dp, Color.White, CardDefaults.shape)
+            if (canAct) Modifier.border(2.dp, Color.White, cardShape)
             else Modifier
           )
           .pointerInput(Unit) {

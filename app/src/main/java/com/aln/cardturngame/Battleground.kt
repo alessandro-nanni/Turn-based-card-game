@@ -41,6 +41,7 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
     var draggingSource by remember { mutableStateOf<Entity?>(null) }
     var dragStart by remember { mutableStateOf(Offset.Zero) }
     var dragCurrent by remember { mutableStateOf(Offset.Zero) }
+    var hoveredTarget by remember { mutableStateOf<Entity?>(null) }
 
     // Info Dialog State
     var showInfoDialog by remember { mutableStateOf(false) }
@@ -105,6 +106,17 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
       val finalCardHeight = min(heightLimit, heightFromWidth)
       val finalCardWidth = finalCardHeight * aspectRatio
 
+      // Draw line BEHIND the cards
+      val lineEnd = if (hoveredTarget != null && cardBounds.contains(hoveredTarget)) {
+        cardBounds[hoveredTarget]!!.center
+      } else {
+        dragCurrent
+      }
+
+      if (draggingSource != null) {
+        LineCanvas(dragStart, lineEnd)
+      }
+
       BattleLayout(
         finalCardHeight = finalCardHeight,
         finalCardWidth = finalCardWidth,
@@ -125,30 +137,25 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         },
         onDrag = { change ->
           dragCurrent += change
+          hoveredTarget = cardBounds.entries.firstOrNull { (entity, rect) ->
+            entity.isAlive && rect.contains(dragCurrent)
+          }?.key
         },
         onDragEnd = {
           draggingSource?.let { source ->
-            val target = cardBounds.entries.firstOrNull { (_, rect) ->
-              rect.contains(dragCurrent)
-            }?.key
+            val target = hoveredTarget
 
-            if (target != null && target != source && target.isAlive) {
+            if (target != null && target.isAlive) {
               if (canEntityAct(source)) {
                 executeInteraction(source, target, rightTeam.entities)
               }
             }
           }
           draggingSource = null
+          hoveredTarget = null
         },
         onDoubleTap = { entity ->
-          if (canEntityAct(entity)) {
-            scope.launch {
-              isActionPlaying = true // Lock input
-              entity.passiveAbility.effect(entity, entity)
-              onActionCompleted(entity)
-              isActionPlaying = false // Unlock input
-            }
-          }
+          println("Double tapped ${entity.name}")
         },
         onPressStatus = { entity, isPressed ->
           if (isPressed) {
@@ -158,12 +165,18 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
             showInfoDialog = false
             selectedEntity = null
           }
+        },
+        getHighlightColor = { entity ->
+          if (draggingSource != null && entity == hoveredTarget) {
+            val source = draggingSource!!
+            val isSourceLeft = leftTeam.entities.contains(source)
+            val isTargetLeft = leftTeam.entities.contains(entity)
+            if (isSourceLeft == isTargetLeft) Color.Green else Color.Red
+          } else {
+            Color.Transparent
+          }
         }
       )
-
-      if (draggingSource != null) {
-        LineCanvas(dragStart, dragCurrent)
-      }
 
       // Overlay for Info (Shown while holding)
       if (showInfoDialog && selectedEntity != null) {
@@ -177,7 +190,7 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
   fun LineCanvas(dragStart: Offset, dragCurrent: Offset) {
     Canvas(modifier = Modifier.fillMaxSize()) {
       drawLine(
-        color = Color.Red,
+        color = Color.White,
         start = dragStart,
         end = dragCurrent,
         strokeWidth = 8f
@@ -212,7 +225,8 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
     onDrag: (Offset) -> Unit,
     onDragEnd: () -> Unit,
     onDoubleTap: (Entity) -> Unit,
-    onPressStatus: (Entity, Boolean) -> Unit
+    onPressStatus: (Entity, Boolean) -> Unit,
+    getHighlightColor: (Entity) -> Color
   ) {
 
     Row(
@@ -232,7 +246,8 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         onDrag = onDrag,
         onDragEnd = onDragEnd,
         onDoubleTap = onDoubleTap,
-        onPressStatus = onPressStatus
+        onPressStatus = onPressStatus,
+        getHighlightColor = getHighlightColor
       )
 
       Text(
@@ -253,7 +268,8 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         onDrag = onDrag,
         onDragEnd = onDragEnd,
         onDoubleTap = onDoubleTap,
-        onPressStatus = onPressStatus
+        onPressStatus = onPressStatus,
+        getHighlightColor = getHighlightColor
       )
     }
   }
