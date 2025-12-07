@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.ui.InfoCard
 import com.aln.cardturngame.viewModel.BattleViewModel
+import kotlin.collections.get
 import kotlin.math.roundToInt
 
 @Composable
@@ -74,7 +76,7 @@ fun BattleScreen(viewModel: BattleViewModel) {
 
     viewModel.ultimateDragState?.let { ultState ->
       val iconSize = 48.dp
-      val density = androidx.compose.ui.platform.LocalDensity.current
+      val density = LocalDensity.current
       val iconSizePx = with(density) { iconSize.toPx() }
 
       Box(
@@ -87,14 +89,14 @@ fun BattleScreen(viewModel: BattleViewModel) {
           }
           .size(iconSize)
           .clip(CircleShape)
-          .background(Color.Red.copy(alpha = 0.8f))
-          .border(2.dp, Color.Yellow, CircleShape),
+          .background(Color.Red.copy(alpha = 0.8f)) // Maintained Red background
+          .border(2.dp, Color.Red, CircleShape), // CHANGED: Yellow -> Red border
         contentAlignment = Alignment.Center
       ) {
         Icon(
           painter = painterResource(id = R.drawable.ultimate),
           contentDescription = "Dragging Ultimate",
-          tint = Color.Yellow,
+          tint = Color.Black, // CHANGED: Yellow -> Black
           modifier = Modifier.size(28.dp)
         )
       }
@@ -149,6 +151,7 @@ fun BattleLayout(
         rage = viewModel.leftTeam.rage,
         maxRage = viewModel.leftTeam.maxRage,
         isTurn = viewModel.isLeftTeamTurn,
+        isDragging = viewModel.ultimateDragState?.team == viewModel.leftTeam, // CHANGED: Pass drag state
         onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
         onDrag = viewModel::onUltimateDrag,
         onDragEnd = viewModel::onUltimateDragEnd
@@ -173,6 +176,7 @@ fun BattleLayout(
         rage = viewModel.rightTeam.rage,
         maxRage = viewModel.rightTeam.maxRage,
         isTurn = !viewModel.isLeftTeamTurn,
+        isDragging = viewModel.ultimateDragState?.team == viewModel.rightTeam, // CHANGED: Pass drag state
         onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
         onDrag = viewModel::onUltimateDrag,
         onDragEnd = viewModel::onUltimateDragEnd
@@ -230,6 +234,7 @@ fun RageBar(
   rage: Float,
   maxRage: Float,
   isTurn: Boolean,
+  isDragging: Boolean, // CHANGED: New parameter
   onDragStart: (Offset) -> Unit,
   onDrag: (Offset) -> Unit,
   onDragEnd: () -> Unit
@@ -300,20 +305,22 @@ fun RageBar(
         contentAlignment = Alignment.Center
       ) {
         // Visual Circle
-        Box(
-          modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(Color.Red)
-            .border(2.dp, Color.Yellow, CircleShape),
-          contentAlignment = Alignment.Center
-        ) {
-          Icon(
-            painter = painterResource(id = R.drawable.ultimate),
-            contentDescription = "Ready Ultimate",
-            tint = Color.Yellow,
-            modifier = Modifier.size(24.dp)
-          )
+        if (!isDragging) { // CHANGED: Hide visual when dragging
+          Box(
+            modifier = Modifier
+              .size(40.dp)
+              .clip(CircleShape)
+              .background(Color.Red)
+              .border(2.dp, Color.Red, CircleShape), // CHANGED: Yellow -> Red
+            contentAlignment = Alignment.Center
+          ) {
+            Icon(
+              painter = painterResource(id = R.drawable.ultimate),
+              contentDescription = "Ready Ultimate",
+              tint = Color.Black, // CHANGED: Yellow -> Black
+              modifier = Modifier.size(24.dp)
+            )
+          }
         }
       }
     }

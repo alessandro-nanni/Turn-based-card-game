@@ -262,7 +262,7 @@ fun StatsView(viewModel: EntityViewModel) {
 
 @Composable
 fun ActiveEffects(viewModel: EntityViewModel) {
-  Spacer(modifier = Modifier.height(8.dp))
+  Spacer(modifier = Modifier.height(4.dp))
   Row(
     horizontalArrangement = Arrangement.Center,
     verticalAlignment = Alignment.CenterVertically,
