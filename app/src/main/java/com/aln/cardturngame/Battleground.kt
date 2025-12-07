@@ -29,92 +29,115 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entity.Team
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class Battleground(val leftTeam: Team, val rightTeam: Team) {
 
-  @Composable
-  fun BattleScreen() {
-    val scope = rememberCoroutineScope()
+  private data class DragState(
+    val source: Entity,
+    val start: Offset,
+    val current: Offset
+  )
 
-    // Drag & Drop State
-    var draggingSource by remember { mutableStateOf<Entity?>(null) }
-    var dragStart by remember { mutableStateOf(Offset.Zero) }
-    var dragCurrent by remember { mutableStateOf(Offset.Zero) }
-    var hoveredTarget by remember { mutableStateOf<Entity?>(null) }
+  private inner class BattleScreenState(private val scope: CoroutineScope) {
+    var dragState by mutableStateOf<DragState?>(null)
+    var hoveredTarget by mutableStateOf<Entity?>(null)
+    var showInfoDialog by mutableStateOf(false)
+    var selectedEntity by mutableStateOf<Entity?>(null)
 
-    // Info Dialog State
-    var showInfoDialog by remember { mutableStateOf(false) }
-    var selectedEntity by remember { mutableStateOf<Entity?>(null) }
+    // Turn & Game State
+    var isLeftTeamTurn by mutableStateOf(true)
+    var isActionPlaying by mutableStateOf(false)
+    val actionsTaken = mutableStateListOf<Entity>()
+    val cardBounds = mutableStateMapOf<Entity, Rect>()
 
-    // Turn State
-    var isLeftTeamTurn by remember { mutableStateOf(true) }
-    val actionsTaken = remember { mutableStateListOf<Entity>() }
-    // Lock state to prevent interactions during animations
-    var isActionPlaying by remember { mutableStateOf(false) }
-
-    val cardBounds = remember { mutableStateMapOf<Entity, Rect>() }
-
-    val canEntityAct: (Entity) -> Boolean = { entity ->
+    fun canEntityAct(entity: Entity): Boolean {
       val isLeft = leftTeam.entities.contains(entity)
       val isRight = rightTeam.entities.contains(entity)
-
       val isTurn = (isLeft && isLeftTeamTurn) || (isRight && !isLeftTeamTurn)
 
-      // Entity must be Alive to act (gets outline)
-      // AND no action should be currently playing
-      isTurn && !actionsTaken.contains(entity) && entity.isAlive && !isActionPlaying
+      return isTurn && !actionsTaken.contains(entity) && entity.isAlive && !isActionPlaying
     }
 
-    fun onActionCompleted(source: Entity) {
-      if (!actionsTaken.contains(source)) {
-        actionsTaken.add(source)
-      }
-
-      val activeTeamEntities = if (isLeftTeamTurn) leftTeam.entities else rightTeam.entities
-
-      // Filter actions check to only care about ALIVE entities
-      val aliveTeamEntities = activeTeamEntities.filter { it.isAlive }
-
-      if (actionsTaken.containsAll(aliveTeamEntities)) {
-        actionsTaken.clear()
-        isLeftTeamTurn = !isLeftTeamTurn
+    fun onDragStart(char: Entity, offset: Offset) {
+      if (canEntityAct(char)) {
+        val cardTopLeft = cardBounds[char]?.topLeft ?: Offset.Zero
+        val globalStart = cardTopLeft + offset
+        dragState = DragState(char, globalStart, globalStart)
       }
     }
 
-    // Helper to launch suspend functions with lock
-    fun executeInteraction(source: Entity, target: Entity, ownTeam: List<Entity>) {
+    fun onDrag(change: Offset) {
+      dragState?.let { currentDrag ->
+        val newCurrent = currentDrag.current + change
+        dragState = currentDrag.copy(current = newCurrent)
+
+        hoveredTarget = cardBounds.entries.firstOrNull { (entity, rect) ->
+          entity.isAlive && rect.contains(newCurrent)
+        }?.key
+      }
+    }
+
+    fun onDragEnd() {
+      val state = dragState
+      val target = hoveredTarget
+
+      if (state != null && target != null && target.isAlive && canEntityAct(state.source)) {
+        executeInteraction(state.source, target)
+      }
+
+      dragState = null
+      hoveredTarget = null
+    }
+
+    private fun executeInteraction(source: Entity, target: Entity) {
       if (isActionPlaying) return
 
       scope.launch {
-        isActionPlaying = true // Lock input
-        handleCardInteraction(source, target, ownTeam)
-        onActionCompleted(source)
-        isActionPlaying = false // Unlock input
+        isActionPlaying = true
+        // handleCardInteraction is accessed from the outer Battleground class
+        handleCardInteraction(source, target, rightTeam.entities)
+
+        if (!actionsTaken.contains(source)) {
+          actionsTaken.add(source)
+        }
+
+        val activeTeamEntities = if (isLeftTeamTurn) leftTeam.entities else rightTeam.entities
+        if (actionsTaken.containsAll(activeTeamEntities.filter { it.isAlive })) {
+          actionsTaken.clear()
+          isLeftTeamTurn = !isLeftTeamTurn
+        }
+
+        isActionPlaying = false
       }
     }
+  }
+
+  @Composable
+  fun BattleScreen() {
+    val scope = rememberCoroutineScope()
+    val state = remember(scope) { BattleScreenState(scope) }
 
     BoxWithConstraints(
       modifier = Modifier
         .fillMaxSize()
         .background(Color(0xFF1E1E1E))
     ) {
-      val heightLimit = this.maxHeight / 3.4f
-      val widthLimit = this.maxWidth / 2.5f
-      val aspectRatio = 0.7f
-      val heightFromWidth = widthLimit / aspectRatio
-      val finalCardHeight = min(heightLimit, heightFromWidth)
-      val finalCardWidth = finalCardHeight * aspectRatio
+      val finalCardHeight = min(
+        this.maxHeight / 3.4f,
+        (this.maxWidth / 2.5f) / 0.7f
+      )
+      val finalCardWidth = finalCardHeight * 0.7f
 
-      // Draw line BEHIND the cards
-      val lineEnd = if (hoveredTarget != null && cardBounds.contains(hoveredTarget)) {
-        cardBounds[hoveredTarget]!!.center
-      } else {
-        dragCurrent
-      }
-
-      if (draggingSource != null) {
-        LineCanvas(dragStart, lineEnd)
+      // Line Drawing
+      state.dragState?.let { dragState ->
+        val lineEnd = if (state.hoveredTarget != null && state.cardBounds.contains(state.hoveredTarget)) {
+          state.cardBounds[state.hoveredTarget]!!.center
+        } else {
+          dragState.current
+        }
+        LineCanvas(dragState.start, lineEnd)
       }
 
       BattleLayout(
@@ -122,65 +145,35 @@ class Battleground(val leftTeam: Team, val rightTeam: Team) {
         finalCardWidth = finalCardWidth,
         leftTeam = leftTeam,
         rightTeam = rightTeam,
-        canAct = canEntityAct,
-        onCardPositioned = { char, rect ->
-          cardBounds[char] = rect
-        },
-        onDragStart = { char, offset ->
-          if (canEntityAct(char)) {
-            draggingSource = char
-            val cardTopLeft = cardBounds[char]?.topLeft ?: Offset.Zero
-            val globalStart = cardTopLeft + offset
-            dragStart = globalStart
-            dragCurrent = globalStart
-          }
-        },
-        onDrag = { change ->
-          dragCurrent += change
-          hoveredTarget = cardBounds.entries.firstOrNull { (entity, rect) ->
-            entity.isAlive && rect.contains(dragCurrent)
-          }?.key
-        },
-        onDragEnd = {
-          draggingSource?.let { source ->
-            val target = hoveredTarget
-
-            if (target != null && target.isAlive) {
-              if (canEntityAct(source)) {
-                executeInteraction(source, target, rightTeam.entities)
-              }
-            }
-          }
-          draggingSource = null
-          hoveredTarget = null
-        },
-        onDoubleTap = { entity ->
-          println("Double tapped ${entity.name}")
-        },
+        canAct = state::canEntityAct,
+        onCardPositioned = { char, rect -> state.cardBounds[char] = rect },
+        onDragStart = state::onDragStart,
+        onDrag = state::onDrag,
+        onDragEnd = state::onDragEnd,
+        onDoubleTap = { entity -> println("Double tapped ${entity.name}") },
         onPressStatus = { entity, isPressed ->
           if (isPressed) {
-            selectedEntity = entity
-            showInfoDialog = true
+            state.selectedEntity = entity
+            state.showInfoDialog = true
           } else {
-            showInfoDialog = false
-            selectedEntity = null
+            state.showInfoDialog = false
+            state.selectedEntity = null
           }
         },
         getHighlightColor = { entity ->
-          if (draggingSource != null && entity == hoveredTarget) {
-            val source = draggingSource!!
-            val isSourceLeft = leftTeam.entities.contains(source)
-            val isTargetLeft = leftTeam.entities.contains(entity)
-            if (isSourceLeft == isTargetLeft) Color.Green else Color.Red
+          val draggingState = state.dragState
+          if (draggingState != null && entity == state.hoveredTarget) {
+            val sourceLeft = leftTeam.entities.contains(draggingState.source)
+            val targetLeft = leftTeam.entities.contains(entity)
+            if (sourceLeft == targetLeft) Color.Green else Color.Red
           } else {
             Color.Transparent
           }
         }
       )
 
-      // Overlay for Info (Shown while holding)
-      if (showInfoDialog && selectedEntity != null) {
-        selectedEntity!!.InfoCard()
+      if (state.showInfoDialog && state.selectedEntity != null) {
+        state.selectedEntity!!.InfoCard()
       }
     }
   }
