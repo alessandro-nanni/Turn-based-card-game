@@ -261,6 +261,11 @@ class BattleViewModel(
 
   private suspend fun processStartOfTurnEffects(team: Team) {
     team.entities.filter { it.isAlive }.forEach { entity ->
+
+      entity.traits.forEach { trait ->
+        trait.onStartTurn(entity)
+      }
+
       val activeEffects = entity.statusEffects.toList()
       activeEffects.forEach { effect ->
         effect.onStartTurn(entity)

@@ -9,69 +9,99 @@ import androidx.lifecycle.ViewModel
 import com.aln.cardturngame.effect.StatusEffect
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entity.Popup
+import com.aln.cardturngame.trait.Trait
 import kotlinx.coroutines.delay
 
 class EntityViewModel(
-    val entity: Entity
+  val entity: Entity
 ) : ViewModel() {
-    var health by mutableFloatStateOf(entity.initialStats.maxHealth)
-    var maxHealth by mutableFloatStateOf(entity.initialStats.maxHealth)
-    var damage by mutableFloatStateOf(entity.initialStats.damage)
+  var health by mutableFloatStateOf(entity.initialStats.maxHealth)
+  var maxHealth by mutableFloatStateOf(entity.initialStats.maxHealth)
+  var damage by mutableFloatStateOf(entity.initialStats.damage)
 
-    val statusEffects = mutableStateListOf<StatusEffect>()
-    val popups = mutableStateListOf<Popup>()
-    private var popupIdCounter = 0L
+  val statusEffects = mutableStateListOf<StatusEffect>()
+  val popups = mutableStateListOf<Popup>()
+  private var popupIdCounter = 0L
 
-    val isAlive: Boolean
-        get() = health > 0
+  val isAlive: Boolean
+    get() = health > 0
 
-    val name: String get() = entity.name
-    val color: Color get() = entity.color
+  val name: String get() = entity.name
+  val color: Color get() = entity.color
 
-    fun addStatusEffect(effect: StatusEffect) {
-        val existingEffect = statusEffects.find { it::class == effect::class }
+  val traits: List<Trait> get() = entity.traits
 
-        if (existingEffect != null) {
-            existingEffect.duration = effect.duration
-        } else {
-            statusEffects.add(effect)
-            effect.onApply(this)
-        }
+  fun addStatusEffect(effect: StatusEffect) {
+    val existingEffect = statusEffects.find { it::class == effect::class }
+
+    if (existingEffect != null) {
+      existingEffect.duration = effect.duration
+    } else {
+      statusEffects.add(effect)
+      effect.onApply(this)
+    }
+  }
+
+  fun removeStatusEffect(effect: StatusEffect) {
+    effect.onVanish(this)
+    statusEffects.remove(effect)
+  }
+
+  fun addPopup(amount: Float, color: Color = Color.Red) {
+    val id = popupIdCounter++
+    popups.add(Popup(id, amount.toInt(), color))
+  }
+
+  fun receiveDamage(amount: Float, source: EntityViewModel? = null) {
+    var actualDamage = amount
+    traits.forEach { trait ->
+      actualDamage = trait.modifyIncomingDamage(this, source, actualDamage)
     }
 
-    fun removeStatusEffect(effect: StatusEffect) {
-        effect.onVanish(this)
-        statusEffects.remove(effect)
+    health = (health - actualDamage).coerceAtLeast(0f)
+    addPopup(actualDamage)
+
+    traits.forEach { trait ->
+      trait.onDidReceiveDamage(this, source, actualDamage)
     }
 
-    fun addPopup(amount: Float, color: Color = Color.Red) {
-        val id = popupIdCounter++
-        popups.add(Popup(id, amount.toInt(), color))
+    source?.let { attacker ->
+      attacker.traits.forEach { trait ->
+        trait.onDidDealDamage(attacker, this, actualDamage)
+      }
     }
+  }
 
-    fun receiveDamage(amount: Float) {
-        health = (health - amount).coerceAtLeast(0f)
-        addPopup(amount)
-    }
+  suspend fun heal(amount: Float, repeats: Int = 1, delayTime: Long = 400) {
+    repeat(repeats) {
+      var actualHeal = amount
+      traits.forEach { trait ->
+        actualHeal = trait.modifyHeal(this, actualHeal)
+      }
 
-    suspend fun heal(amount: Float, repeats: Int = 1, delayTime: Long = 400) {
-        repeat(repeats) {
-            health = (health + amount).coerceAtMost(maxHealth)
-            addPopup(amount, Color.Green)
-            if (repeats > 1) delay(delayTime)
-        }
+      health = (health + actualHeal).coerceAtMost(maxHealth)
+      addPopup(actualHeal, Color.Green)
+      if (repeats > 1) delay(delayTime)
     }
+  }
 
-    suspend fun applyDamage(
-        target: EntityViewModel,
-        amount: Float = damage,
-        repeats: Int = 1,
-        delayTime: Long = 400
-    ) {
-        repeat(repeats) {
-            if (!target.isAlive) return
-            target.receiveDamage(amount)
-            if (repeats > 1) delay(delayTime)
-        }
+  suspend fun applyDamage(
+    target: EntityViewModel,
+    amount: Float = damage,
+    repeats: Int = 1,
+    delayTime: Long = 400
+  ) {
+    repeat(repeats) {
+      if (!target.isAlive) return
+
+      var calculatedDamage = amount
+      traits.forEach { trait ->
+        calculatedDamage = trait.modifyOutgoingDamage(this, target, calculatedDamage)
+      }
+
+      target.receiveDamage(calculatedDamage, source = this)
+
+      if (repeats > 1) delay(delayTime)
     }
+  }
 }

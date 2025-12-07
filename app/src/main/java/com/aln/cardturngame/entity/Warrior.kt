@@ -1,8 +1,9 @@
-// alessandro-nanni/turn-based-card-game/Turn-based-card-game-master/app/src/main/java/com/aln/cardturngame/entity/Warrior.kt
 package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
+import com.aln.cardturngame.trait.BerserkerTrait
+import com.aln.cardturngame.trait.SpikyArmorTrait
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Warrior : Entity(
@@ -26,5 +27,6 @@ class Warrior : Entity(
       source.applyDamage(target, amount = source.damage * 3)
       println("${source.name} used Ultimate on ${target.name}!")
     }
-  }
+  },
+  traits = listOf(BerserkerTrait(), SpikyArmorTrait())
 )

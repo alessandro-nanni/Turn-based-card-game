@@ -23,8 +23,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -348,21 +350,22 @@ fun InfoCard(viewModel: EntityViewModel) {
         .fillMaxWidth(0.7f)
         .fillMaxHeight()
         .padding(16.dp),
-      shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+      shape = RoundedCornerShape(16.dp),
       colors = CardDefaults.cardColors(containerColor = Color(0xFF333333))
     ) {
       Column(
-        modifier = Modifier.padding(24.dp),
+        modifier = Modifier
+          .padding(24.dp)
+          .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.Start
       ) {
+
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Row(
-            horizontalArrangement = Arrangement.Start
-          ) {
+          Row(horizontalArrangement = Arrangement.Start) {
             Text(
               text = viewModel.name,
               color = Color.White,
@@ -382,82 +385,139 @@ fun InfoCard(viewModel: EntityViewModel) {
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Active Ability
-        Text(
-          text = "Active: ${stringResource(viewModel.entity.activeAbility.nameRes)}",
-          color = Color(0xFF4CAF50),
-          fontWeight = FontWeight.Bold
-        )
-        Text(
-          text = stringResource(viewModel.entity.activeAbility.descriptionRes),
-          color = Color.LightGray
-        )
+        Abilities(viewModel)
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Passive Ability
-        Text(
-          text = "Passive: ${stringResource(viewModel.entity.passiveAbility.nameRes)}",
-          color = Color(0xFF2196F3),
-          fontWeight = FontWeight.Bold
-        )
-        Text(
-          text = stringResource(viewModel.entity.passiveAbility.descriptionRes),
-          color = Color.LightGray
-        )
+        if (viewModel.traits.isNotEmpty()) {
+          Traits(viewModel)
+        }
 
         if (viewModel.statusEffects.isNotEmpty()) {
-          Spacer(modifier = Modifier.height(16.dp))
-
-          Text(
-            text = "Status Effects:",
-            color = Color.White,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-          )
-          Spacer(modifier = Modifier.height(8.dp))
-
-          viewModel.statusEffects.forEach { effect ->
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-            ) {
-              Icon(
-                painter = painterResource(id = effect.iconRes),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier.size(32.dp)
-              )
-
-              Spacer(modifier = Modifier.width(12.dp))
-
-              Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                  Text(
-                    text = stringResource(effect.nameRes),
-                    color = Color(0xFFFFC107),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                  )
-                  Spacer(modifier = Modifier.width(8.dp))
-                  Text(
-                    text = "(${effect.duration} turns)",
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                  )
-                }
-
-                Text(
-                  text = stringResource(effect.descriptionRes),
-                  color = Color.LightGray,
-                  fontSize = 14.sp
-                )
-              }
-            }
-          }
+          StatusEffects(viewModel)
         }
+      }
+    }
+  }
+}
+
+@Composable
+fun Abilities(viewModel: EntityViewModel){
+  // active
+  Text(
+    text = "Active: ${stringResource(viewModel.entity.activeAbility.nameRes)}",
+    color = Color(0xFF4CAF50),
+    fontWeight = FontWeight.Bold
+  )
+  Text(
+    text = stringResource(viewModel.entity.activeAbility.descriptionRes),
+    color = Color.LightGray
+  )
+
+  Spacer(modifier = Modifier.height(12.dp))
+
+  // passive
+  Text(
+    text = "Passive: ${stringResource(viewModel.entity.passiveAbility.nameRes)}",
+    color = Color(0xFF2196F3),
+    fontWeight = FontWeight.Bold
+  )
+  Text(
+    text = stringResource(viewModel.entity.passiveAbility.descriptionRes),
+    color = Color.LightGray
+  )
+
+  Spacer(modifier = Modifier.height(12.dp))
+
+  // ultimate
+  Text(
+    text = "Ultimate: ${stringResource(viewModel.entity.ultimateAbility.nameRes)}",
+    color = Color(0xFFE91E63),
+    fontWeight = FontWeight.Bold
+  )
+  Text(
+    text = stringResource(viewModel.entity.ultimateAbility.descriptionRes),
+    color = Color.LightGray
+  )
+}
+
+@Composable
+fun Traits(viewModel: EntityViewModel){
+  Spacer(modifier = Modifier.height(16.dp))
+
+  Text(
+    text = "Traits:",
+    color = Color.White,
+    fontSize = 18.sp,
+    fontWeight = FontWeight.Bold
+  )
+  Spacer(modifier = Modifier.height(4.dp))
+
+  viewModel.traits.forEach { trait ->
+    Column(modifier = Modifier.padding(bottom = 8.dp)) {
+      Text(
+        text = "• ${stringResource(trait.nameRes)}",
+        color = Color(0xFFFF9800), // Orange color for Traits
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
+      )
+      Text(
+        text = stringResource(trait.descriptionRes),
+        color = Color.LightGray,
+        fontSize = 14.sp,
+        modifier = Modifier.padding(start = 12.dp)
+      )
+    }
+  }
+}
+
+@Composable
+fun StatusEffects(viewModel: EntityViewModel){
+  Spacer(modifier = Modifier.height(16.dp))
+
+  Text(
+    text = "Status Effects:",
+    color = Color.White,
+    fontSize = 18.sp,
+    fontWeight = FontWeight.Bold
+  )
+  Spacer(modifier = Modifier.height(8.dp))
+
+  viewModel.statusEffects.forEach { effect ->
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = 8.dp)
+    ) {
+      Icon(
+        painter = painterResource(id = effect.iconRes),
+        contentDescription = null,
+        tint = Color.Unspecified,
+        modifier = Modifier.size(32.dp)
+      )
+
+      Spacer(modifier = Modifier.width(12.dp))
+
+      Column {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Text(
+            text = stringResource(effect.nameRes),
+            color = Color(0xFFFFC107),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+          )
+          Spacer(modifier = Modifier.width(8.dp))
+          Text(
+            text = "(${effect.duration} turns)",
+            color = Color.Gray,
+            fontSize = 12.sp
+          )
+        }
+
+        Text(
+          text = stringResource(effect.descriptionRes),
+          color = Color.LightGray,
+          fontSize = 14.sp
+        )
       }
     }
   }
