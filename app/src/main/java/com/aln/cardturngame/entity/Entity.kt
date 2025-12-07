@@ -7,5 +7,6 @@ abstract class Entity(
   val initialStats: Stats,
   val color: Color,
   val passiveAbility: Ability,
-  val activeAbility: Ability
+  val activeAbility: Ability,
+  val ultimateAbility: Ability
 )

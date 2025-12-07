@@ -1,9 +1,13 @@
+// alessandro-nanni/turn-based-card-game/Turn-based-card-game-master/app/src/main/java/com/aln/cardturngame/entity/Team.kt
 package com.aln.cardturngame.entity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -16,6 +20,8 @@ import com.aln.cardturngame.viewModel.EntityViewModel
 class Team(
   val entities: List<EntityViewModel>
 ) {
+  var rage by mutableFloatStateOf(0f)
+  val maxRage = 100f
 
   @Composable
   fun TeamColumn(

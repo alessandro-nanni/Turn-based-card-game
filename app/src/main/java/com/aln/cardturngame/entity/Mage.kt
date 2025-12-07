@@ -7,28 +7,25 @@ import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Mage : Entity(
   name = "Mage",
-  initialStats = Stats(
-    maxHealth = 150f,
-    damage = 20f
-  ),
+  initialStats = Stats(maxHealth = 150f, damage = 20f),
   color = Color(0xFF2FC0D3),
-
-  activeAbility = object : Ability(
-    nameRes = R.string.heavy_strike_name,
-    descriptionRes = R.string.heavy_strike_desc
-  ) {
+  activeAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
       target.addStatusEffect(WeakeningPoison(4))
-      println("${source.name} hit ${target.name} multiple times!")
     }
   },
-  passiveAbility = object : Ability(
-    nameRes = R.string.heavy_strike_name,
-    descriptionRes = R.string.heavy_strike_desc
-  ) {
+  passiveAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
       target.heal(amount = 20f, repeats = 3)
-      println("${source.name} kissed ${target.name} for the lols!")
+    }
+  },
+  // New Ultimate
+  ultimateAbility = object : Ability(R.string.poison_name, R.string.poison_desc) {
+    override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
+      // Mage Ult: Massive Poison
+      target.addStatusEffect(WeakeningPoison(10))
+      target.receiveDamage(30f)
+      println("${source.name} cast Ultimate Poison on ${target.name}!")
     }
   }
 )
