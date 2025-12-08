@@ -2,6 +2,8 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
+import com.aln.cardturngame.effect.BurningEffect
+import com.aln.cardturngame.effect.PainLinkEffect
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Archer : Entity(
@@ -19,12 +21,15 @@ class Archer : Entity(
   passiveAbility = object :
     Ability(R.string.ability_cover, R.string.ability_cover_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
+      source.addStatusEffect(PainLinkEffect(2, target), source = source)
     }
   },
   ultimateAbility = object :
-    Ability(R.string.poison_name, R.string.poison_desc) {
+    Ability(R.string.ability_rain_fire, R.string.ability_rain_fire_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      target.receiveDamage(30f)
+      val randomMember = target.getAliveTeamMembers().random()
+      source.applyDamage(randomMember, repeats = 5, delayTime = 250)
+      randomMember.addStatusEffect(BurningEffect(2),source)
     }
   },
   damageType = DamageType.Magic

@@ -24,6 +24,8 @@ abstract class StatusEffect(
 
   open fun modifyDamage(currentDamage: Float): Float = currentDamage
 
+  open fun modifyIncomingDamage(owner: EntityViewModel, currentDamage: Float, source: EntityViewModel?): Float = currentDamage
+
   fun tick(): Boolean {
     duration--
     return duration <= 0

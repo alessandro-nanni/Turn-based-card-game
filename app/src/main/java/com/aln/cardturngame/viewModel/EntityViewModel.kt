@@ -85,6 +85,13 @@ class EntityViewModel(
 
   fun receiveDamage(amount: Float, source: EntityViewModel? = null) {
     var actualDamage = amount
+
+    // Applica modificatori dagli effetti di stato (es. Pain Link)
+    statusEffects.toList().forEach { effect ->
+      actualDamage = effect.modifyIncomingDamage(this, actualDamage, source)
+    }
+
+    // Applica modificatori dai tratti
     traits.forEach { trait ->
       actualDamage = trait.modifyIncomingDamage(this, source, actualDamage)
     }

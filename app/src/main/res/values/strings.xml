@@ -1,17 +1,5 @@
 <resources>
-    <string name="app_name">CardTurnGame</string>
-    <string name="heavy_strike_name">Heavy Strike</string>
-    <string name="heavy_strike_desc">Deals 150% damage</string>
-    <string name="poison_name">Weakening Poison</string>
-    <string name="poison_desc">Decreases damage by 5 and deals 10 damage per turn.</string>
-    <string name="trait_spiky_armor_name">Spiky Armor</string>
-    <string name="trait_spiky_armor_desc">Reflects 5 damage to attackers.</string>
-    <string name="trait_beserker_name">Beserker</string>
-    <string name="trait_beserker_desc">Increases damage by 50% when below 30% health</string>
-    <string name="trait_stone_skin_name">Stone Skin</string>
-    <string name="trait_stone_skin_desc">Reduces incoming damage by 3</string>
-    <string name="warrior_name">Warrior</string>
-    <string name="mage_name">Mage</string>
+    <string name="app_name" translatable="false">Card Game 3</string>
     <string name="damage_type_ranged">Ranged</string>
     <string name="damage_type_magic">Magic</string>
     <string name="damage_type_melee">Melee</string>
@@ -33,4 +21,10 @@
     <string name="ability_arrow_rain_desc">2 arrows hit all enemies</string>
     <string name="ability_cover">Cover</string>
     <string name="ability_cover_desc">Form a Pain Link bond with the target for 2 turns</string>
+    <string name="ability_rain_fire">Rain Fire</string>
+    <string name="ability_rain_fire_desc">A random enemy is hit by 5 arrows and receives Burning for 2 turns</string>
+    <string name="effect_pain_link">Pain Link</string>
+    <string name="effect_pain_link_desc">50% of incoming damage is reflected to the target with which the link was initiated</string>
+    <string name="effect_burning">Burning</string>
+    <string name="effect_burning_desc">Takes 5% of max health as damage</string>
 </resources>
