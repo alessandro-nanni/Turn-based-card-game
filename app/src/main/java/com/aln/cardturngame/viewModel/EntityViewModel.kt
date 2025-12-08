@@ -146,6 +146,21 @@ class EntityViewModel(
     return team?.enemyTeam?.entities?.filter { it.isAlive } ?: emptyList()
   }
 
+  suspend fun applyDamageToTargets(
+    targets: List<EntityViewModel>,
+    amount: Float = damage,
+    repeats: Int = 1,
+    delayTime: Long = 400
+  ) {
+    repeat(repeats) {
+      targets.forEach { target ->
+        applyDamage(target, amount, repeats = 1, delayTime = 0)
+      }
+
+      if (repeats > 1) delay(delayTime)
+    }
+  }
+
   suspend fun withTemporaryDamage(tempDamage: Float, block: suspend () -> Unit) {
     val originalDamage = damage
     damage = tempDamage

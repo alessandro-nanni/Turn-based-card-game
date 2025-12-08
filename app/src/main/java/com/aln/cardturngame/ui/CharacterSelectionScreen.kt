@@ -81,57 +81,65 @@ fun CharacterSelectionScreen(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-      OutlinedTextField(
-        value = player1Name,
-        onValueChange = { player1Name = it },
-        label = { Text("Player 1 Name", color = Color.Gray) },
-        singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-          focusedTextColor = Color.White,
-          unfocusedTextColor = Color.White,
-          focusedBorderColor = Color.White,
-          unfocusedBorderColor = Color.Gray,
-          cursorColor = Color.White,
-          focusedLabelColor = Color.White
-        ),
-        modifier = Modifier.weight(1f)
-      )
-
-      Button(
-        onClick = {
-          onStartGame(player1Name, p1Team.toList(), player2Name, p2Team.toList())
-        },
-        enabled = p1Team.isNotEmpty() && p2Team.isNotEmpty(),
-        colors = ButtonDefaults.buttonColors(
-          containerColor = Color(0xFF4CAF50),
-          disabledContainerColor = Color.DarkGray
-        ),
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.height(56.dp)
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
       ) {
-        Text(
-          text = "START",
-          fontSize = 18.sp,
-          fontWeight = FontWeight.Bold,
-          color = if (p1Team.isNotEmpty() && p2Team.isNotEmpty()) Color.White else Color.Gray
+        OutlinedTextField(
+          value = player1Name,
+          onValueChange = { player1Name = it },
+          label = { Text("Player 1 Name", color = Color.Gray) },
+          singleLine = true,
+          colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White,
+            focusedBorderColor = Color.White,
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = Color.White,
+            focusedLabelColor = Color.White
+          ),
+          modifier = Modifier.weight(1f)
+        )
+
+        Button(
+          onClick = {
+            onStartGame(player1Name, p1Team.toList(), player2Name, p2Team.toList())
+          },
+          enabled = p1Team.size == 3 && p2Team.size == 3,
+          colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF4CAF50),
+            disabledContainerColor = Color.DarkGray
+          ),
+          shape = RoundedCornerShape(8.dp),
+          modifier = Modifier.height(56.dp)
+        ) {
+          Text(
+            text = "START",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (p1Team.size == 3 && p2Team.size == 3) Color.White else Color.Gray
+          )
+        }
+
+        OutlinedTextField(
+          value = player2Name,
+          onValueChange = { player2Name = it },
+          label = { Text("Player 2 Name", color = Color.Gray) },
+          singleLine = true,
+          colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White,
+            focusedBorderColor = Color.White,
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = Color.White,
+            focusedLabelColor = Color.White
+          ),
+          modifier = Modifier.weight(1f)
         )
       }
-
-      OutlinedTextField(
-        value = player2Name,
-        onValueChange = { player2Name = it },
-        label = { Text("Player 2 Name", color = Color.Gray) },
-        singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-          focusedTextColor = Color.White,
-          unfocusedTextColor = Color.White,
-          focusedBorderColor = Color.White,
-          unfocusedBorderColor = Color.Gray,
-          cursorColor = Color.White,
-          focusedLabelColor = Color.White
-        ),
-        modifier = Modifier.weight(1f)
-      )
     }
 
     Row(
@@ -160,7 +168,6 @@ fun CharacterSelectionScreen(
     }
   }
 }
-
 @Composable
 fun PlayerGridSection(
   team: MutableList<Entity>,
@@ -193,7 +200,7 @@ fun PlayerGridSection(
               val existing = team.find { it::class == entity::class }
               if (existing != null) {
                 team.remove(existing)
-              } else {
+              } else if (team.size < 3) {
                 val newInstance = entity::class.createInstance()
                 team.add(newInstance)
               }

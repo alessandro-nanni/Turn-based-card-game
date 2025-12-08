@@ -15,8 +15,7 @@ class Archer : Entity(
   color = Color(0xFF2FC0D3),
   damageType = DamageType.Ranged,
   activeAbility = Ability(R.string.ability_arrow_rain, R.string.ability_arrow_rain_desc) { source, target ->
-    target.getAliveTeamMembers()
-      .forEach { e -> source.applyDamage(e, repeats = 2, delayTime = 450) }
+    source.applyDamageToTargets(target.getAliveTeamMembers(), repeats = 2, delayTime = 450)
   },
   passiveAbility = Ability(R.string.ability_cover, R.string.ability_cover_desc) { source, target ->
     source.addStatusEffect(PainLinkEffect(2, target), source = source)
