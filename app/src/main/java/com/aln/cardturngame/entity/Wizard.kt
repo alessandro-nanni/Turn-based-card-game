@@ -13,34 +13,29 @@ class Wizard : Entity(
   iconRes = R.drawable.entity_wizard,
   initialStats = Stats(maxHealth = 150f, damage = 45f),
   color = Color(0xFF9C27B0),
-  activeAbility = object :
-    Ability(R.string.ability_zap, R.string.ability_zap_desc) {
-    override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      source.applyDamage(target)
-    }
+  activeAbility = Ability(R.string.ability_zap, R.string.ability_zap_desc) { source, target ->
+    source.applyDamage(target)
   },
-  passiveAbility = object :
-    Ability(R.string.ability_override, R.string.ability_override_desc) {
-    override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      val enemies = target.getEnemies()
-      if (enemies.isNotEmpty()) {
-        val randomEnemy = enemies.random()
-        val reducedDamage = target.damage / 2f
-        target.withTemporaryDamage(reducedDamage) {
-          target.entity.activeAbility.effect(target, randomEnemy)
-        }
+  passiveAbility = Ability(
+    R.string.ability_override,
+    R.string.ability_override_desc
+  ) { _, target ->
+    val enemies = target.getEnemies()
+    if (enemies.isNotEmpty()) {
+      val randomEnemy = enemies.random()
+      val reducedDamage = target.damage / 2f
+      target.withTemporaryDamage(reducedDamage) {
+        target.entity.activeAbility.effect(target, randomEnemy)
       }
     }
   },
-  ultimateAbility = object :
-    Ability(R.string.ability_blessing, R.string.ability_blessing_desc) {
-    override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      source.getAliveTeamMembers().forEach {
-        run {
-          it.heal(40f)
-          it.clearNegativeEffects()
-        }
-      }
+  ultimateAbility = Ability(
+    R.string.ability_blessing,
+    R.string.ability_blessing_desc
+  ) { source, _ ->
+    source.getAliveTeamMembers().forEach {
+      it.heal(40f)
+      it.clearNegativeEffects()
     }
   },
   damageType = DamageType.Magic,
