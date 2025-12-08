@@ -49,4 +49,6 @@
     <string name="effect_spiked_shield_desc">Reduces incoming damage by 20% and reflects it on the attacking enemy</string>
     <string name="ability_martyr">Martyr</string>
     <string name="ability_martyr_desc">Gain Spiked Shield for 3 turns and apply Taunt for 2 turns to all enemies</string>
+    <string name="trait_spite">Spite</string>
+    <string name="trait_spite_desc">Increases the group rage bar by 3 when hit</string>
 </resources>

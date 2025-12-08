@@ -27,6 +27,7 @@ data class UltimateDragState(
   val start: Offset,
   val current: Offset
 )
+
 class BattleViewModel(
   initialLeftTeam: Team = Team("Blue", emptyList()),
   initialRightTeam: Team = Team("Red", emptyList())
@@ -94,7 +95,7 @@ class BattleViewModel(
   }
 
   fun increaseRage(team: Team, amount: Float) {
-    team.rage = (team.rage + amount).coerceAtMost(team.maxRage)
+    team.increaseRage(amount)
   }
 
   fun onUltimateDragStart(team: Team, offset: Offset) {
@@ -203,7 +204,9 @@ class BattleViewModel(
     cardBounds[entity] = rect
   }
 
-  fun onDoubleTap(entity: EntityViewModel) { println("Double tapped ${entity.name}") }
+  fun onDoubleTap(entity: EntityViewModel) {
+    println("Double tapped ${entity.name}")
+  }
 
   fun onPressStatus(entity: EntityViewModel, isPressed: Boolean) {
     if (isPressed) {
@@ -247,7 +250,7 @@ class BattleViewModel(
       isActionPlaying = true
       handleCardInteraction(source, target)
 
-      val sourceTeam = if(leftTeam.entities.contains(source)) leftTeam else rightTeam
+      val sourceTeam = if (leftTeam.entities.contains(source)) leftTeam else rightTeam
 
       increaseRage(sourceTeam, 10f)
 
