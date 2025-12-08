@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import com.aln.cardturngame.ui.InfoCard
+import com.aln.cardturngame.ui.CharacterInfoCard
 import com.aln.cardturngame.viewModel.BattleViewModel
 import kotlin.collections.get
 import kotlin.math.roundToInt
@@ -108,7 +108,7 @@ fun BattleScreen(viewModel: BattleViewModel) {
     }
 
     if (viewModel.showInfoDialog && viewModel.selectedEntity != null) {
-      InfoCard(viewModel.selectedEntity!!)
+      CharacterInfoCard(viewModel.selectedEntity!!)
     }
 
     if (viewModel.winner != null) {
