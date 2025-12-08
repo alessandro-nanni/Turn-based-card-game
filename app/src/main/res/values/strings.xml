@@ -28,4 +28,9 @@
     <string name="trait_sidestep_desc">10% chance to receive 0 damage</string>
     <string name="ability_vanish">Vanish</string>
     <string name="ability_vanish_desc">Applies vanish to themselves for 2 turns</string>
+    <string name="entity_archer">Archer</string>
+    <string name="ability_arrow_rain">Arrow Rain</string>
+    <string name="ability_arrow_rain_desc">2 arrows hit all enemies</string>
+    <string name="ability_cover">Cover</string>
+    <string name="ability_cover_desc">Form a Pain Link bond with the target for 2 turns</string>
 </resources>

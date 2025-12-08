@@ -9,7 +9,7 @@ import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Ninja : Entity(
   name = R.string.entity_ninja,
-  iconRes = R.drawable.ninja,
+  iconRes = R.drawable.entity_ninja,
   initialStats = Stats(maxHealth = 240f, damage = 10f),
   color = Color(0xFFFFFB0C),
   activeAbility = object :
