@@ -21,7 +21,9 @@ class Team(
   val entities: List<EntityViewModel>
 ) {
   init {
-    entities.forEach { it.entity.team = this }
+    entities.forEach {
+      it.team = this
+    }
   }
   var rage by mutableFloatStateOf(100f)
   val maxRage = 100f
