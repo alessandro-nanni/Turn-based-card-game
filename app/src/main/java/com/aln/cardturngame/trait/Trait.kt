@@ -19,7 +19,7 @@ interface Trait {
   fun modifyHeal(owner: EntityViewModel, amount: Float): Float = amount
   fun onStartTurn(owner: EntityViewModel) {}
   fun onEndTurn(owner: EntityViewModel) {}
-  fun onDidDealDamage(owner: EntityViewModel, target: EntityViewModel, amount: Float) {}
+  fun onDidDealDamage(owner: EntityViewModel, target: EntityViewModel, amount: Float, overkill: Float = 0f) {}
   fun onDidReceiveDamage(owner: EntityViewModel, source: EntityViewModel?, amount: Float) {}
   fun onDeath(owner: EntityViewModel) {}
 }

@@ -69,6 +69,9 @@ class BattleViewModel(
     leftTeam = newLeftTeam
     rightTeam = newRightTeam
 
+    leftTeam.enemyTeam = rightTeam
+    rightTeam.enemyTeam = leftTeam
+
     // Reset game state
     isLeftTeamTurn = Random.nextBoolean()
     isActionPlaying = false

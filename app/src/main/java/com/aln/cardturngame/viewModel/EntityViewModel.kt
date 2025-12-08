@@ -94,6 +94,7 @@ class EntityViewModel(
       actualDamage = trait.modifyIncomingDamage(this, source, actualDamage)
     }
 
+    val overkill = (actualDamage - health).coerceAtLeast(0f)
     health = (health - actualDamage).coerceAtLeast(0f)
     addPopup(actualDamage)
 
@@ -103,7 +104,7 @@ class EntityViewModel(
 
     source?.let { attacker ->
       attacker.traits.forEach { trait ->
-        trait.onDidDealDamage(attacker, this, actualDamage)
+        trait.onDidDealDamage(attacker, this, actualDamage, overkill)
       }
     }
   }
@@ -138,6 +139,26 @@ class EntityViewModel(
       target.receiveDamage(calculatedDamage, source = this)
 
       if (repeats > 1) delay(delayTime)
+    }
+  }
+
+  fun getEnemies(): List<EntityViewModel> {
+    return team?.enemyTeam?.entities?.filter { it.isAlive } ?: emptyList()
+  }
+
+  suspend fun withTemporaryDamage(tempDamage: Float, block: suspend () -> Unit) {
+    val originalDamage = damage
+    damage = tempDamage
+    try {
+      block()
+    } finally {
+      damage = originalDamage
+    }
+  }
+
+  fun clearNegativeEffects() {
+    statusEffects.filter { !it.isPositive }.forEach { effect ->
+      removeStatusEffect(effect)
     }
   }
 }

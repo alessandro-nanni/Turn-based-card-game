@@ -20,6 +20,7 @@ class Team(
   val name: String,
   val entities: List<EntityViewModel>
 ) {
+  var enemyTeam: Team? = null
   init {
     entities.forEach {
       it.team = this

@@ -32,4 +32,8 @@
     <string name="ability_zap_desc">Lightning strikes the target</string>
     <string name="ability_override">Override</string>
     <string name="ability_override_desc">Make the target perform their active ability on a random enemy</string>
+    <string name="ability_blessing">Blessing</string>
+    <string name="ability_blessing_desc">Heal allies for 40 health and remove all negative effects</string>
+    <string name="trait_overkill">Overkill</string>
+    <string name="trait_overkill_desc">Killing blows distribute leftover damage to other enemies</string>
 </resources>
