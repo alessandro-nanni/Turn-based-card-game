@@ -1,6 +1,8 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
+import com.aln.cardturngame.entity.DamageType
+import com.aln.cardturngame.viewModel.EntityViewModel
 
 class SharpenedBlade(duration: Int) : StatusEffect(
   nameRes = R.string.effect_sharpened_blade,
@@ -9,7 +11,17 @@ class SharpenedBlade(duration: Int) : StatusEffect(
   initialDuration = duration,
   isPositive = true
 ) {
+  private var ownerDamageType: DamageType? = null
+
+  override fun onApply(target: EntityViewModel) {
+    ownerDamageType = target.damageType
+  }
+
   override fun modifyDamage(currentDamage: Float): Float {
-    return currentDamage * 1.2f
+    return if (ownerDamageType == DamageType.Melee) {
+      currentDamage * 1.2f
+    } else {
+      currentDamage
+    }
   }
 }

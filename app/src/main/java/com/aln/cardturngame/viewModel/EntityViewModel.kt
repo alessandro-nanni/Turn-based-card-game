@@ -49,11 +49,13 @@ class EntityViewModel(
     return team?.entities?.filter { it.isAlive } ?: emptyList()
   }
 
-  fun addStatusEffect(effect: StatusEffect) {
+  fun addStatusEffect(effect: StatusEffect, source: EntityViewModel?) {
     val existingEffect = statusEffects.find { it::class == effect::class }
     if (existingEffect != null) {
       existingEffect.duration = effect.duration
+      existingEffect.source = source
     } else {
+      effect.source = source
       statusEffects.add(effect)
       effect.onApply(this)
       recalculateStats()

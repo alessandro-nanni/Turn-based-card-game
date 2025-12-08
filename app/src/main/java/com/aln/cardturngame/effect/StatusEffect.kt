@@ -15,6 +15,7 @@ abstract class StatusEffect(
   val isPositive: Boolean = false
 ) {
   var duration by mutableIntStateOf(initialDuration)
+  var source: EntityViewModel? = null
 
   open fun onApply(target: EntityViewModel) {}
   open fun onVanish(target: EntityViewModel) {}

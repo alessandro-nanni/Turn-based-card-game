@@ -20,4 +20,8 @@
     <string name="ability_slash_desc">Performs 3 rapid strikes</string>
     <string name="effect_sharpened_blade">Sharpened Blade</string>
     <string name="effect_sharpened_blade_desc">Melee damage is increased by 20%</string>
+    <string name="ability_warriors_blessing">Warrior\'s Blessing</string>
+    <string name="ability_warriors_blessing_desc">Apply Sharpened Blade for 3 turns</string>
+    <string name="effect_vanish">Vanish</string>
+    <string name="effect_vanish_desc">Cannot be targeted by active abilities</string>
 </resources>

@@ -23,7 +23,7 @@ class Team(
   init {
     entities.forEach { it.entity.team = this }
   }
-  var rage by mutableFloatStateOf(0f)
+  var rage by mutableFloatStateOf(100f)
   val maxRage = 100f
 
   @Composable

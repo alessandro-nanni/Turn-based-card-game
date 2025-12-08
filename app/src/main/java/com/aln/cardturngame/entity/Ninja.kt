@@ -2,6 +2,8 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
+import com.aln.cardturngame.effect.SharpenedBlade
+import com.aln.cardturngame.effect.Vanish
 import com.aln.cardturngame.trait.BerserkerTrait
 import com.aln.cardturngame.trait.StoneSkinTrait
 import com.aln.cardturngame.viewModel.EntityViewModel
@@ -16,16 +18,16 @@ class Ninja : Entity(
       source.applyDamage(target, repeats = 3, delayTime = 300)
     }
   },
-  passiveAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
+  passiveAbility = object :
+    Ability(R.string.ability_warriors_blessing, R.string.ability_warriors_blessing_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      target.heal(amount = 20f, repeats = 3)
+      target.addStatusEffect(SharpenedBlade(3), source = source)
     }
   },
   // New Ultimate
   ultimateAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      // Ninja Ult: Massive damage to single target
-      source.applyDamage(target, amount = source.damage * 3)
+      source.addStatusEffect(Vanish(2), source = source)
     }
   },
   traits = listOf(BerserkerTrait(), StoneSkinTrait()),

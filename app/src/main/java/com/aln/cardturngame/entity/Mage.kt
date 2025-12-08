@@ -2,7 +2,6 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.SharpenedBlade
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Mage : Entity(
@@ -12,7 +11,6 @@ class Mage : Entity(
   color = Color(0xFF2FC0D3),
   activeAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      target.addStatusEffect(SharpenedBlade(4))
     }
   },
   passiveAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
@@ -24,7 +22,6 @@ class Mage : Entity(
   ultimateAbility = object : Ability(R.string.poison_name, R.string.poison_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
       // Mage Ult: Massive Poison
-      target.addStatusEffect(SharpenedBlade(10))
       target.receiveDamage(30f)
     }
   },
