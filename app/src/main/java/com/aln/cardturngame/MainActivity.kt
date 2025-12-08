@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.aln.cardturngame.boardItems.Team
+import com.aln.cardturngame.entityFeatures.Team
 import com.aln.cardturngame.ui.CharacterSelectionScreen
 import com.aln.cardturngame.ui.theme.CardTurnGameTheme
 import com.aln.cardturngame.viewModel.BattleViewModel

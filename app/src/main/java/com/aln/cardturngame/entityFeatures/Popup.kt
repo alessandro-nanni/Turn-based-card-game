@@ -1,4 +1,4 @@
-package com.aln.cardturngame.boardItems
+package com.aln.cardturngame.entityFeatures
 
 import androidx.compose.ui.graphics.Color
 

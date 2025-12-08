@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aln.cardturngame.effect.VanishEffect
-import com.aln.cardturngame.boardItems.Team
+import com.aln.cardturngame.entityFeatures.Team
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 

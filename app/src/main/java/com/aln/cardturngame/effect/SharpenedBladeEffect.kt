@@ -1,7 +1,7 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
-import com.aln.cardturngame.boardItems.DamageType
+import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class SharpenedBladeEffect(duration: Int) : StatusEffect(

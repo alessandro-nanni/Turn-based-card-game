@@ -2,9 +2,9 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.boardItems.Ability
-import com.aln.cardturngame.boardItems.DamageType
-import com.aln.cardturngame.boardItems.Stats
+import com.aln.cardturngame.entityFeatures.Ability
+import com.aln.cardturngame.entityFeatures.DamageType
+import com.aln.cardturngame.entityFeatures.Stats
 import com.aln.cardturngame.trait.OverkillTrait
 import com.aln.cardturngame.viewModel.EntityViewModel
 

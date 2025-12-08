@@ -64,8 +64,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
 import com.aln.cardturngame.effect.StatusEffect
-import com.aln.cardturngame.boardItems.DamageType
-import com.aln.cardturngame.boardItems.Popup
+import com.aln.cardturngame.entityFeatures.DamageType
+import com.aln.cardturngame.entityFeatures.Popup
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlinx.coroutines.launch
 

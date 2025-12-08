@@ -7,10 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.aln.cardturngame.effect.StatusEffect
-import com.aln.cardturngame.boardItems.DamageType
+import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entity.Entity
-import com.aln.cardturngame.boardItems.Popup
-import com.aln.cardturngame.boardItems.Team
+import com.aln.cardturngame.entityFeatures.Popup
+import com.aln.cardturngame.entityFeatures.Team
 import com.aln.cardturngame.trait.Trait
 import kotlinx.coroutines.delay
 
