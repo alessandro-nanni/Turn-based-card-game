@@ -4,7 +4,7 @@ import com.aln.cardturngame.R
 import com.aln.cardturngame.entity.DamageType
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class SharpenedBlade(duration: Int) : StatusEffect(
+class SharpenedBladeEffect(duration: Int) : StatusEffect(
   nameRes = R.string.effect_sharpened_blade,
   descriptionRes = R.string.effect_sharpened_blade_desc,
   iconRes = R.drawable.effect_sharpened_blade,

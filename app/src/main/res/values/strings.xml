@@ -24,4 +24,8 @@
     <string name="ability_warriors_blessing_desc">Apply Sharpened Blade for 3 turns</string>
     <string name="effect_vanish">Vanish</string>
     <string name="effect_vanish_desc">Cannot be targeted by active abilities</string>
+    <string name="trait_sidestep">Sidestep</string>
+    <string name="trait_sidestep_desc">10% chance to receive 0 damage</string>
+    <string name="ability_vanish">Vanish</string>
+    <string name="ability_vanish_desc">Applies vanish to themselves for 2 turns</string>
 </resources>

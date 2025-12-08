@@ -10,6 +10,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aln.cardturngame.effect.VanishEffect
 import com.aln.cardturngame.entity.Team
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -157,7 +158,20 @@ class BattleViewModel(
       dragState = currentDrag.copy(current = newCurrent)
 
       hoveredTarget = cardBounds.entries.firstOrNull { (entity, rect) ->
-        entity.isAlive && rect.contains(newCurrent)
+        val isTargetAlive = entity.isAlive
+        val isHovering = rect.contains(newCurrent)
+
+        if (!isTargetAlive || !isHovering) return@firstOrNull false
+
+        val isSourceLeft = leftTeam.entities.contains(currentDrag.source)
+        val isTargetLeft = leftTeam.entities.contains(entity)
+        val isEnemy = isSourceLeft != isTargetLeft
+
+        if (isEnemy && entity.statusEffects.any { it is VanishEffect }) {
+          return@firstOrNull false
+        }
+
+        true
       }?.key
     }
   }
