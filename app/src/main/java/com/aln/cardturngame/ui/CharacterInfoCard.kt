@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -59,8 +60,7 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
       modifier = Modifier
         .widthIn(max = 600.dp)
         .fillMaxWidth()
-        .padding(16.dp)
-        .verticalScroll(rememberScrollState()),
+        .padding(16.dp),
       shape = RoundedCornerShape(12.dp),
       colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
       elevation = CardDefaults.cardElevation(8.dp)
@@ -165,6 +165,8 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
               modifier = Modifier
                 .weight(1f)
                 .padding(start = 8.dp)
+                .heightIn(max = 250.dp)
+                .verticalScroll(rememberScrollState())
             ) {
               Text(
                 text = "Effects",

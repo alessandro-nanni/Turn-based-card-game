@@ -220,7 +220,7 @@ fun PlayerGridSection(
         Box(modifier = Modifier.fillMaxSize()) {
           val tempViewModel = remember(entity) { EntityViewModel(entity) }
 
-          InfoCard(viewModel = tempViewModel)
+          CharacterInfoCard(viewModel = tempViewModel)
 
           IconButton(
             onClick = { infoCharacter = null },
