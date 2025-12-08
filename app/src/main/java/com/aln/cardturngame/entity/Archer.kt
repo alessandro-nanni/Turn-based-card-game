@@ -14,7 +14,8 @@ class Archer : Entity(
   iconRes = R.drawable.entity_archer,
   initialStats = Stats(maxHealth = 180f, damage = 13f),
   color = Color(0xFF2FC0D3),
-  activeAbility = object :
+  damageType = DamageType.Ranged,
+      activeAbility = object :
     Ability(R.string.ability_arrow_rain, R.string.ability_arrow_rain_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
       target.getAliveTeamMembers()
@@ -34,6 +35,5 @@ class Archer : Entity(
       source.applyDamage(randomMember, repeats = 5, delayTime = 250)
       randomMember.addStatusEffect(BurningEffect(2),source)
     }
-  },
-  damageType = DamageType.Magic
+  }
 )

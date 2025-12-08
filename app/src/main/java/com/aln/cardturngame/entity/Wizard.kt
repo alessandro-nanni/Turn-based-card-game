@@ -11,7 +11,7 @@ import com.aln.cardturngame.viewModel.EntityViewModel
 class Wizard : Entity(
   name = R.string.entity_wizard,
   iconRes = R.drawable.entity_wizard,
-  initialStats = Stats(maxHealth = 180f, damage = 500f),
+  initialStats = Stats(maxHealth = 150f, damage = 45f),
   color = Color(0xFF9C27B0),
   activeAbility = object :
     Ability(R.string.ability_zap, R.string.ability_zap_desc) {

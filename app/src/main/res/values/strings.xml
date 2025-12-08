@@ -36,4 +36,17 @@
     <string name="ability_blessing_desc">Heal allies for 40 health and remove all negative effects</string>
     <string name="trait_overkill">Overkill</string>
     <string name="trait_overkill_desc">Killing blows distribute leftover damage to other enemies</string>
+    <string name="effect_taunt">Taunt</string>
+    <string name="effect_taunt_desc">Active abilities can be used only on the character that applied the taunt</string>
+    <string name="entity_paladin">Paladin</string>
+    <string name="ability_challenge">Challenge</string>
+    <string name="ability_challenge_desc">Attack the target and apply Taunt for 1 turn</string>
+    <string name="ability_guard">Guard</string>
+    <string name="ability_guard_desc">Apply Protection to the target for 4 turns</string>
+    <string name="effect_protection">Protection</string>
+    <string name="effect_protection_desc">Reduces incoming damage by 25%</string>
+    <string name="effect_spiked_shield">Spiked Shield</string>
+    <string name="effect_spiked_shield_desc">Reduces incoming damage by 20% and reflects it on the attacking enemy</string>
+    <string name="ability_martyr">Martyr</string>
+    <string name="ability_martyr_desc">Gain Spiked Shield for 3 turns and apply Taunt for 2 turns to all enemies</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
-import com.aln.cardturngame.entityFeatures.DamageType
 
 class VanishEffect(duration: Int) : StatusEffect(
   nameRes = R.string.effect_vanish,
@@ -9,7 +8,4 @@ class VanishEffect(duration: Int) : StatusEffect(
   iconRes = R.drawable.effect_vanish,
   initialDuration = duration,
   isPositive = true
-) {
-  private var ownerDamageType: DamageType? = null
-
-}
+)
