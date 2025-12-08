@@ -6,14 +6,14 @@ import com.aln.cardturngame.trait.BerserkerTrait
 import com.aln.cardturngame.trait.StoneSkinTrait
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class Warrior : Entity(
-  name = R.string.warrior_name,
-  iconRes = R.drawable.warrior,
-  initialStats = Stats(maxHealth = 150f, damage = 20f),
-  color = Color(0xFFD32F2F),
-  activeAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
+class Ninja : Entity(
+  name = R.string.entity_ninja,
+  iconRes = R.drawable.ninja,
+  initialStats = Stats(maxHealth = 240f, damage = 10f),
+  color = Color(0xFFFFFB0C),
+  activeAbility = object : Ability(R.string.ability_slash, R.string.ability_slash_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      source.applyDamage(target, repeats = 3)
+      source.applyDamage(target, repeats = 3, delayTime = 300)
     }
   },
   passiveAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
@@ -24,7 +24,7 @@ class Warrior : Entity(
   // New Ultimate
   ultimateAbility = object : Ability(R.string.heavy_strike_name, R.string.heavy_strike_desc) {
     override suspend fun effect(source: EntityViewModel, target: EntityViewModel) {
-      // Warrior Ult: Massive damage to single target
+      // Ninja Ult: Massive damage to single target
       source.applyDamage(target, amount = source.damage * 3)
     }
   },

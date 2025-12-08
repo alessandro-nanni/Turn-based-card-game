@@ -15,4 +15,6 @@ sealed class Entity(
   val activeAbility: Ability,
   val ultimateAbility: Ability,
   val traits: List<Trait> = emptyList()
-)
+) {
+  var team: Team? = null
+}

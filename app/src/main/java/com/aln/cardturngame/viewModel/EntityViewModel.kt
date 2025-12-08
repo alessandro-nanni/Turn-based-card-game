@@ -10,15 +10,22 @@ import com.aln.cardturngame.effect.StatusEffect
 import com.aln.cardturngame.entity.DamageType
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entity.Popup
+import com.aln.cardturngame.entity.Team
 import com.aln.cardturngame.trait.Trait
 import kotlinx.coroutines.delay
 
 class EntityViewModel(
   val entity: Entity
 ) : ViewModel() {
+  var team: Team? = null
+
+  private var baseDamage = entity.initialStats.damage
+
+  var damage by mutableFloatStateOf(baseDamage)
+    private set
+
   var health by mutableFloatStateOf(entity.initialStats.maxHealth)
   var maxHealth by mutableFloatStateOf(entity.initialStats.maxHealth)
-  var damage by mutableFloatStateOf(entity.initialStats.damage)
 
   val statusEffects = mutableStateListOf<StatusEffect>()
   val popups = mutableStateListOf<Popup>()
@@ -34,20 +41,39 @@ class EntityViewModel(
   val iconRes: Int = entity.iconRes
   val traits: List<Trait> get() = entity.traits
 
+  fun getAllTeamMembers(): List<EntityViewModel> {
+    return team?.entities ?: emptyList()
+  }
+
+  fun getAliveTeamMembers(): List<EntityViewModel> {
+    return team?.entities?.filter { it.isAlive } ?: emptyList()
+  }
+
   fun addStatusEffect(effect: StatusEffect) {
     val existingEffect = statusEffects.find { it::class == effect::class }
-
     if (existingEffect != null) {
       existingEffect.duration = effect.duration
     } else {
       statusEffects.add(effect)
       effect.onApply(this)
+      recalculateStats()
     }
   }
 
   fun removeStatusEffect(effect: StatusEffect) {
     effect.onVanish(this)
     statusEffects.remove(effect)
+    recalculateStats()
+  }
+
+  private fun recalculateStats() {
+    var newDamage = baseDamage
+
+    statusEffects.forEach { effect ->
+      newDamage = effect.modifyDamage(newDamage)
+    }
+
+    damage = newDamage
   }
 
   fun addPopup(amount: Float, color: Color = Color.Red) {

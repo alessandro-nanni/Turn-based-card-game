@@ -17,8 +17,11 @@ abstract class StatusEffect(
   var duration by mutableIntStateOf(initialDuration)
 
   open fun onApply(target: EntityViewModel) {}
-  open suspend fun onStartTurn(target: EntityViewModel) {}
   open fun onVanish(target: EntityViewModel) {}
+
+  open suspend fun onStartTurn(target: EntityViewModel) {}
+
+  open fun modifyDamage(currentDamage: Float): Float = currentDamage
 
   fun tick(): Boolean {
     duration--

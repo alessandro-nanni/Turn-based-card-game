@@ -15,4 +15,9 @@
     <string name="damage_type_ranged">Ranged</string>
     <string name="damage_type_magic">Magic</string>
     <string name="damage_type_melee">Melee</string>
+    <string name="entity_ninja">Ninja</string>
+    <string name="ability_slash">Slash</string>
+    <string name="ability_slash_desc">Performs 3 rapid strikes</string>
+    <string name="effect_sharpened_blade">Sharpened Blade</string>
+    <string name="effect_sharpened_blade_desc">Melee damage is increased by 20%</string>
 </resources>
