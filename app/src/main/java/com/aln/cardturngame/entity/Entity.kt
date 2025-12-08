@@ -3,6 +3,9 @@ package com.aln.cardturngame.entity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import com.aln.cardturngame.boardItems.Ability
+import com.aln.cardturngame.boardItems.DamageType
+import com.aln.cardturngame.boardItems.Stats
 import com.aln.cardturngame.trait.Trait
 
 sealed class Entity(

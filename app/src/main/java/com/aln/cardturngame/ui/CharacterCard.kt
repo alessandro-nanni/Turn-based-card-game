@@ -33,7 +33,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -65,8 +64,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
 import com.aln.cardturngame.effect.StatusEffect
-import com.aln.cardturngame.entity.DamageType
-import com.aln.cardturngame.entity.Popup
+import com.aln.cardturngame.boardItems.DamageType
+import com.aln.cardturngame.boardItems.Popup
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.aln.cardturngame.entity
+package com.aln.cardturngame.boardItems
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

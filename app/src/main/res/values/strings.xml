@@ -27,4 +27,9 @@
     <string name="effect_pain_link_desc">50% of incoming damage is reflected to the target with which the link was initiated</string>
     <string name="effect_burning">Burning</string>
     <string name="effect_burning_desc">Takes 5% of max health as damage</string>
+    <string name="entity_wizard">Wizard</string>
+    <string name="ability_zap">Zap</string>
+    <string name="ability_zap_desc">Lightning strikes the target</string>
+    <string name="ability_override">Override</string>
+    <string name="ability_override_desc">Make the target perform their active ability on a random enemy</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.aln.cardturngame.entity
+package com.aln.cardturngame.boardItems
 
 data class Stats(
   val maxHealth: Float,

@@ -1,7 +1,6 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
-import com.aln.cardturngame.entity.DamageType
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class BurningEffect(duration: Int) : StatusEffect(

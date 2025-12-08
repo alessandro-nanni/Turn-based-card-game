@@ -1,4 +1,4 @@
-package com.aln.cardturngame.entity
+package com.aln.cardturngame.boardItems
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
