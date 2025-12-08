@@ -23,10 +23,4 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
           # override default build-tools version (33.0.0) -- optional
-          BUILD_TOOLS_VERSION: "34.0.0"
-
-      # Example use of `signedReleaseFile` output -- not needed
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Signed app bundle
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          BUILD_TOOLS_VERSION: "34.0.0"}}
