@@ -178,7 +178,7 @@ class BattleViewModel(
 
         val tauntEffect = currentDrag.source.statusEffects.find { it is TauntEffect }
         if (tauntEffect != null && tauntEffect.source?.isAlive == true) {
-          if (entity != tauntEffect.source) {
+          if (isEnemy && entity != tauntEffect.source) {
             return@firstOrNull false
           }
         }
