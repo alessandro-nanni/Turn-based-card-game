@@ -101,6 +101,14 @@ fun CharacterCard(
     }
   }
 
+  LaunchedEffect(viewModel.passiveAnimTrigger) {
+    if (viewModel.passiveAnimTrigger > 0) {
+      launch {
+        scaleX.animateTo(0f, tween(150)) // Squish to 0px
+        scaleX.animateTo(1f, tween(150)) // Expand back
+      }
+    }
+  }
   Box(
     modifier = Modifier
       .width(width)

@@ -1,6 +1,5 @@
 package com.aln.cardturngame.viewModel
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -9,10 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aln.cardturngame.R
 import com.aln.cardturngame.effect.TauntEffect
 import com.aln.cardturngame.effect.VanishEffect
 import com.aln.cardturngame.entityFeatures.Team
@@ -292,7 +289,10 @@ class BattleViewModel(
     val onSameTeam = sourceLeft == targetLeft
 
     if (onSameTeam) {
+      source.passiveAnimTrigger++
+      delay(150)
       source.entity.passiveAbility.effect(source, target)
+      delay(150)
     } else {
       // Calculate attack animation offset
       val sourceBounds = cardBounds[source]
@@ -300,7 +300,7 @@ class BattleViewModel(
 
       if (sourceBounds != null && targetBounds != null) {
         val direction = targetBounds.center - sourceBounds.center
-        // Move 70% of the way to the target (to stop "next to" it)
+        // Move 70% of the way to the target
         source.attackAnimOffset = direction * 0.7f
         // Wait for move animation
         delay(200)
