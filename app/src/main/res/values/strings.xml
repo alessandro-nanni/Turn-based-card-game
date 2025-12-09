@@ -60,4 +60,6 @@
     <string name="ability_bewitched_desc">Cast a spell on the enemy, applying Watched for %s turns</string>
     <string name="ability_reckoning">Reckoning</string>
     <string name="ability_reckoning_desc">Heals the target by %s health for each Watched enemy, then deals %s damage to all Watched enemies</string>
+    <string name="ability_harvest">Harvest</string>
+    <string name="ability_harvest_desc">Deals damage to a random enemy equal to %s × total Watched duration across all enemies, then heals self for %s%% of damage dealt</string>
 </resources>

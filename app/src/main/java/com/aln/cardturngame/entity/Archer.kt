@@ -36,13 +36,13 @@ class Archer : Entity(
     nameRes = R.string.ability_rain_fire,
     descriptionRes = R.string.ability_rain_fire_desc,
     formatArgs = listOf(ULTIMATE_REPEATS, ULTIMATE_BURN_DURATION)
-  ) { source, target ->
+  ) { source, randomEnemy ->
     source.applyDamage(
-      target,
+      randomEnemy,
       repeats = ULTIMATE_REPEATS,
       delayTime = 150L
     )
-    target.addStatusEffect(BurningEffect(ULTIMATE_BURN_DURATION), source)
+    randomEnemy.addStatusEffect(BurningEffect(ULTIMATE_BURN_DURATION), source)
   }
 ) {
   private companion object {

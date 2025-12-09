@@ -94,7 +94,7 @@ class EntityViewModel(
     popups.add(Popup(id, amount.toInt(), color))
   }
 
-  fun receiveDamage(amount: Float, source: EntityViewModel? = null) {
+  fun receiveDamage(amount: Float, source: EntityViewModel? = null): Float {
     var actualDamage = amount
 
     statusEffects.toList().forEach { effect ->
@@ -118,9 +118,20 @@ class EntityViewModel(
         trait.onDidDealDamage(attacker, this, actualDamage, overkill)
       }
     }
+
+    return actualDamage
   }
 
-  suspend fun heal(amount: Float, repeats: Int = 1, delayTime: Long = 400) {
+  suspend fun heal(
+    amount: Float,
+    source: EntityViewModel? = null,
+    repeats: Int = 1,
+    delayTime: Long = 400
+  ) {
+    if (traits.any { it is com.aln.cardturngame.trait.ForsakenTrait } && source != this) {
+      return
+    }
+
     repeat(repeats) {
       var actualHeal = amount
       traits.forEach { trait ->
@@ -138,23 +149,29 @@ class EntityViewModel(
     amount: Float = damage,
     repeats: Int = 1,
     delayTime: Long = 400
-  ) {
+  ): Float {
+    var totalDamage = 0f
     repeat(repeats) {
-      if (!target.isAlive) return
+      if (!target.isAlive) return totalDamage
 
       var calculatedDamage = amount
       traits.forEach { trait ->
         calculatedDamage = trait.modifyOutgoingDamage(this, target, calculatedDamage)
       }
 
-      target.receiveDamage(calculatedDamage, source = this)
+      totalDamage += target.receiveDamage(calculatedDamage, source = this)
 
       if (repeats > 1) delay(delayTime)
     }
+    return totalDamage
   }
 
   fun getEnemies(): List<EntityViewModel> {
     return team?.enemyTeam?.entities?.filter { it.isAlive } ?: emptyList()
+  }
+
+  fun getRandomEnemy(): EntityViewModel {
+    return getEnemies().random()
   }
 
   suspend fun applyDamageToTargets(
@@ -162,14 +179,16 @@ class EntityViewModel(
     amount: Float = damage,
     repeats: Int = 1,
     delayTime: Long = 400
-  ) {
+  ): Float {
+    var totalDamage = 0f
     repeat(repeats) {
       targets.forEach { target ->
-        applyDamage(target, amount, repeats = 1, delayTime = 0)
+        totalDamage += applyDamage(target, amount, repeats = 1, delayTime = 0)
       }
 
       if (repeats > 1) delay(delayTime)
     }
+    return totalDamage
   }
 
   suspend fun withTemporaryDamage(tempDamage: Float, block: suspend () -> Unit) {

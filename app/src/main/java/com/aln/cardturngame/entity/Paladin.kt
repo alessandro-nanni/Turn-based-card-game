@@ -43,8 +43,8 @@ class Paladin : Entity(
       ULTIMATE_SHIELD_DURATION,
       ULTIMATE_TAUNT_DURATION
     )
-  ) { source, target ->
-    target.getAliveTeamMembers().forEach { enemy ->
+  ) { source, randomEnemy ->
+    randomEnemy.getAliveTeamMembers().forEach { enemy ->
       enemy.addStatusEffect(TauntEffect(ULTIMATE_TAUNT_DURATION), source)
     }
     source.addStatusEffect(SpikedShieldEffect(ULTIMATE_SHIELD_DURATION), source)
