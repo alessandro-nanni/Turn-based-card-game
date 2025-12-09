@@ -7,7 +7,7 @@
     <string name="ability_slash">Slash</string>
     <string name="ability_slash_desc">Performs 3 rapid strikes</string>
     <string name="effect_sharpened_blade">Sharpened Blade</string>
-    <string name="effect_sharpened_blade_desc">Melee damage is increased by 20%</string>
+    <string name="effect_sharpened_blade_desc">Melee damage is increased by %s%%</string>
     <string name="ability_warriors_blessing">Warrior\'s Blessing</string>
     <string name="ability_warriors_blessing_desc">Apply Sharpened Blade for 3 turns</string>
     <string name="effect_vanish">Vanish</string>
@@ -24,9 +24,9 @@
     <string name="ability_rain_fire">Rain Fire</string>
     <string name="ability_rain_fire_desc">A random enemy is hit by 5 arrows and receives Burning for 2 turns</string>
     <string name="effect_pain_link">Pain Link</string>
-    <string name="effect_pain_link_desc">50% of incoming damage is reflected to the target with which the link was initiated</string>
+    <string name="effect_pain_link_desc">%s%% of incoming damage is reflected to the target with which the link was initiated</string>
     <string name="effect_burning">Burning</string>
-    <string name="effect_burning_desc">Takes $1%s of max health as damage</string>
+    <string name="effect_burning_desc">Take %s%% of max health as damage</string>
     <string name="entity_wizard">Wizard</string>
     <string name="ability_zap">Zap</string>
     <string name="ability_zap_desc">Lightning strikes the target</string>
@@ -44,9 +44,9 @@
     <string name="ability_guard">Guard</string>
     <string name="ability_guard_desc">Apply Protection to the target for 4 turns</string>
     <string name="effect_protection">Protection</string>
-    <string name="effect_protection_desc">Reduces incoming damage by 25%</string>
+    <string name="effect_protection_desc">Reduces incoming damage by %s%%</string>
     <string name="effect_spiked_shield">Spiked Shield</string>
-    <string name="effect_spiked_shield_desc">Reduces incoming damage by 20% and reflects it on the attacking enemy</string>
+    <string name="effect_spiked_shield_desc">Reduces incoming damage by %s%% and reflects it on the attacking enemy</string>
     <string name="ability_martyr">Martyr</string>
     <string name="ability_martyr_desc">Gain Spiked Shield for 3 turns and apply Taunt for 2 turns to all enemies</string>
     <string name="trait_spite">Spite</string>

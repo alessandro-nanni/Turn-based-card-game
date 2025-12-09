@@ -9,7 +9,8 @@ class SharpenedBladeEffect(duration: Int) : StatusEffect(
   descriptionRes = R.string.effect_sharpened_blade_desc,
   iconRes = R.drawable.effect_sharpened_blade,
   initialDuration = duration,
-  isPositive = true
+  isPositive = true,
+  formatArgs = listOf(DAMAGE_INCREASE)
 ) {
   private var ownerDamageType: DamageType? = null
 
@@ -19,9 +20,13 @@ class SharpenedBladeEffect(duration: Int) : StatusEffect(
 
   override fun modifyDamage(currentDamage: Float): Float {
     return if (ownerDamageType == DamageType.Melee) {
-      currentDamage * 1.2f
+      currentDamage * ((100 + DAMAGE_INCREASE) / 100)
     } else {
       currentDamage
     }
+  }
+
+  private companion object {
+    const val DAMAGE_INCREASE = 15f
   }
 }

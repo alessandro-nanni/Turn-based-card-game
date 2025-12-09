@@ -15,13 +15,18 @@ class SpikedShieldEffect(duration: Int) : StatusEffect(
     currentDamage: Float,
     source: EntityViewModel?
   ): Float {
-    val reducedDamage = currentDamage * 0.8f
+    val multiplier = DAMAGE_REFLECTED / 100
+    val reducedDamage = currentDamage * (1 - multiplier)
 
     if (source != null && source != owner && source.isAlive) {
-      val reflectedDamage = currentDamage * 0.2f
+      val reflectedDamage = currentDamage * multiplier
       source.receiveDamage(reflectedDamage, source = null)
     }
 
     return reducedDamage
+  }
+
+  private companion object {
+    const val DAMAGE_REFLECTED = 20f
   }
 }

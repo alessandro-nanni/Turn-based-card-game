@@ -16,7 +16,7 @@ class BurningEffect(duration: Int) : StatusEffect(
     target.applyDamage(target, amount = damage)
   }
 
-  companion object {
-    const val HEALTH_PERCENTAGE = 20
+  private companion object {
+    const val HEALTH_PERCENTAGE = 10
   }
 }
