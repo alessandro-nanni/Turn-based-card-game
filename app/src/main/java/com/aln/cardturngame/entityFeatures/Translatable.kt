@@ -1,4 +1,4 @@
-package com.aln.cardturngame.value
+package com.aln.cardturngame.entityFeatures
 
 import android.content.Context
 import androidx.annotation.StringRes

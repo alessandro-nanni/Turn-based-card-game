@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
-import com.aln.cardturngame.value.Translatable
+import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 abstract class StatusEffect(

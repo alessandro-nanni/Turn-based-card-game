@@ -106,32 +106,27 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
             modifier = Modifier
               .weight(1f)
               .padding(end = 8.dp)
+              .heightIn(max = 250.dp)
+              .verticalScroll(rememberScrollState())
           ) {
-            Column(
-              modifier = Modifier
-                .weight(1f)
-                .padding(end = 8.dp)
-            ) {
-              Ability(
-                context = context,
-                label = "Active",
-                ability = viewModel.entity.activeAbility,
-                color = Color(0xFF66BB6A)
-              )
-              Ability(
-                context = context,
-                label = "Passive",
-                ability = viewModel.entity.passiveAbility,
-                color = Color(0xFF42A5F5)
-              )
-              Ability(
-                context = context,
-                label = "Ultimate",
-                ability = viewModel.entity.ultimateAbility,
-                color = Color(0xFFE91E63)
-              )
-            }
-
+            Ability(
+              context = context,
+              label = "Active",
+              ability = viewModel.entity.activeAbility,
+              color = Color(0xFF66BB6A)
+            )
+            Ability(
+              context = context,
+              label = "Passive",
+              ability = viewModel.entity.passiveAbility,
+              color = Color(0xFF42A5F5)
+            )
+            Ability(
+              context = context,
+              label = "Ultimate",
+              ability = viewModel.entity.ultimateAbility,
+              color = Color(0xFFE91E63)
+            )
           }
 
           val hasEffects = viewModel.statusEffects.isNotEmpty()
@@ -149,6 +144,8 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
               modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 8.dp)
+                .heightIn(max = 250.dp)
+                .verticalScroll(rememberScrollState())
             ) {
               Text(
                 text = "Traits",

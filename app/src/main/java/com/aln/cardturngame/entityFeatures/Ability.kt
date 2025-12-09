@@ -1,7 +1,7 @@
 package com.aln.cardturngame.entityFeatures
 
 import androidx.annotation.StringRes
-import com.aln.cardturngame.value.Translatable
+import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Ability(

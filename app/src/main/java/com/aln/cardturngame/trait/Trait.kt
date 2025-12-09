@@ -1,6 +1,6 @@
 package com.aln.cardturngame.trait
 
-import com.aln.cardturngame.value.Translatable
+import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 interface Trait : Translatable {
