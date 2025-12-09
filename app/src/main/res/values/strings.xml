@@ -71,4 +71,13 @@
     <string name="ability_iron_will_desc">Apply Spiked Shield to the target for %s turns</string>
     <string name="ability_liberation">Liberation</string>
     <string name="ability_liberation_desc">Purge all ally effects. Deal %s damage per effect removed to a random enemy</string>
+    <string name="ui_traits">Traits</string>
+    <string name="ui_start">Start</string>
+    <string name="ui_active">Active\n</string>
+    <string name="ui_passive">Passive</string>
+    <string name="ui_ultimate">Ultimate</string>
+    <string name="ui_restart">Restart</string>
+    <string name="ui_effects">Effects</string>
+    <string name="ui_player_name">Player %s Name</string>
+    <string name="ui_winner">%s wins!</string>
 </resources>

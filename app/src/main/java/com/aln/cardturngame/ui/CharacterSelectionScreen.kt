@@ -50,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aln.cardturngame.R
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlin.reflect.full.createInstance
@@ -91,7 +92,7 @@ fun CharacterSelectionScreen(
         OutlinedTextField(
           value = player1Name,
           onValueChange = { player1Name = it },
-          label = { Text("Player 1 Name", color = Color.Gray) },
+          label = { Text(stringResource(R.string.ui_player_name, 1), color = Color.Gray) },
           singleLine = true,
           colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = Color.White,
@@ -117,7 +118,7 @@ fun CharacterSelectionScreen(
           modifier = Modifier.height(56.dp)
         ) {
           Text(
-            text = "START",
+            text = stringResource(R.string.ui_start),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = if (p1Team.size == 3 && p2Team.size == 3) Color.White else Color.Gray
@@ -127,7 +128,7 @@ fun CharacterSelectionScreen(
         OutlinedTextField(
           value = player2Name,
           onValueChange = { player2Name = it },
-          label = { Text("Player 2 Name", color = Color.Gray) },
+          label = { Text(stringResource(R.string.ui_player_name, 2), color = Color.Gray) },
           singleLine = true,
           colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = Color.White,
@@ -168,6 +169,7 @@ fun CharacterSelectionScreen(
     }
   }
 }
+
 @Composable
 fun PlayerGridSection(
   team: MutableList<Entity>,

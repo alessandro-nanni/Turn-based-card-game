@@ -1,5 +1,6 @@
 package com.aln.cardturngame.viewModel
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -8,8 +9,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aln.cardturngame.R
 import com.aln.cardturngame.effect.TauntEffect
 import com.aln.cardturngame.effect.VanishEffect
 import com.aln.cardturngame.entityFeatures.Team
@@ -239,8 +242,11 @@ class BattleViewModel(
     val isLeftAlive = leftTeam.entities.any { it.isAlive }
     val isRightAlive = rightTeam.entities.any { it.isAlive }
 
-    if (!isLeftAlive) winner = "${rightTeam.name} Wins!"
-    else if (!isRightAlive) winner = "${leftTeam.name} Wins!"
+    if (!isLeftAlive) {
+      winner = rightTeam.name
+    } else if (!isRightAlive) {
+      winner = leftTeam.name
+    }
   }
 
   private fun executeInteraction(source: EntityViewModel, target: EntityViewModel) {

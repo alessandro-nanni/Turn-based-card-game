@@ -41,6 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aln.cardturngame.R
 import com.aln.cardturngame.effect.StatusEffect
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
@@ -111,19 +112,19 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
           ) {
             Ability(
               context = context,
-              label = "Active",
+              label = stringResource(R.string.ui_active),
               ability = viewModel.entity.activeAbility,
               color = Color(0xFF66BB6A)
             )
             Ability(
               context = context,
-              label = "Passive",
+              label = stringResource(R.string.ui_passive),
               ability = viewModel.entity.passiveAbility,
               color = Color(0xFF42A5F5)
             )
             Ability(
               context = context,
-              label = "Ultimate",
+              label = stringResource(R.string.ui_ultimate),
               ability = viewModel.entity.ultimateAbility,
               color = Color(0xFFE91E63)
             )
@@ -148,7 +149,7 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
                 .verticalScroll(rememberScrollState())
             ) {
               Text(
-                text = "Traits",
+                text = stringResource(R.string.ui_traits),
                 color = Color.Gray,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
@@ -177,7 +178,7 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
                 .verticalScroll(rememberScrollState())
             ) {
               Text(
-                text = "Effects",
+                text = stringResource(R.string.ui_effects),
                 color = Color.Gray,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
