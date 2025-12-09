@@ -5,15 +5,17 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import com.aln.cardturngame.value.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 abstract class StatusEffect(
-  @field:StringRes val nameRes: Int,
-  @field:StringRes val descriptionRes: Int,
+  @field:StringRes override val nameRes: Int,
+  @field:StringRes override val descriptionRes: Int,
   @field:DrawableRes val iconRes: Int,
   initialDuration: Int,
-  val isPositive: Boolean = false
-) {
+  val isPositive: Boolean = false,
+  override val formatArgs: List<Any> = emptyList()
+) : Translatable {
   var duration by mutableIntStateOf(initialDuration)
   var source: EntityViewModel? = null
 

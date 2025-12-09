@@ -68,9 +68,20 @@ class EntityViewModel(
     recalculateStats()
   }
 
-  private fun recalculateStats() {
-    var newDamage = baseDamage
+  inline fun <reified T : StatusEffect> removeStatusEffect() {
+    val iterator = statusEffects.iterator()
+    while (iterator.hasNext()) {
+      val effect = iterator.next()
+      if (effect is T) {
+        effect.onVanish(this)
+        iterator.remove()
+      }
+    }
+    recalculateStats()
+  }
 
+  fun recalculateStats() {
+    var newDamage = baseDamage
     statusEffects.forEach { effect ->
       newDamage = effect.modifyDamage(newDamage)
     }

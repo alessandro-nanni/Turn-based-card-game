@@ -1,15 +1,9 @@
 package com.aln.cardturngame.trait
 
-import androidx.annotation.StringRes
+import com.aln.cardturngame.value.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-interface Trait {
-  @get:StringRes
-  val nameRes: Int
-
-  @get:StringRes
-  val descriptionRes: Int
-
+interface Trait : Translatable {
   fun modifyOutgoingDamage(owner: EntityViewModel, target: EntityViewModel, amount: Float): Float =
     amount
 

@@ -1,5 +1,6 @@
 package com.aln.cardturngame.ui
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
@@ -40,12 +42,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.effect.StatusEffect
+import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
+import com.aln.cardturngame.trait.Trait
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 
 @Composable
 fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier) {
+  val context = LocalContext.current
   Box(
     modifier = modifier
       .fillMaxSize()
@@ -102,24 +107,30 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
               .weight(1f)
               .padding(end = 8.dp)
           ) {
-            Ability(
-              "Active",
-              viewModel.entity.activeAbility.nameRes,
-              viewModel.entity.activeAbility.descriptionRes,
-              Color(0xFF66BB6A)
-            )
-            Ability(
-              "Passive",
-              viewModel.entity.passiveAbility.nameRes,
-              viewModel.entity.passiveAbility.descriptionRes,
-              Color(0xFF42A5F5)
-            )
-            Ability(
-              "Ultimate",
-              viewModel.entity.ultimateAbility.nameRes,
-              viewModel.entity.ultimateAbility.descriptionRes,
-              Color(0xFFE91E63)
-            )
+            Column(
+              modifier = Modifier
+                .weight(1f)
+                .padding(end = 8.dp)
+            ) {
+              Ability(
+                context = context,
+                label = "Active",
+                ability = viewModel.entity.activeAbility,
+                color = Color(0xFF66BB6A)
+              )
+              Ability(
+                context = context,
+                label = "Passive",
+                ability = viewModel.entity.passiveAbility,
+                color = Color(0xFF42A5F5)
+              )
+              Ability(
+                context = context,
+                label = "Ultimate",
+                ability = viewModel.entity.ultimateAbility,
+                color = Color(0xFFE91E63)
+              )
+            }
 
           }
 
@@ -146,8 +157,8 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 6.dp)
               )
-              viewModel.traits.forEach { trait ->
-                Trait(trait.nameRes, trait.descriptionRes)
+              viewModel.traits.forEach {
+                Trait(it, context = context)
               }
             }
           }
@@ -175,8 +186,8 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 6.dp)
               )
-              viewModel.statusEffects.forEach { effect ->
-                Effect(effect)
+              viewModel.statusEffects.forEach {
+                Effect(it, context)
               }
             }
           }
@@ -199,7 +210,8 @@ fun DamageTypeChip(
 }
 
 @Composable
-fun Ability(label: String, nameRes: Int, descRes: Int, color: Color) {
+fun Ability(context: Context, label: String, ability: Ability, color: Color) {
+
   Column(modifier = Modifier.padding(bottom = 12.dp)) {
     Row(verticalAlignment = Alignment.CenterVertically) {
       Text(
@@ -219,14 +231,14 @@ fun Ability(label: String, nameRes: Int, descRes: Int, color: Color) {
       )
       Spacer(modifier = Modifier.width(8.dp))
       Text(
-        text = stringResource(nameRes),
+        text = ability.getName(context),
         color = Color.White,
         fontSize = 13.sp,
         fontWeight = FontWeight.Medium
       )
     }
     Text(
-      text = stringResource(descRes),
+      text = ability.getDescription(context),
       color = Color.LightGray,
       fontSize = 11.sp,
       lineHeight = 14.sp,
@@ -236,16 +248,16 @@ fun Ability(label: String, nameRes: Int, descRes: Int, color: Color) {
 }
 
 @Composable
-fun Trait(nameRes: Int, descRes: Int) {
+fun Trait(trait: Trait, context: Context) {
   Column(modifier = Modifier.padding(bottom = 8.dp)) {
     Text(
-      text = "• ${stringResource(nameRes)}",
+      text = "• ${trait.getName(context)}",
       color = Color(0xFFFF9800),
       fontSize = 12.sp,
       fontWeight = FontWeight.Bold
     )
     Text(
-      text = stringResource(descRes),
+      text = trait.getDescription(context),
       color = Color.LightGray,
       fontSize = 11.sp,
       lineHeight = 13.sp,
@@ -255,7 +267,7 @@ fun Trait(nameRes: Int, descRes: Int) {
 }
 
 @Composable
-fun Effect(effect: StatusEffect) {
+fun Effect(effect: StatusEffect, context: Context) {
   Column(
     modifier = Modifier.padding(bottom = 8.dp),
     horizontalAlignment = Alignment.Start
@@ -269,7 +281,7 @@ fun Effect(effect: StatusEffect) {
       )
       Spacer(modifier = Modifier.width(6.dp))
       Text(
-        text = stringResource(effect.nameRes),
+        text = effect.getName(context),
         color = if (effect.isPositive) Color(0xFF00D471) else Color(0xFFBD3BF5),
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold
@@ -282,7 +294,7 @@ fun Effect(effect: StatusEffect) {
       )
     }
     Text(
-      text = stringResource(effect.descriptionRes),
+      text = effect.getDescription(context),
       color = Color.LightGray,
       fontSize = 11.sp,
       lineHeight = 13.sp

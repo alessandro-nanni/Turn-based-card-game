@@ -1,6 +1,7 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
+import com.aln.cardturngame.value.Effects
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class BurningEffect(duration: Int) : StatusEffect(
@@ -8,11 +9,11 @@ class BurningEffect(duration: Int) : StatusEffect(
   descriptionRes = R.string.effect_burning_desc,
   iconRes = R.drawable.effect_burning,
   initialDuration = duration,
-  isPositive = false
+  isPositive = false,
+  formatArgs = listOf(Effects.Burning.HEALTH_PERCENTAGE)
 ) {
   override suspend fun onStartTurn(target: EntityViewModel) {
-    val damage = target.maxHealth / 20
+    val damage = target.maxHealth / Effects.Burning.HEALTH_PERCENTAGE
     target.applyDamage(target, amount = damage)
   }
-
 }

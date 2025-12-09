@@ -26,7 +26,7 @@
     <string name="effect_pain_link">Pain Link</string>
     <string name="effect_pain_link_desc">50% of incoming damage is reflected to the target with which the link was initiated</string>
     <string name="effect_burning">Burning</string>
-    <string name="effect_burning_desc">Takes 5% of max health as damage</string>
+    <string name="effect_burning_desc">Takes $1%s of max health as damage</string>
     <string name="entity_wizard">Wizard</string>
     <string name="ability_zap">Zap</string>
     <string name="ability_zap_desc">Lightning strikes the target</string>
@@ -50,5 +50,5 @@
     <string name="ability_martyr">Martyr</string>
     <string name="ability_martyr_desc">Gain Spiked Shield for 3 turns and apply Taunt for 2 turns to all enemies</string>
     <string name="trait_spite">Spite</string>
-    <string name="trait_spite_desc">Increases the group rage bar by 3 when hit</string>
+    <string name="trait_spite_desc">Increases the group rage bar by %1$s when hit</string>
 </resources>
