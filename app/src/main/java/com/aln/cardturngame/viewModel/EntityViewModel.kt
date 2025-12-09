@@ -68,16 +68,16 @@ class EntityViewModel(
     damage = newDamage
   }
 
-  fun addPopup(text: String, color: Color = Color.Red) {
+  fun addPopup(text: String, color: Color = Color.Red, isStatus: Boolean = true) {
     val id = popupIdCounter++
     val xOffset = getXOffset()
-    popups.add(Popup(id = id, text = text, color = color, xOffset = xOffset))
+    popups.add(Popup(id = id, text = text, color = color, xOffset = xOffset, isStatus = isStatus))
   }
 
   fun addPopup(textRes: Int, color: Color = Color.White) {
     val id = popupIdCounter++
     val xOffset = getXOffset()
-    popups.add(Popup(id = id, textRes = textRes, color = color, xOffset = xOffset))
+    popups.add(Popup(id = id, textRes = textRes, color = color, xOffset = xOffset, isStatus = true))
   }
 
   fun getXOffset(): Float {
@@ -86,7 +86,7 @@ class EntityViewModel(
 
   fun addPopup(amount: Float, color: Color = Color.Red) {
     val sign = if (color == Color.Green) "+" else "-"
-    addPopup("$sign${amount.toInt()}", color)
+    addPopup("$sign${amount.toInt()}", color, isStatus = false)
   }
 
   fun receiveDamage(amount: Float, source: EntityViewModel? = null): Float {

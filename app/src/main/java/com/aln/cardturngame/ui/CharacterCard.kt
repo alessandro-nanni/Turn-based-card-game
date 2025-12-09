@@ -80,7 +80,6 @@ fun CharacterCard(
 ) {
   val cardShape = RoundedCornerShape(12.dp)
 
-  //  Animations
   val animatedOffset by animateOffsetAsState(
     targetValue = viewModel.attackAnimOffset ?: Offset.Zero,
     animationSpec = tween(200),
@@ -104,7 +103,6 @@ fun CharacterCard(
     }
   }
 
-  // Passive (Flip) Animation
   LaunchedEffect(viewModel.passiveAnimTrigger) {
     if (viewModel.passiveAnimTrigger > 0) {
       launch {
@@ -143,7 +141,6 @@ fun CharacterCard(
       shape = cardShape,
       modifier = Modifier
         .fillMaxSize()
-
         .graphicsLayer {
           this.translationX = animatedOffset.x
           this.translationY = animatedOffset.y
@@ -386,10 +383,12 @@ fun PopupView(popup: Popup, parentTranslation: Offset, onComplete: () -> Unit) {
     popup.text
   }
 
+  val fontSize = if (popup.isStatus) 14.sp else 28.sp
+
   Text(
     text = displayText,
     color = popup.color,
-    fontSize = 28.sp,
+    fontSize = fontSize,
     fontWeight = FontWeight.Bold,
     modifier = Modifier
       .graphicsLayer {
