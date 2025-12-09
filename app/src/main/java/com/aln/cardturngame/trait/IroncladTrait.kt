@@ -13,7 +13,11 @@ class IroncladTrait : Trait {
     source: EntityViewModel?,
     amount: Float
   ): Float {
-    return if (amount <= DAMAGE_IGNORED) 0f else amount
+    owner.addPopup(nameRes)
+    if (amount <= DAMAGE_IGNORED) {
+      return 0f
+    }
+    return amount
   }
 
   companion object {

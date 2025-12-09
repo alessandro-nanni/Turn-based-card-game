@@ -54,6 +54,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -79,7 +80,7 @@ fun CharacterCard(
 ) {
   val cardShape = RoundedCornerShape(12.dp)
 
-  // -- Animations --
+  //  Animations
   val animatedOffset by animateOffsetAsState(
     targetValue = viewModel.attackAnimOffset ?: Offset.Zero,
     animationSpec = tween(200),
@@ -112,7 +113,6 @@ fun CharacterCard(
       }
     }
   }
-  // ----------------
 
   Box(
     modifier = Modifier
@@ -143,7 +143,7 @@ fun CharacterCard(
       shape = cardShape,
       modifier = Modifier
         .fillMaxSize()
-        // Apply animations via graphicsLayer
+
         .graphicsLayer {
           this.translationX = animatedOffset.x
           this.translationY = animatedOffset.y
@@ -232,7 +232,7 @@ fun CharacterCard(
       key(popup.id) {
         PopupView(
           popup = popup,
-          parentTranslation = animatedOffset // Pass the current card translation
+          parentTranslation = animatedOffset
         ) {
           viewModel.popups.remove(popup)
         }
@@ -380,10 +380,14 @@ fun PopupView(popup: Popup, parentTranslation: Offset, onComplete: () -> Unit) {
     }
   }
 
-  val sign = if (popup.color == Color.Green) "+" else "-"
+  val displayText = if (popup.textRes != null) {
+    stringResource(id = popup.textRes) + "!"
+  } else {
+    popup.text
+  }
 
   Text(
-    text = "$sign${popup.amount}",
+    text = displayText,
     color = popup.color,
     fontSize = 28.sp,
     fontWeight = FontWeight.Bold,

@@ -15,7 +15,7 @@ import com.aln.cardturngame.entityFeatures.Popup
 import com.aln.cardturngame.entityFeatures.Team
 import com.aln.cardturngame.trait.Trait
 import kotlinx.coroutines.delay
-import kotlin.random.Random // Import Random
+import kotlin.random.Random
 
 class EntityViewModel(
   val entity: Entity
@@ -68,38 +68,52 @@ class EntityViewModel(
     damage = newDamage
   }
 
-  fun addPopup(amount: Float, color: Color = Color.Red) {
+  fun addPopup(text: String, color: Color = Color.Red) {
     val id = popupIdCounter++
     val xOffset = Random.nextInt(-40, 40).toFloat()
-    popups.add(Popup(id, amount.toInt(), color, xOffset))
+    popups.add(Popup(id = id, text = text, color = color, xOffset = xOffset))
+  }
+
+  fun addPopup(textRes: Int, color: Color = Color.White) {
+    val id = popupIdCounter++
+    val xOffset = Random.nextInt(-40, 40).toFloat()
+    popups.add(Popup(id = id, textRes = textRes, color = color, xOffset = xOffset))
+  }
+
+  fun addPopup(amount: Float, color: Color = Color.Red) {
+    val sign = if (color == Color.Green) "+" else "-"
+    addPopup("$sign${amount.toInt()}", color)
   }
 
   fun receiveDamage(amount: Float, source: EntityViewModel? = null): Float {
-    if (source != null) {
-      hitAnimTrigger++
-    }
-
     var actualDamage = amount
 
     statusEffects.toList().forEach { effect ->
       actualDamage = effect.modifyIncomingDamage(this, actualDamage, source)
     }
 
+
     traits.forEach { trait ->
       actualDamage = trait.modifyIncomingDamage(this, source, actualDamage)
     }
 
-    val overkill = (actualDamage - health).coerceAtLeast(0f)
-    health = (health - actualDamage).coerceAtLeast(0f)
-    addPopup(actualDamage)
+    if (actualDamage > 0) {
+      if (source != null) {
+        hitAnimTrigger++
+      }
 
-    traits.forEach { trait ->
-      trait.onDidReceiveDamage(this, source, actualDamage)
-    }
+      val overkill = (actualDamage - health).coerceAtLeast(0f)
+      health = (health - actualDamage).coerceAtLeast(0f)
+      addPopup(actualDamage, Color.Red)
 
-    source?.let { attacker ->
-      attacker.traits.forEach { trait ->
-        trait.onDidDealDamage(attacker, this, actualDamage, overkill)
+      traits.forEach { trait ->
+        trait.onDidReceiveDamage(this, source, actualDamage)
+      }
+
+      source?.let { attacker ->
+        attacker.traits.forEach { trait ->
+          trait.onDidDealDamage(attacker, this, actualDamage, overkill)
+        }
       }
     }
 

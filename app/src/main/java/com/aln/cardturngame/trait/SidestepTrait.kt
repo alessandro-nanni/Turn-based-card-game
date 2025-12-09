@@ -1,8 +1,8 @@
 package com.aln.cardturngame.trait
 
 import com.aln.cardturngame.R
-import com.aln.cardturngame.trait.SpiteTrait.Companion.RAGE_GAIN
 import com.aln.cardturngame.viewModel.EntityViewModel
+import kotlin.random.Random
 
 class SidestepTrait : Trait {
   override val nameRes: Int = R.string.trait_sidestep
@@ -14,7 +14,8 @@ class SidestepTrait : Trait {
     source: EntityViewModel?,
     amount: Float
   ): Float {
-    if (kotlin.random.Random.nextFloat() < (DODGE_CHANCE / 100)) {
+    if (Random.nextFloat() < (DODGE_CHANCE / 100)) {
+      owner.addPopup(nameRes)
       return 0f
     }
     return amount
