@@ -22,7 +22,7 @@ class Archer : Entity(
     source.applyDamageToTargets(
       target.getAliveTeamMembers(),
       repeats = Active.REPEATS,
-      delayTime = Active.DELAY
+      delayTime = 200L
     )
   },
   passiveAbility = Ability(
@@ -40,18 +40,17 @@ class Archer : Entity(
     source.applyDamage(
       target,
       repeats = Ultimate.REPEATS,
-      delayTime = Ultimate.DELAY
+      delayTime = 150L
     )
     target.addStatusEffect(BurningEffect(Ultimate.BURN_DURATION), source)
   }
 ) {
-  companion object {
+  private companion object {
     const val MAX_HEALTH = 100f
     const val DAMAGE = 15f
 
     object Active {
       const val REPEATS = 3
-      const val DELAY = 200L
     }
 
     object Passive {
@@ -60,7 +59,6 @@ class Archer : Entity(
 
     object Ultimate {
       const val REPEATS = 5
-      const val DELAY = 150L
       const val BURN_DURATION = 3
     }
   }

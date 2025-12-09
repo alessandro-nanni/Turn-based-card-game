@@ -12,17 +12,52 @@ import com.aln.cardturngame.trait.SidestepTrait
 class Ninja : Entity(
   name = R.string.entity_ninja,
   iconRes = R.drawable.entity_ninja,
-  initialStats = Stats(maxHealth = 240f, damage = 10f),
+  initialStats = Stats(maxHealth = MAX_HEALTH, damage = DAMAGE),
   color = Color(0xFFFFFB0C),
-  activeAbility = Ability(R.string.ability_slash, R.string.ability_slash_desc) { source, target ->
-    source.applyDamage(target, repeats = 3, delayTime = 300)
+  activeAbility = Ability(
+    nameRes = R.string.ability_slash,
+    descriptionRes = R.string.ability_slash_desc,
+    formatArgs = listOf(
+      Active.REPEATS
+    )
+  ) { source, target ->
+    source.applyDamage(target, repeats = Active.REPEATS, delayTime = 300)
   },
-  passiveAbility = Ability(R.string.ability_warriors_blessing, R.string.ability_warriors_blessing_desc) { source, target ->
-    target.addStatusEffect(SharpenedBladeEffect(3), source = source)
+  passiveAbility = Ability(
+    nameRes = R.string.ability_warriors_blessing,
+    descriptionRes = R.string.ability_warriors_blessing_desc,
+    formatArgs = listOf(
+      Passive.DURATION
+    )
+  ) { source, target ->
+    target.addStatusEffect(SharpenedBladeEffect(Passive.DURATION), source = source)
   },
-  ultimateAbility = Ability(R.string.ability_vanish, R.string.ability_vanish_desc) { source, _ ->
-    source.addStatusEffect(VanishEffect(2), source = source)
+  ultimateAbility = Ability(
+    nameRes = R.string.ability_vanish,
+    descriptionRes = R.string.ability_vanish_desc,
+    formatArgs = listOf(
+      Ultimate.DURATION
+    )
+  ) { source, _ ->
+    source.addStatusEffect(VanishEffect(Ultimate.DURATION), source = source)
   },
   traits = listOf(SidestepTrait()),
   damageType = DamageType.Melee
-)
+) {
+  private companion object {
+    const val MAX_HEALTH = 240f
+    const val DAMAGE = 10f
+
+    object Active {
+      const val REPEATS = 3
+    }
+
+    object Passive {
+      const val DURATION = 3
+    }
+
+    object Ultimate {
+      const val DURATION = 3
+    }
+  }
+}
