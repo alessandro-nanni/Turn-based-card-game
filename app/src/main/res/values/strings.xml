@@ -51,4 +51,13 @@
     <string name="ability_martyr_desc">Gain Spiked Shield for %s turns and apply Taunt for %s turns to all enemies</string>
     <string name="trait_spite">Spite</string>
     <string name="trait_spite_desc">Rage Bar increases by %s%% when hit</string>
+    <string name="entity_cultist">Cultist</string>
+    <string name="effect_watched">Watched</string>
+    <string name="effect_watched_desc">You feel like something bad is about to happen</string>
+    <string name="trait_forsaken">Forsaken</string>
+    <string name="trait_forsaken_desc">Cannot be healed by allies</string>
+    <string name="ability_bewitched">Bewitched</string>
+    <string name="ability_bewitched_desc">Cast a spell on the enemy, applying Watched for %s turns</string>
+    <string name="ability_reckoning">Reckoning</string>
+    <string name="ability_reckoning_desc">Heals the target by %s health for each Watched enemy, then deals %s damage to all Watched enemies</string>
 </resources>
