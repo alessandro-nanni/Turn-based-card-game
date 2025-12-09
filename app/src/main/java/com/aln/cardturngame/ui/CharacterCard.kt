@@ -79,6 +79,7 @@ fun CharacterCard(
 ) {
   val cardShape = RoundedCornerShape(12.dp)
 
+  // -- Animations --
   val animatedOffset by animateOffsetAsState(
     targetValue = viewModel.attackAnimOffset ?: Offset.Zero,
     animationSpec = tween(200),
@@ -88,6 +89,7 @@ fun CharacterCard(
   val scaleX = remember { Animatable(1f) }
   val scaleY = remember { Animatable(1f) }
 
+  // Hit Animation
   LaunchedEffect(viewModel.hitAnimTrigger) {
     if (viewModel.hitAnimTrigger > 0) {
       launch {
@@ -101,14 +103,17 @@ fun CharacterCard(
     }
   }
 
+  // Passive (Flip) Animation
   LaunchedEffect(viewModel.passiveAnimTrigger) {
     if (viewModel.passiveAnimTrigger > 0) {
       launch {
-        scaleX.animateTo(0f, tween(150)) // Squish to 0px
-        scaleX.animateTo(1f, tween(150)) // Expand back
+        scaleX.animateTo(0f, tween(150))
+        scaleX.animateTo(1f, tween(150))
       }
     }
   }
+  // ----------------
+
   Box(
     modifier = Modifier
       .width(width)
@@ -225,7 +230,10 @@ fun CharacterCard(
 
     viewModel.popups.forEach { popup ->
       key(popup.id) {
-        PopupView(popup) {
+        PopupView(
+          popup = popup,
+          parentTranslation = animatedOffset // Pass the current card translation
+        ) {
           viewModel.popups.remove(popup)
         }
       }
@@ -358,7 +366,7 @@ fun ActiveEffects(viewModel: EntityViewModel) {
 }
 
 @Composable
-fun PopupView(popup: Popup, onComplete: () -> Unit) {
+fun PopupView(popup: Popup, parentTranslation: Offset, onComplete: () -> Unit) {
   val offsetY = remember { Animatable(0f) }
   val alpha = remember { Animatable(1f) }
 
@@ -380,7 +388,11 @@ fun PopupView(popup: Popup, onComplete: () -> Unit) {
     fontSize = 28.sp,
     fontWeight = FontWeight.Bold,
     modifier = Modifier
-      .offset(y = offsetY.value.dp)
+      .graphicsLayer {
+        translationX = parentTranslation.x
+        translationY = parentTranslation.y
+      }
+      .offset(x = popup.xOffset.dp, y = offsetY.value.dp)
       .alpha(alpha.value)
   )
 }

@@ -15,6 +15,7 @@ import com.aln.cardturngame.entityFeatures.Popup
 import com.aln.cardturngame.entityFeatures.Team
 import com.aln.cardturngame.trait.Trait
 import kotlinx.coroutines.delay
+import kotlin.random.Random // Import Random
 
 class EntityViewModel(
   val entity: Entity
@@ -69,7 +70,8 @@ class EntityViewModel(
 
   fun addPopup(amount: Float, color: Color = Color.Red) {
     val id = popupIdCounter++
-    popups.add(Popup(id, amount.toInt(), color))
+    val xOffset = Random.nextInt(-40, 40).toFloat()
+    popups.add(Popup(id, amount.toInt(), color, xOffset))
   }
 
   fun receiveDamage(amount: Float, source: EntityViewModel? = null): Float {
