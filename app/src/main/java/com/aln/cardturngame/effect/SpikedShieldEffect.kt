@@ -8,7 +8,9 @@ class SpikedShieldEffect(duration: Int) : StatusEffect(
   descriptionRes = R.string.effect_spiked_shield_desc,
   iconRes = R.drawable.effect_spiked_shield,
   initialDuration = duration,
-  isPositive = true
+  isPositive = true,
+  formatArgs = listOf(DAMAGE_REFLECTED)
+
 ) {
   override fun modifyIncomingDamage(
     owner: EntityViewModel,

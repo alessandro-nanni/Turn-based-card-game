@@ -43,7 +43,7 @@ class Wizard : Entity(
     )
   ) { source, _ ->
     source.getAliveTeamMembers().forEach {
-      it.heal(40f)
+      it.heal(Ultimate.HEAL_AMOUNT)
       it.clearNegativeEffects()
     }
   },
@@ -59,7 +59,7 @@ class Wizard : Entity(
     }
 
     object Ultimate {
-      const val HEAL_AMOUNT = 40
+      const val HEAL_AMOUNT = 40f
     }
   }
 }
