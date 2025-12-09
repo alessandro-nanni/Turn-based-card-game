@@ -21,50 +21,41 @@ class Paladin : Entity(
     nameRes = R.string.ability_challenge,
     descriptionRes = R.string.ability_challenge_desc,
     formatArgs = listOf(
-      Active.DURATION
+      ACTIVE_DURATION
     )
   ) { source, target ->
     source.applyDamage(target)
-    target.addStatusEffect(TauntEffect(Active.DURATION), source)
+    target.addStatusEffect(TauntEffect(ACTIVE_DURATION), source)
   },
   passiveAbility = Ability(
     nameRes = R.string.ability_guard,
     descriptionRes = R.string.ability_guard_desc,
     formatArgs = listOf(
-      Passive.DURATION
+      PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addStatusEffect(ProtectionEffect(Passive.DURATION), source)
+    target.addStatusEffect(ProtectionEffect(PASSIVE_DURATION), source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_martyr,
     descriptionRes = R.string.ability_martyr_desc,
     formatArgs = listOf(
-      Ultimate.SHIELD_DURATION,
-      Ultimate.TAUNT_DURATION
+      ULTIMATE_SHIELD_DURATION,
+      ULTIMATE_TAUNT_DURATION
     )
   ) { source, target ->
     target.getAliveTeamMembers().forEach { enemy ->
-      enemy.addStatusEffect(TauntEffect(Ultimate.TAUNT_DURATION), source)
+      enemy.addStatusEffect(TauntEffect(ULTIMATE_TAUNT_DURATION), source)
     }
-    source.addStatusEffect(SpikedShieldEffect(Ultimate.SHIELD_DURATION), source)
+    source.addStatusEffect(SpikedShieldEffect(ULTIMATE_SHIELD_DURATION), source)
   }
 ) {
   private companion object {
     const val MAX_HEALTH = 260f
     const val DAMAGE = 12f
-
-    object Active {
-      const val DURATION = 2
-    }
-
-    object Passive {
-      const val DURATION = 4
-    }
-
-    object Ultimate {
-      const val TAUNT_DURATION = 2
-      const val SHIELD_DURATION = 3
-    }
+    const val ACTIVE_DURATION = 2
+    const val PASSIVE_DURATION = 4
+    const val ULTIMATE_TAUNT_DURATION = 2
+    const val ULTIMATE_SHIELD_DURATION = 3
   }
 }

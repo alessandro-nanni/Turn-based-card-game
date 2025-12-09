@@ -6,7 +6,6 @@ import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
 import com.aln.cardturngame.trait.OverkillTrait
-import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Wizard : Entity(
   name = R.string.entity_wizard,
@@ -23,13 +22,13 @@ class Wizard : Entity(
     nameRes = R.string.ability_override,
     descriptionRes = R.string.ability_override_desc,
     formatArgs = listOf(
-      Passive.DAMAGE_PERCENTAGE
+      PASSIVE_DAMAGE_PERCENTAGE
     )
   ) { _, target ->
     val enemies = target.getEnemies()
     if (enemies.isNotEmpty()) {
       val randomEnemy = enemies.random()
-      val reducedDamage = target.damage * Passive.DAMAGE_PERCENTAGE / 100
+      val reducedDamage = target.damage * PASSIVE_DAMAGE_PERCENTAGE / 100
       target.withTemporaryDamage(reducedDamage) {
         target.entity.activeAbility.effect(target, randomEnemy)
       }
@@ -39,11 +38,11 @@ class Wizard : Entity(
     nameRes = R.string.ability_blessing,
     descriptionRes = R.string.ability_blessing_desc,
     formatArgs = listOf(
-      Ultimate.HEAL_AMOUNT
+      ULTIMATE_HEAL_AMOUNT
     )
   ) { source, _ ->
     source.getAliveTeamMembers().forEach {
-      it.heal(Ultimate.HEAL_AMOUNT)
+      it.heal(ULTIMATE_HEAL_AMOUNT)
       it.clearNegativeEffects()
     }
   },
@@ -53,13 +52,8 @@ class Wizard : Entity(
   private companion object {
     const val MAX_HEALTH = 150f
     const val DAMAGE = 35f
+    const val PASSIVE_DAMAGE_PERCENTAGE = 50
+    const val ULTIMATE_HEAL_AMOUNT = 40f
 
-    object Passive {
-      const val DAMAGE_PERCENTAGE = 50
-    }
-
-    object Ultimate {
-      const val HEAL_AMOUNT = 40f
-    }
   }
 }

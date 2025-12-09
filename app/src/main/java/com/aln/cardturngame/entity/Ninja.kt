@@ -18,28 +18,28 @@ class Ninja : Entity(
     nameRes = R.string.ability_slash,
     descriptionRes = R.string.ability_slash_desc,
     formatArgs = listOf(
-      Active.REPEATS
+      ACTIVE_REPEATS
     )
   ) { source, target ->
-    source.applyDamage(target, repeats = Active.REPEATS, delayTime = 300)
+    source.applyDamage(target, repeats = ACTIVE_REPEATS, delayTime = 300)
   },
   passiveAbility = Ability(
     nameRes = R.string.ability_warriors_blessing,
     descriptionRes = R.string.ability_warriors_blessing_desc,
     formatArgs = listOf(
-      Passive.DURATION
+      PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addStatusEffect(SharpenedBladeEffect(Passive.DURATION), source = source)
+    target.addStatusEffect(SharpenedBladeEffect(PASSIVE_DURATION), source = source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_vanish,
     descriptionRes = R.string.ability_vanish_desc,
     formatArgs = listOf(
-      Ultimate.DURATION
+      ULTIMATE_DURATION
     )
   ) { source, _ ->
-    source.addStatusEffect(VanishEffect(Ultimate.DURATION), source = source)
+    source.addStatusEffect(VanishEffect(ULTIMATE_DURATION), source = source)
   },
   traits = listOf(SidestepTrait()),
   damageType = DamageType.Melee
@@ -47,17 +47,8 @@ class Ninja : Entity(
   private companion object {
     const val MAX_HEALTH = 240f
     const val DAMAGE = 10f
-
-    object Active {
-      const val REPEATS = 3
-    }
-
-    object Passive {
-      const val DURATION = 3
-    }
-
-    object Ultimate {
-      const val DURATION = 3
-    }
+    const val ACTIVE_REPEATS = 3
+    const val PASSIVE_DURATION = 3
+    const val ULTIMATE_DURATION = 3
   }
 }
