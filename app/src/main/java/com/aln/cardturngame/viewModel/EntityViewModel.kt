@@ -13,6 +13,7 @@ import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entityFeatures.Popup
 import com.aln.cardturngame.entityFeatures.Team
+import com.aln.cardturngame.trait.ForsakenTrait
 import com.aln.cardturngame.trait.Trait
 import kotlinx.coroutines.delay
 import kotlin.random.Random
@@ -58,7 +59,6 @@ class EntityViewModel(
   }
 
 
-
   fun recalculateStats() {
     var newDamage = baseDamage
     statusEffects.forEach { effect ->
@@ -70,14 +70,18 @@ class EntityViewModel(
 
   fun addPopup(text: String, color: Color = Color.Red) {
     val id = popupIdCounter++
-    val xOffset = Random.nextInt(-40, 40).toFloat()
+    val xOffset = getXOffset()
     popups.add(Popup(id = id, text = text, color = color, xOffset = xOffset))
   }
 
   fun addPopup(textRes: Int, color: Color = Color.White) {
     val id = popupIdCounter++
-    val xOffset = Random.nextInt(-40, 40).toFloat()
+    val xOffset = getXOffset()
     popups.add(Popup(id = id, textRes = textRes, color = color, xOffset = xOffset))
+  }
+
+  fun getXOffset(): Float {
+    return Random.nextInt(-20, 60).toFloat()
   }
 
   fun addPopup(amount: Float, color: Color = Color.Red) {
@@ -106,6 +110,10 @@ class EntityViewModel(
       health = (health - actualDamage).coerceAtLeast(0f)
       addPopup(actualDamage, Color.Red)
 
+      if (!isAlive) {
+        clearAllEffects()
+      }
+
       traits.forEach { trait ->
         trait.onDidReceiveDamage(this, source, actualDamage)
       }
@@ -126,7 +134,7 @@ class EntityViewModel(
     repeats: Int = 1,
     delayTime: Long = 400
   ) {
-    if (traits.any { it is com.aln.cardturngame.trait.ForsakenTrait } && source != this) {
+    if (traits.any { it is ForsakenTrait } && source != this) {
       return
     }
 
