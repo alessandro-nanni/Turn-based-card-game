@@ -2,6 +2,7 @@ package com.aln.cardturngame.ui
 
 import android.graphics.BlurMaskFilter
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
@@ -76,6 +79,28 @@ fun CharacterCard(
 ) {
   val cardShape = RoundedCornerShape(12.dp)
 
+  val animatedOffset by animateOffsetAsState(
+    targetValue = viewModel.attackAnimOffset ?: Offset.Zero,
+    animationSpec = tween(200),
+    label = "AttackAnimation"
+  )
+
+  val scaleX = remember { Animatable(1f) }
+  val scaleY = remember { Animatable(1f) }
+
+  LaunchedEffect(viewModel.hitAnimTrigger) {
+    if (viewModel.hitAnimTrigger > 0) {
+      launch {
+        scaleX.animateTo(1.2f, tween(100))
+        scaleX.animateTo(1f, tween(150))
+      }
+      launch {
+        scaleY.animateTo(0.8f, tween(100))
+        scaleY.animateTo(1f, tween(150))
+      }
+    }
+  }
+
   Box(
     modifier = Modifier
       .width(width)
@@ -105,6 +130,13 @@ fun CharacterCard(
       shape = cardShape,
       modifier = Modifier
         .fillMaxSize()
+        // Apply animations via graphicsLayer
+        .graphicsLayer {
+          this.translationX = animatedOffset.x
+          this.translationY = animatedOffset.y
+          this.scaleX = scaleX.value
+          this.scaleY = scaleY.value
+        }
         .onGloballyPositioned { coordinates ->
           onCardPositioned(viewModel, coordinates.boundsInRoot())
         }

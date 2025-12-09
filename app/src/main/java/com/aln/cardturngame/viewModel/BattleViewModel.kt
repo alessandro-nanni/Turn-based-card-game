@@ -16,6 +16,7 @@ import com.aln.cardturngame.R
 import com.aln.cardturngame.effect.TauntEffect
 import com.aln.cardturngame.effect.VanishEffect
 import com.aln.cardturngame.entityFeatures.Team
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -293,7 +294,24 @@ class BattleViewModel(
     if (onSameTeam) {
       source.entity.passiveAbility.effect(source, target)
     } else {
+      // Calculate attack animation offset
+      val sourceBounds = cardBounds[source]
+      val targetBounds = cardBounds[target]
+
+      if (sourceBounds != null && targetBounds != null) {
+        val direction = targetBounds.center - sourceBounds.center
+        // Move 70% of the way to the target (to stop "next to" it)
+        source.attackAnimOffset = direction * 0.7f
+        // Wait for move animation
+        delay(200)
+      }
+
       source.entity.activeAbility.effect(source, target)
+
+      // Reset animation
+      source.attackAnimOffset = null
+      // Wait for return animation
+      delay(200)
     }
   }
 

@@ -3,7 +3,9 @@ package com.aln.cardturngame.viewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf // Aggiunto
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset // Aggiunto
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.aln.cardturngame.effect.StatusEffect
@@ -30,6 +32,10 @@ class EntityViewModel(
   val statusEffects = mutableStateListOf<StatusEffect>()
   val popups = mutableStateListOf<Popup>()
   private var popupIdCounter = 0L
+
+  // Animation States
+  var attackAnimOffset by mutableStateOf<Offset?>(null)
+  var hitAnimTrigger by mutableStateOf(0)
 
   val isAlive: Boolean
     get() = health > 0
@@ -66,6 +72,11 @@ class EntityViewModel(
   }
 
   fun receiveDamage(amount: Float, source: EntityViewModel? = null): Float {
+    // Trigger squish animation only if source is specified
+    if (source != null) {
+      hitAnimTrigger++
+    }
+
     var actualDamage = amount
 
     statusEffects.toList().forEach { effect ->
