@@ -49,36 +49,7 @@ class EntityViewModel(
     return getAllTeamMembers().filter { it.isAlive }
   }
 
-  fun addStatusEffect(effect: StatusEffect, source: EntityViewModel?) {
-    val existingEffect = statusEffects.find { it::class == effect::class }
-    if (existingEffect != null) {
-      existingEffect.duration = effect.duration
-      existingEffect.source = source
-    } else {
-      effect.source = source
-      statusEffects.add(effect)
-      effect.onApply(this)
-      recalculateStats()
-    }
-  }
 
-  fun removeStatusEffect(effect: StatusEffect) {
-    effect.onVanish(this)
-    statusEffects.remove(effect)
-    recalculateStats()
-  }
-
-  inline fun <reified T : StatusEffect> removeStatusEffect() {
-    val iterator = statusEffects.iterator()
-    while (iterator.hasNext()) {
-      val effect = iterator.next()
-      if (effect is T) {
-        effect.onVanish(this)
-        iterator.remove()
-      }
-    }
-    recalculateStats()
-  }
 
   fun recalculateStats() {
     var newDamage = baseDamage
@@ -201,9 +172,56 @@ class EntityViewModel(
     }
   }
 
-  fun clearNegativeEffects() {
-    statusEffects.filter { !it.isPositive }.forEach { effect ->
-      removeStatusEffect(effect)
+  // EFFECTS
+
+  fun addEffect(effect: StatusEffect, source: EntityViewModel?) {
+    val existingEffect = statusEffects.find { it::class == effect::class }
+    if (existingEffect != null) {
+      existingEffect.duration = effect.duration
+      existingEffect.source = source
+    } else {
+      effect.source = source
+      statusEffects.add(effect)
+      effect.onApply(this)
+      recalculateStats()
     }
+  }
+
+  fun removeEffect(effect: StatusEffect) {
+    effect.onVanish(this)
+    statusEffects.remove(effect)
+    recalculateStats()
+  }
+
+  inline fun <reified T : StatusEffect> removeEffect() {
+    val iterator = statusEffects.iterator()
+    while (iterator.hasNext()) {
+      val effect = iterator.next()
+      if (effect is T) {
+        effect.onVanish(this)
+        iterator.remove()
+      }
+    }
+    recalculateStats()
+  }
+
+  fun clearAllEffects(): Int {
+    return clearNegativeEffects() + clearPositiveEffects()
+  }
+
+  fun clearNegativeEffects(): Int {
+    val effectsToRemove = statusEffects.filter { !it.isPositive }
+    effectsToRemove.forEach { effect ->
+      removeEffect(effect)
+    }
+    return effectsToRemove.size
+  }
+
+  fun clearPositiveEffects(): Int {
+    val effectsToRemove = statusEffects.filter { it.isPositive }
+    effectsToRemove.forEach { effect ->
+      removeEffect(effect)
+    }
+    return effectsToRemove.size
   }
 }

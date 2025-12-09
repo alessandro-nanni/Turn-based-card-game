@@ -25,7 +25,7 @@ class Paladin : Entity(
     )
   ) { source, target ->
     source.applyDamage(target)
-    target.addStatusEffect(TauntEffect(ACTIVE_DURATION), source)
+    target.addEffect(TauntEffect(ACTIVE_DURATION), source)
   },
   passiveAbility = Ability(
     nameRes = R.string.ability_guard,
@@ -34,7 +34,7 @@ class Paladin : Entity(
       PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addStatusEffect(ProtectionEffect(PASSIVE_DURATION), source)
+    target.addEffect(ProtectionEffect(PASSIVE_DURATION), source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_martyr,
@@ -45,9 +45,9 @@ class Paladin : Entity(
     )
   ) { source, randomEnemy ->
     randomEnemy.getAliveTeamMembers().forEach { enemy ->
-      enemy.addStatusEffect(TauntEffect(ULTIMATE_TAUNT_DURATION), source)
+      enemy.addEffect(TauntEffect(ULTIMATE_TAUNT_DURATION), source)
     }
-    source.addStatusEffect(SpikedShieldEffect(ULTIMATE_SHIELD_DURATION), source)
+    source.addEffect(SpikedShieldEffect(ULTIMATE_SHIELD_DURATION), source)
   }
 ) {
   private companion object {

@@ -21,7 +21,7 @@ class Cultist : Entity(
     formatArgs = listOf(ACTIVE_REPEATS)
   ) { source, target ->
     source.applyDamage(target)
-    target.addStatusEffect(WatchedEffect(ACTIVE_REPEATS), source)
+    target.addEffect(WatchedEffect(ACTIVE_REPEATS), source)
   },
   passiveAbility = Ability(
     nameRes = R.string.ability_reckoning,

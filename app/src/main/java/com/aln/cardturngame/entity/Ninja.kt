@@ -30,7 +30,7 @@ class Ninja : Entity(
       PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addStatusEffect(SharpenedBladeEffect(PASSIVE_DURATION), source = source)
+    target.addEffect(SharpenedBladeEffect(PASSIVE_DURATION), source = source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_vanish,
@@ -39,7 +39,7 @@ class Ninja : Entity(
       ULTIMATE_DURATION
     )
   ) { source, _ ->
-    source.addStatusEffect(VanishEffect(ULTIMATE_DURATION), source = source)
+    source.addEffect(VanishEffect(ULTIMATE_DURATION), source = source)
   },
   traits = listOf(SidestepTrait()),
   damageType = DamageType.Melee

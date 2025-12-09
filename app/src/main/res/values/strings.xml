@@ -62,4 +62,13 @@
     <string name="ability_reckoning_desc">Heals the target by %s health for each Watched enemy, then deals %s damage to all Watched enemies</string>
     <string name="ability_harvest">Harvest</string>
     <string name="ability_harvest_desc">Deals damage to a random enemy equal to %s × total Watched duration across all enemies, then heals self for %s%% of damage dealt</string>
+    <string name="entity_monk">Monk\n</string>
+    <string name="trait_ironclad">Ironclad</string>
+    <string name="trait_ironclad_desc">Ignores all damage below %s</string>
+    <string name="ability_syphon">Syphon</string>
+    <string name="ability_syphon_desc">Strike an enemy and distribute the damage dealt as healing across all team members</string>
+    <string name="ability_iron_will">Iron Will</string>
+    <string name="ability_iron_will_desc">Apply Spiked Shield to the target for %s turns</string>
+    <string name="ability_liberation">Liberation</string>
+    <string name="ability_liberation_desc">Purge all ally effects. Deal %s damage per effect removed to a random enemy</string>
 </resources>

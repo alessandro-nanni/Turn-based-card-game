@@ -28,12 +28,11 @@ class Team(
     }
   }
 
-  var rage by mutableFloatStateOf(99f)
+  var rage by mutableFloatStateOf(0f)
   val maxRage = 100f
 
   fun increaseRage(amount: Float) {
     rage = (rage + amount).coerceAtMost(maxRage)
-    rage = 100f
   }
 
   @Composable

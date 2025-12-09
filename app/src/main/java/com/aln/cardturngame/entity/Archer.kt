@@ -30,7 +30,7 @@ class Archer : Entity(
     descriptionRes = R.string.ability_cover_desc,
     formatArgs = listOf(PASSIVE_DURATION)
   ) { source, target ->
-    source.addStatusEffect(PainLinkEffect(PASSIVE_DURATION, target), source = source)
+    source.addEffect(PainLinkEffect(PASSIVE_DURATION, target), source = source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_rain_fire,
@@ -42,12 +42,12 @@ class Archer : Entity(
       repeats = ULTIMATE_REPEATS,
       delayTime = 150L
     )
-    randomEnemy.addStatusEffect(BurningEffect(ULTIMATE_BURN_DURATION), source)
+    randomEnemy.addEffect(BurningEffect(ULTIMATE_BURN_DURATION), source)
   }
 ) {
   private companion object {
-    const val MAX_HEALTH = 100f
-    const val DAMAGE = 15f
+    const val MAX_HEALTH = 110f
+    const val DAMAGE = 11f
     const val ACTIVE_REPEATS = 3
     const val PASSIVE_DURATION = 2
     const val ULTIMATE_REPEATS = 5

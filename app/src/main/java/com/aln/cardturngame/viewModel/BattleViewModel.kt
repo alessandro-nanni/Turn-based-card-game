@@ -301,7 +301,7 @@ class BattleViewModel(
       activeEffects.forEach { effect ->
         effect.onStartTurn(entity)
         if (effect.tick()) {
-          entity.removeStatusEffect(effect)
+          entity.removeEffect(effect)
         }
       }
     }
