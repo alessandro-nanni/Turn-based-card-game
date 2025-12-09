@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
@@ -87,7 +88,8 @@ fun CharacterInfoCard(viewModel: EntityViewModel, modifier: Modifier = Modifier)
             text = stringResource(viewModel.name),
             color = Color.White,
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
           )
           StatsView(viewModel)
 

@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     enableEdgeToEdge()
     window.attributes.layoutInDisplayCutoutMode =
@@ -44,10 +45,10 @@ class MainActivity : ComponentActivity() {
         var isBattleStarted by remember { mutableStateOf(false) }
 
         LaunchedEffect(battleViewModel.navigateToSelection) {
-            if (battleViewModel.navigateToSelection) {
-                isBattleStarted = false
-                battleViewModel.onNavigatedToSelection()
-            }
+          if (battleViewModel.navigateToSelection) {
+            isBattleStarted = false
+            battleViewModel.onNavigatedToSelection()
+          }
         }
 
         if (!isBattleStarted) {
