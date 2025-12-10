@@ -39,9 +39,9 @@
     <string name="effect_taunt_desc">Le abilità attive possono essere usate solo sul personaggio che ha applicato la provocazione</string>
     <string name="entity_paladin">Paladino</string>
     <string name="ability_challenge">Sfida</string>
-    <string name="ability_challenge_desc">Attacca il bersaglio e applica Provocazione per %s turni</string>
+    <string name="ability_challenge_desc">Attacca il bersaglio e applica %s per %s turni</string>
     <string name="ability_guard">Guardia</string>
-    <string name="ability_guard_desc">Applica Protezione al bersaglio per %s turni</string>
+    <string name="ability_guard_desc">Applica %s al bersaglio per %s turni</string>
     <string name="effect_protection">Protezione</string>
     <string name="effect_protection_desc">Riduce i danni in arrivo del %s%%</string>
     <string name="effect_spiked_shield">Scudo Chiodato</string>

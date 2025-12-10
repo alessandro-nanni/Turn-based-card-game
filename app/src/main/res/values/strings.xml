@@ -40,7 +40,7 @@
     <string name="effect_taunt_desc">Active abilities can be used only on the character that applied the taunt</string>
     <string name="entity_paladin">Paladin</string>
     <string name="ability_challenge">Challenge</string>
-    <string name="ability_challenge_desc">Attack the target and apply Taunt for %s turns</string>
+    <string name="ability_challenge_desc">Attack the target and apply %s for %s turns</string>
     <string name="ability_guard">Guard</string>
     <string name="ability_guard_desc">Apply Protection to the target for %s turns</string>
     <string name="effect_protection">Protection</string>

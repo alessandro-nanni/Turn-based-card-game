@@ -21,6 +21,7 @@ class Paladin : Entity(
     nameRes = R.string.ability_challenge,
     descriptionRes = R.string.ability_challenge_desc,
     formatArgs = listOf(
+      TauntEffect(),
       ACTIVE_DURATION
     )
   ) { source, target ->
