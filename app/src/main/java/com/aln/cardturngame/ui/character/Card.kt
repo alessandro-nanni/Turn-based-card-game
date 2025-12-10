@@ -1,4 +1,4 @@
-package com.aln.cardturngame.ui
+package com.aln.cardturngame.ui.character
 
 import android.graphics.BlurMaskFilter
 import androidx.compose.animation.core.Animatable

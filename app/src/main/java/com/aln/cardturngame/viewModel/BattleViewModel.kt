@@ -87,25 +87,8 @@ class BattleViewModel(
     rightTeam.rage = 0f
   }
 
-  fun canEntityAct(entity: EntityViewModel): Boolean {
-    if (winner != null) return false
-    val isLeft = leftTeam.entities.contains(entity)
-    val isRight = rightTeam.entities.contains(entity)
-    val isTurn = (isLeft && isLeftTeamTurn) || (isRight && !isLeftTeamTurn)
-    return isTurn && !actionsTaken.contains(entity) && entity.isAlive && !isActionPlaying
-  }
-
   fun increaseRage(team: Team, amount: Float) {
     team.increaseRage(amount)
-  }
-
-  fun onUltimateDragStart(team: Team, offset: Offset) {
-    val isLeft = (team == leftTeam)
-    if ((isLeft && isLeftTeamTurn) || (!isLeft && !isLeftTeamTurn)) {
-      if (team.rage >= team.maxRage && !isActionPlaying && winner == null) {
-        ultimateDragState = UltimateDragState(team, offset, offset)
-      }
-    }
   }
 
   fun onUltimateDrag(change: Offset) {
@@ -247,6 +230,40 @@ class BattleViewModel(
     }
   }
 
+  private suspend fun processStartOfTurnEffects(team: Team) {
+    team.entities.filter { it.isAlive }.forEach { entity ->
+      entity.traits.forEach { trait ->
+        trait.onStartTurn(entity)
+      }
+
+      val activeEffects = entity.statusEffects.toList()
+      activeEffects.forEach { effect ->
+        effect.onStartTurn(entity)
+        if (effect.tick()) {
+          entity.removeEffect(effect)
+        }
+      }
+    }
+  }
+
+  fun canEntityAct(entity: EntityViewModel): Boolean {
+    if (winner != null) return false
+    val isLeft = leftTeam.entities.contains(entity)
+    val isRight = rightTeam.entities.contains(entity)
+    val isTurn = (isLeft && isLeftTeamTurn) || (isRight && !isLeftTeamTurn)
+    return isTurn && !actionsTaken.contains(entity) && entity.isAlive && !isActionPlaying && !entity.isStunned
+  }
+
+  fun onUltimateDragStart(team: Team, offset: Offset) {
+    val isLeft = (team == leftTeam)
+    if ((isLeft && isLeftTeamTurn) || (!isLeft && !isLeftTeamTurn)) {
+      val hasNonStunnedMember = team.entities.any { it.isAlive && !it.isStunned }
+      if (team.rage >= team.maxRage && !isActionPlaying && winner == null && hasNonStunnedMember) {
+        ultimateDragState = UltimateDragState(team, offset, offset)
+      }
+    }
+  }
+
   private fun executeInteraction(source: EntityViewModel, target: EntityViewModel) {
     if (isActionPlaying || winner != null) return
 
@@ -269,16 +286,30 @@ class BattleViewModel(
       }
 
       val activeTeamEntities = if (isLeftTeamTurn) leftTeam.entities else rightTeam.entities
-      if (actionsTaken.containsAll(activeTeamEntities.filter { it.isAlive })) {
-        actionsTaken.clear()
-        isLeftTeamTurn = !isLeftTeamTurn
 
-        val nextTeam = if (isLeftTeamTurn) leftTeam else rightTeam
-        processStartOfTurnEffects(nextTeam)
-        checkWinCondition()
+      val capableEntities = activeTeamEntities.filter { it.isAlive && !it.isStunned }
+
+      if (actionsTaken.containsAll(capableEntities)) {
+        advanceTurn()
       }
 
       isActionPlaying = false
+    }
+  }
+
+  private suspend fun advanceTurn() {
+    actionsTaken.clear()
+    isLeftTeamTurn = !isLeftTeamTurn
+
+    val nextTeam = if (isLeftTeamTurn) leftTeam else rightTeam
+    processStartOfTurnEffects(nextTeam)
+    checkWinCondition()
+
+    if (winner != null) return
+
+    val aliveMembers = nextTeam.entities.filter { it.isAlive }
+    if (aliveMembers.isNotEmpty() && aliveMembers.all { it.isStunned }) {
+      advanceTurn()
     }
   }
 
@@ -289,45 +320,26 @@ class BattleViewModel(
     val onSameTeam = sourceLeft == targetLeft
 
     if (onSameTeam) {
+      if (source.isStunned) return
+
       source.passiveAnimTrigger++
       delay(150)
       source.entity.passiveAbility.effect(source, target)
       delay(150)
     } else {
-      // Calculate attack animation offset
       val sourceBounds = cardBounds[source]
       val targetBounds = cardBounds[target]
 
       if (sourceBounds != null && targetBounds != null) {
         val direction = targetBounds.center - sourceBounds.center
-        // Move 70% of the way to the target
         source.attackAnimOffset = direction * 0.7f
-        // Wait for move animation
         delay(200)
       }
 
       source.entity.activeAbility.effect(source, target)
 
-      // Reset animation
       source.attackAnimOffset = null
-      // Wait for return animation
       delay(200)
-    }
-  }
-
-  private suspend fun processStartOfTurnEffects(team: Team) {
-    team.entities.filter { it.isAlive }.forEach { entity ->
-      entity.traits.forEach { trait ->
-        trait.onStartTurn(entity)
-      }
-
-      val activeEffects = entity.statusEffects.toList()
-      activeEffects.forEach { effect ->
-        effect.onStartTurn(entity)
-        if (effect.tick()) {
-          entity.removeEffect(effect)
-        }
-      }
     }
   }
 }

@@ -13,7 +13,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import com.aln.cardturngame.ui.CharacterCard
+import com.aln.cardturngame.ui.character.CharacterCard
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class Team(

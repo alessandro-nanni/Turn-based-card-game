@@ -10,6 +10,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.aln.cardturngame.effect.StatusEffect
+import com.aln.cardturngame.effect.StunnedEffect
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entityFeatures.Popup
@@ -209,6 +210,8 @@ class EntityViewModel(
   }
 
   // EFFECTS
+  val isStunned: Boolean
+    get() = statusEffects.any { it is StunnedEffect }
 
   fun addEffect(effect: StatusEffect, source: EntityViewModel?) {
     val existingEffect = statusEffects.find { it::class == effect::class }

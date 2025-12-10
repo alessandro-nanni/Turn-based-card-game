@@ -1,4 +1,4 @@
-package com.aln.cardturngame
+package com.aln.cardturngame.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
@@ -49,7 +50,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import com.aln.cardturngame.ui.CharacterInfoCard
+import com.aln.cardturngame.R
+import com.aln.cardturngame.ui.character.CharacterInfoCard
 import com.aln.cardturngame.viewModel.BattleViewModel
 import kotlin.collections.get
 import kotlin.math.roundToInt
@@ -249,7 +251,7 @@ fun RageBar(
             1.0f to Color(0xFFFF0741),
             start = Offset.Zero,
             end = Offset(40f, 40f),
-            tileMode = androidx.compose.ui.graphics.TileMode.Repeated
+            tileMode = TileMode.Repeated
           )
         )
     )
