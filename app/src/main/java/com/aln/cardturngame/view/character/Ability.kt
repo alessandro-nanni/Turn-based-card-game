@@ -1,4 +1,4 @@
-package com.aln.cardturngame.ui.character
+package com.aln.cardturngame.view.character
 
 import android.content.Context
 import androidx.compose.foundation.background

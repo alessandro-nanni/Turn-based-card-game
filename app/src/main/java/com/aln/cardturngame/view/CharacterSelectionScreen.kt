@@ -1,4 +1,4 @@
-package com.aln.cardturngame.ui
+package com.aln.cardturngame.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aln.cardturngame.R
 import com.aln.cardturngame.entity.Entity
-import com.aln.cardturngame.ui.character.CharacterInfoCard
+import com.aln.cardturngame.view.character.CharacterInfoCard
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlin.reflect.full.createInstance
 
