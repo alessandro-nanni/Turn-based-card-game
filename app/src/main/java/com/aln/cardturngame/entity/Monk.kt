@@ -26,6 +26,7 @@ class Monk : Entity(
     nameRes = R.string.ability_iron_will,
     descriptionRes = R.string.ability_iron_will_desc,
     formatArgs = listOf(
+      SpikedShieldEffect.Spec,
       PASSIVE_DURATION
     )
   ) { source, target ->

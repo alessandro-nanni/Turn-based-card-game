@@ -1,12 +1,13 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
+import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class ProtectionEffect(duration: Int) : StatusEffect(
-  nameRes = R.string.effect_protection,
-  descriptionRes = R.string.effect_protection_desc,
-  iconRes = R.drawable.effect_protection,
+  nameRes = nameRes,
+  descriptionRes = descriptionRes,
+  iconRes = iconRes,
   initialDuration = duration,
   isPositive = true,
   formatArgs = listOf(DAMAGE_REDUCTION_PERCENTAGE)
@@ -19,7 +20,10 @@ class ProtectionEffect(duration: Int) : StatusEffect(
     return currentDamage * ((100 - DAMAGE_REDUCTION_PERCENTAGE) / 100)
   }
 
-  private companion object {
-    const val DAMAGE_REDUCTION_PERCENTAGE = 25f
+  companion object Spec : Translatable {
+    private const val DAMAGE_REDUCTION_PERCENTAGE = 25f
+    override val nameRes = R.string.effect_protection
+    override val descriptionRes = R.string.effect_protection_desc
+    val iconRes = R.drawable.effect_protection
   }
 }

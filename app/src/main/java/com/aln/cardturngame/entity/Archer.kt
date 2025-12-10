@@ -28,14 +28,14 @@ class Archer : Entity(
   passiveAbility = Ability(
     nameRes = R.string.ability_cover,
     descriptionRes = R.string.ability_cover_desc,
-    formatArgs = listOf(PASSIVE_DURATION)
+    formatArgs = listOf(PainLinkEffect.Spec, PASSIVE_DURATION)
   ) { source, target ->
     source.addEffect(PainLinkEffect(PASSIVE_DURATION, target), source = source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_rain_fire,
     descriptionRes = R.string.ability_rain_fire_desc,
-    formatArgs = listOf(ULTIMATE_REPEATS, ULTIMATE_BURN_DURATION)
+    formatArgs = listOf(ULTIMATE_REPEATS, BurningEffect.Spec, ULTIMATE_BURN_DURATION)
   ) { source, randomEnemy ->
     source.applyDamage(
       randomEnemy,

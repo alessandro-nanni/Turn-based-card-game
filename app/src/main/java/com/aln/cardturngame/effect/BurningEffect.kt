@@ -1,12 +1,13 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
+import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class BurningEffect(duration: Int) : StatusEffect(
-  nameRes = R.string.effect_burning,
-  descriptionRes = R.string.effect_burning_desc,
-  iconRes = R.drawable.effect_burning,
+  nameRes = nameRes,
+  descriptionRes = descriptionRes,
+  iconRes = iconRes,
   initialDuration = duration,
   isPositive = false,
   formatArgs = listOf(HEALTH_PERCENTAGE)
@@ -16,7 +17,10 @@ class BurningEffect(duration: Int) : StatusEffect(
     target.applyDamage(target, amount = damage)
   }
 
-  private companion object {
-    const val HEALTH_PERCENTAGE = 10
+  companion object Spec : Translatable {
+    private const val HEALTH_PERCENTAGE = 10
+    override val nameRes = R.string.effect_burning
+    override val descriptionRes = R.string.effect_burning_desc
+    val iconRes = R.drawable.effect_burning
   }
 }

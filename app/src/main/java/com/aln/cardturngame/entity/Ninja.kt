@@ -27,6 +27,7 @@ class Ninja : Entity(
     nameRes = R.string.ability_warriors_blessing,
     descriptionRes = R.string.ability_warriors_blessing_desc,
     formatArgs = listOf(
+      SharpenedBladeEffect.Spec,
       PASSIVE_DURATION
     )
   ) { source, target ->
@@ -36,6 +37,7 @@ class Ninja : Entity(
     nameRes = R.string.ability_vanish,
     descriptionRes = R.string.ability_vanish_desc,
     formatArgs = listOf(
+      VanishEffect.Spec,
       ULTIMATE_DURATION
     )
   ) { source, _ ->

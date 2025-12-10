@@ -18,7 +18,7 @@ class Cultist : Entity(
   activeAbility = Ability(
     nameRes = R.string.ability_bewitched,
     descriptionRes = R.string.ability_bewitched_desc,
-    formatArgs = listOf(ACTIVE_REPEATS)
+    formatArgs = listOf(WatchedEffect.Spec, ACTIVE_REPEATS)
   ) { source, target ->
     source.applyDamage(target)
     target.addEffect(WatchedEffect(ACTIVE_REPEATS), source)
@@ -52,9 +52,9 @@ class Cultist : Entity(
     const val MAX_HEALTH = 200f
     const val DAMAGE = 8f
     const val ACTIVE_REPEATS = 3
-    const val PASSIVE_HEAL = 8f
-    const val PASSIVE_DAMAGE = 18f
-    const val ULTIMATE_MULTIPLIER = 6f
+    const val PASSIVE_HEAL = 13f
+    const val PASSIVE_DAMAGE = 21f
+    const val ULTIMATE_MULTIPLIER = 7f
     const val ULTIMATE_HEAL = 50
   }
 }

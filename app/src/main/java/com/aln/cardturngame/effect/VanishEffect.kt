@@ -1,11 +1,18 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
+import com.aln.cardturngame.entityFeatures.Translatable
 
 class VanishEffect(duration: Int) : StatusEffect(
-  nameRes = R.string.effect_vanish,
-  descriptionRes = R.string.effect_vanish_desc,
-  iconRes = R.drawable.effect_vanish,
+  nameRes = nameRes,
+  descriptionRes = descriptionRes,
+  iconRes = iconRes,
   initialDuration = duration,
   isPositive = true
-)
+) {
+  companion object Spec : Translatable {
+    override val nameRes = R.string.effect_vanish
+    override val descriptionRes = R.string.effect_vanish_desc
+    val iconRes = R.drawable.effect_vanish
+  }
+}

@@ -32,6 +32,7 @@ class Paladin : Entity(
     nameRes = R.string.ability_guard,
     descriptionRes = R.string.ability_guard_desc,
     formatArgs = listOf(
+      ProtectionEffect.Spec,
       PASSIVE_DURATION
     )
   ) { source, target ->
@@ -41,7 +42,9 @@ class Paladin : Entity(
     nameRes = R.string.ability_martyr,
     descriptionRes = R.string.ability_martyr_desc,
     formatArgs = listOf(
+      SpikedShieldEffect.Spec,
       ULTIMATE_SHIELD_DURATION,
+      TauntEffect.Spec,
       ULTIMATE_TAUNT_DURATION
     )
   ) { source, randomEnemy ->

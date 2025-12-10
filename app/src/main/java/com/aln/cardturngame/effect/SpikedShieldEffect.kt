@@ -1,12 +1,13 @@
 package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
+import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class SpikedShieldEffect(duration: Int) : StatusEffect(
-  nameRes = R.string.effect_spiked_shield,
-  descriptionRes = R.string.effect_spiked_shield_desc,
-  iconRes = R.drawable.effect_spiked_shield,
+  nameRes = nameRes,
+  descriptionRes = descriptionRes,
+  iconRes = iconRes,
   initialDuration = duration,
   isPositive = true,
   formatArgs = listOf(DAMAGE_REFLECTED)
@@ -28,7 +29,10 @@ class SpikedShieldEffect(duration: Int) : StatusEffect(
     return reducedDamage
   }
 
-  private companion object {
-    const val DAMAGE_REFLECTED = 20f
+  companion object Spec : Translatable {
+    private const val DAMAGE_REFLECTED = 20f
+    override val nameRes = R.string.effect_spiked_shield
+    override val descriptionRes = R.string.effect_spiked_shield_desc
+    val iconRes = R.drawable.effect_spiked_shield
   }
 }

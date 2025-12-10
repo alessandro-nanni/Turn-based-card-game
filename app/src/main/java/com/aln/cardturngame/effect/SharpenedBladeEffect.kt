@@ -2,12 +2,13 @@ package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
 import com.aln.cardturngame.entityFeatures.DamageType
+import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 class SharpenedBladeEffect(duration: Int) : StatusEffect(
-  nameRes = R.string.effect_sharpened_blade,
-  descriptionRes = R.string.effect_sharpened_blade_desc,
-  iconRes = R.drawable.effect_sharpened_blade,
+  nameRes = nameRes,
+  descriptionRes = descriptionRes,
+  iconRes = iconRes,
   initialDuration = duration,
   isPositive = true,
   formatArgs = listOf(DAMAGE_INCREASE)
@@ -26,7 +27,10 @@ class SharpenedBladeEffect(duration: Int) : StatusEffect(
     }
   }
 
-  private companion object {
-    const val DAMAGE_INCREASE = 15f
+  companion object Spec : Translatable {
+    private const val DAMAGE_INCREASE = 15f
+    override val nameRes = R.string.effect_sharpened_blade
+    override val descriptionRes = R.string.effect_sharpened_blade_desc
+    val iconRes = R.drawable.effect_sharpened_blade
   }
 }
