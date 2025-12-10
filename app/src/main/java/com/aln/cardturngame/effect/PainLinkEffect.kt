@@ -36,7 +36,7 @@ class PainLinkEffect(
     override val formatArgs = listOf(SPLIT_PERCENTAGE)
     override val nameRes = R.string.effect_pain_link
     override val descriptionRes = R.string.effect_pain_link_desc
-    override val isPositive = false
+    override val isPositive = true
 
     private const val SPLIT_PERCENTAGE = 50
   }

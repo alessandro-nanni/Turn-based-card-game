@@ -79,4 +79,19 @@
     <string name="ui_effects">Effetti</string>
     <string name="ui_player_name">Nome Giocatore %s</string>
     <string name="ui_winner">%s vince!</string>
+    <string name="entity_robot">Robot</string>
+    <string name="ability_shock_attack">Attacco Shock</string>
+    <string name="ability_shock_attack_desc">Applica %s al bersaglio per %s turni</string>
+    <string name="effect_electrified">Elettrificato</string>
+    <string name="effect_electrified_desc">Subisce %s danni, poi l\'effetto rimbalza su un altro alleato</string>
+    <string name="effect_overloaded">Sovraccarico</string>
+    <string name="effect_overloaded_desc">Il danno base e i danni subiti aumentano del %s%%</string>
+    <string name="ability_overload">Sovraccarico</string>
+    <string name="ability_overload_desc">Applica %s al bersaglio per %s turni</string>
+    <string name="ability_shutdown">Spegnimento</string>
+    <string name="ability_shutdown_desc">Applica %s a tutti i nemici Elettrificati per %s turni</string>
+    <string name="effect_stunned">Stordito</string>
+    <string name="effect_stunned_desc">Non può eseguire alcuna azione</string>
+    <string name="trait_meltdown">Fusione</string>
+    <string name="trait_meltdown_desc">Infligge %s danni a tutti i nemici prima di morire</string>
 </resources>

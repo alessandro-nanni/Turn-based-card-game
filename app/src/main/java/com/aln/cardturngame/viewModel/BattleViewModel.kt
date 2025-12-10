@@ -97,7 +97,10 @@ class BattleViewModel(
       ultimateDragState = current.copy(current = newPos)
 
       hoveredTarget = cardBounds.entries.firstOrNull { (entity, rect) ->
-        entity.isAlive && rect.contains(newPos) && current.team.entities.contains(entity)
+        entity.isAlive &&
+            !entity.isStunned
+            && rect.contains(newPos)
+            && current.team.entities.contains(entity)
       }?.key
     }
   }
