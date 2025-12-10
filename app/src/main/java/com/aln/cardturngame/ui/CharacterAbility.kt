@@ -141,14 +141,14 @@ fun CharacterAbility(context: Context, label: String, ability: Ability, color: C
             elevation = CardDefaults.cardElevation(8.dp),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
-              .widthIn(min = 280.dp, max = 400.dp)
+              .widthIn(max = 400.dp)
               .border(1.dp, Color.Gray.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
           ) {
             Text(
               text = desc,
               color = Color.White,
               fontSize = 12.sp,
-              modifier = Modifier.padding(12.dp)
+              modifier = Modifier.padding(4.dp)
             )
           }
         }

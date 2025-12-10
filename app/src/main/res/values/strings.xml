@@ -80,4 +80,17 @@
     <string name="ui_effects">Effects</string>
     <string name="ui_player_name">Player %s Name</string>
     <string name="ui_winner">%s wins!</string>
+    <string name="entity_robot">Robot</string>
+    <string name="ability_shock_attack">Shock Attack</string>
+    <string name="ability_shock_attack_desc">Apply %s to the target for %s turns</string>
+    <string name="effect_electrified">Electrified</string>
+    <string name="effect_electrified_desc">Receive %s damage, then the effect bounces to another teammate</string>
+    <string name="effect_overloaded">Overloaded</string>
+    <string name="effect_overloaded_desc">Base damage and received damage are increased by %s%%</string>
+    <string name="ability_overload">Overload</string>
+    <string name="ability_overload_desc">Apply %s to the target for %s turns</string>
+    <string name="ability_shutdown">Shutdown</string>
+    <string name="ability_shutdown_desc">Apply %s to all Electrified enemies for %s turns</string>
+    <string name="effect_stunned">Stunned</string>
+    <string name="effect_stunned_desc">Cannot perform any action</string>
 </resources>

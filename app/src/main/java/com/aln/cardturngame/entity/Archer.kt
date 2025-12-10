@@ -12,7 +12,7 @@ class Archer : Entity(
   name = R.string.entity_archer,
   iconRes = R.drawable.entity_archer,
   initialStats = Stats(maxHealth = MAX_HEALTH, damage = DAMAGE),
-  color = Color(0xFF2FC0D3),
+  color = Color(0xFF0893FF),
   damageType = DamageType.Ranged,
   activeAbility = Ability(
     nameRes = R.string.ability_arrow_rain,
