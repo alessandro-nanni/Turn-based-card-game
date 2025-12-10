@@ -255,14 +255,20 @@ fun Ability(context: Context, label: String, ability: Ability, color: Color) {
     val description = ability.getDescription(context)
     val annotatedString = remember(description) {
       buildAnnotatedString {
-        val pattern = "\\[\\[(.*?)\\|(.*?)]]".toRegex(RegexOption.DOT_MATCHES_ALL)
+        val pattern = "\\[\\[(.*?)\\|(.*?)\\|(.*?)]]".toRegex(RegexOption.DOT_MATCHES_ALL)
         var lastIndex = 0
         pattern.findAll(description).forEach { match ->
           append(description.substring(lastIndex, match.range.first))
 
-          pushStringAnnotation(tag = "DESC", annotation = match.groupValues[2])
-          withStyle(SpanStyle(color = Color(0xFFFF9800), fontWeight = FontWeight.Bold)) {
-            append(match.groupValues[1])
+          val effectName = match.groupValues[1]
+          val effectDesc = match.groupValues[2]
+          val isPositive = match.groupValues[3].toBoolean()
+
+          val effectColor = if (isPositive) Color(0xFF00D471) else Color(0xFFBD3BF5)
+
+          pushStringAnnotation(tag = "DESC", annotation = effectDesc)
+          withStyle(SpanStyle(color = effectColor, fontWeight = FontWeight.Bold)) {
+            append(effectName)
           }
           pop()
 

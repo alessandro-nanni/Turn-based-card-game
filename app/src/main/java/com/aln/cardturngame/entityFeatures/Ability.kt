@@ -2,6 +2,7 @@ package com.aln.cardturngame.entityFeatures
 
 import android.content.Context
 import androidx.annotation.StringRes
+import com.aln.cardturngame.effect.StatusEffect
 import com.aln.cardturngame.viewModel.EntityViewModel
 
 data class Ability(
@@ -25,7 +26,8 @@ data class Ability(
         val name = context.getString(arg.nameRes)
         val descArgs = arg.formatArgs.toTypedArray()
         val desc = context.getString(arg.descriptionRes, *descArgs)
-        "[[$name|$desc]]"
+        val isPositive = if (arg is StatusEffect) arg.isPositive else true
+        "[[$name|$desc|$isPositive]]"
       } else {
         arg
       }
