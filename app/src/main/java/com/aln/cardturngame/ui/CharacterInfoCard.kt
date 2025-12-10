@@ -56,7 +56,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.BurningEffect
 import com.aln.cardturngame.effect.StatusEffect
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
@@ -299,7 +298,6 @@ fun Ability(context: Context, label: String, ability: Ability, color: Color) {
         onTextLayout = { layoutResult.value = it }
       )
 
-      // Visualizzazione del Popup
       popupControl?.let { (desc, pos) ->
         Popup(
           alignment = Alignment.TopStart,

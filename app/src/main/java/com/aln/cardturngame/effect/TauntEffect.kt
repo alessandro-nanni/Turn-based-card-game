@@ -2,10 +2,17 @@ package com.aln.cardturngame.effect
 
 import com.aln.cardturngame.R
 
-class TauntEffect(duration: Int=0) : StatusEffect(
-  nameRes = R.string.effect_taunt,
-  descriptionRes = R.string.effect_taunt_desc,
-  iconRes = R.drawable.effect_taunt,
+
+class TauntEffect(duration: Int) : StatusEffect(
+  nameRes = nameRes,
+  descriptionRes = descriptionRes,
+  iconRes = iconRes,
   initialDuration = duration,
-  isPositive = false
-)
+  isPositive = false,
+) {
+  companion object Spec {
+    val nameRes = R.string.effect_taunt
+    val descriptionRes = R.string.effect_taunt_desc
+    val iconRes = R.drawable.effect_taunt
+  }
+}
