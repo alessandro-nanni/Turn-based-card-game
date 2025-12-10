@@ -34,7 +34,7 @@ class Cultist : Entity(
 
     target.heal(PASSIVE_HEAL * watchedEnemies.size, source)
 
-    source.applyDamageToTargets(watchedEnemies,PASSIVE_DAMAGE)
+    source.applyDamageToTargets(watchedEnemies, PASSIVE_DAMAGE)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_harvest,

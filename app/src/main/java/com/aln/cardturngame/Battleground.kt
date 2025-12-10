@@ -125,17 +125,31 @@ fun BattleLayout(
   finalCardWidth: Dp
 ) {
   Row(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(horizontal = 40.dp, vertical = 15.dp),
+    modifier = Modifier.fillMaxSize(),
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
   ) {
 
+    // Left Rage Bar
+    RageBar(
+      rage = viewModel.leftTeam.rage,
+      maxRage = viewModel.leftTeam.maxRage,
+      isTurn = viewModel.isLeftTeamTurn,
+      isDragging = viewModel.ultimateDragState?.team == viewModel.leftTeam,
+      onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
+      onDrag = viewModel::onUltimateDrag,
+      onDragEnd = viewModel::onUltimateDragEnd,
+      modifier = Modifier.fillMaxHeight()
+    )
 
+    // Center Content (Cards & VS)
     Row(
-      verticalAlignment = Alignment.Top,
-      horizontalArrangement = Arrangement.spacedBy(16.dp)
+      modifier = Modifier
+        .weight(1f)
+        .fillMaxHeight()
+        .padding(horizontal = 16.dp, vertical = 15.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
     ) {
 
       viewModel.leftTeam.TeamColumn(
@@ -152,39 +166,12 @@ fun BattleLayout(
         getHighlightColor = viewModel::getHighlightColor
       )
 
-      RageBar(
-        rage = viewModel.leftTeam.rage,
-        maxRage = viewModel.leftTeam.maxRage,
-        isTurn = viewModel.isLeftTeamTurn,
-        isDragging = viewModel.ultimateDragState?.team == viewModel.leftTeam,
-        onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
-        onDrag = viewModel::onUltimateDrag,
-        onDragEnd = viewModel::onUltimateDragEnd
-      )
-
-    }
-
-    Text(
-      text = "VS",
-      color = Color.Gray,
-      fontSize = 32.sp,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.alpha(0.5f)
-    )
-
-    Row(
-      verticalAlignment = Alignment.Bottom,
-      horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-
-      RageBar(
-        rage = viewModel.rightTeam.rage,
-        maxRage = viewModel.rightTeam.maxRage,
-        isTurn = !viewModel.isLeftTeamTurn,
-        isDragging = viewModel.ultimateDragState?.team == viewModel.rightTeam,
-        onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
-        onDrag = viewModel::onUltimateDrag,
-        onDragEnd = viewModel::onUltimateDragEnd
+      Text(
+        text = "VS",
+        color = Color.Gray,
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.alpha(0.5f)
       )
 
       viewModel.rightTeam.TeamColumn(
@@ -201,6 +188,18 @@ fun BattleLayout(
         getHighlightColor = viewModel::getHighlightColor
       )
     }
+
+    // Right Rage Bar
+    RageBar(
+      rage = viewModel.rightTeam.rage,
+      maxRage = viewModel.rightTeam.maxRage,
+      isTurn = !viewModel.isLeftTeamTurn,
+      isDragging = viewModel.ultimateDragState?.team == viewModel.rightTeam,
+      onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
+      onDrag = viewModel::onUltimateDrag,
+      onDragEnd = viewModel::onUltimateDragEnd,
+      modifier = Modifier.fillMaxHeight()
+    )
   }
 }
 
@@ -256,39 +255,36 @@ fun RageBar(
   isDragging: Boolean,
   onDragStart: (Offset) -> Unit,
   onDrag: (Offset) -> Unit,
-  onDragEnd: () -> Unit
+  onDragEnd: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-  val barWidth = 200.dp
-  val barHeight = 24.dp
+  val barWidth = 24.dp
   val progress = (rage / maxRage).coerceIn(0f, 1f)
   val isFull = progress >= 1f
 
   var iconCenterGlobal by remember { mutableStateOf(Offset.Zero) }
 
   Box(
-    contentAlignment = Alignment.CenterStart,
-    modifier = Modifier
-      .width(barWidth)
-      .height(barHeight)
+    contentAlignment = Alignment.BottomCenter,
+    modifier = modifier.width(barWidth)
   ) {
     Box(
       modifier = Modifier
         .fillMaxSize()
-        .clip(RoundedCornerShape(12.dp))
         .background(Color.DarkGray)
-        .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
-    ) {
-      Box(
-        modifier = Modifier
-          .fillMaxHeight()
-          .fillMaxWidth(progress)
-          .background(
-            brush = Brush.horizontalGradient(
-              colors = listOf(Color(0xFFFF5722), Color(0xFFFF0741))
-            )
+    )
+
+    Box(
+      modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight(progress)
+        .align(Alignment.BottomCenter)
+        .background(
+          brush = Brush.verticalGradient(
+            colors = listOf(Color(0xFFFF5722), Color(0xFFFF0741))
           )
-      )
-    }
+        )
+    )
 
     if (isFull && isTurn) {
       Box(
