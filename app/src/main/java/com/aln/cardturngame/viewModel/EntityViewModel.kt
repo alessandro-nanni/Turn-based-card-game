@@ -2,6 +2,7 @@ package com.aln.cardturngame.viewModel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -37,8 +38,8 @@ class EntityViewModel(
 
   // Animation States
   var attackAnimOffset by mutableStateOf<Offset?>(null)
-  var hitAnimTrigger by mutableStateOf(0)
-  var passiveAnimTrigger by mutableStateOf(0)
+  var hitAnimTrigger by mutableIntStateOf(0)
+  var passiveAnimTrigger by mutableIntStateOf(0)
 
   val isAlive: Boolean
     get() = health > 0

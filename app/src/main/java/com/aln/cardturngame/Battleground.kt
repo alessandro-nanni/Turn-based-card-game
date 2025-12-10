@@ -139,10 +139,11 @@ fun BattleLayout(
       onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.leftTeam, offset) },
       onDrag = viewModel::onUltimateDrag,
       onDragEnd = viewModel::onUltimateDragEnd,
-      modifier = Modifier.fillMaxHeight()
+      modifier = Modifier
+        .fillMaxHeight()
+        .padding(start = 40.dp, top = 24.dp, bottom = 24.dp)
     )
 
-    // Center Content (Cards & VS)
     Row(
       modifier = Modifier
         .weight(1f)
@@ -198,8 +199,98 @@ fun BattleLayout(
       onDragStart = { offset -> viewModel.onUltimateDragStart(viewModel.rightTeam, offset) },
       onDrag = viewModel::onUltimateDrag,
       onDragEnd = viewModel::onUltimateDragEnd,
-      modifier = Modifier.fillMaxHeight()
+      modifier = Modifier
+        .fillMaxHeight()
+        .padding(end = 40.dp, top = 24.dp, bottom = 24.dp)
     )
+  }
+}
+
+@Composable
+fun RageBar(
+  rage: Float,
+  maxRage: Float,
+  isTurn: Boolean,
+  isDragging: Boolean,
+  onDragStart: (Offset) -> Unit,
+  onDrag: (Offset) -> Unit,
+  onDragEnd: () -> Unit,
+  modifier: Modifier = Modifier
+) {
+  val barWidth = 24.dp
+  val progress = (rage / maxRage).coerceIn(0f, 1f)
+  val isFull = progress >= 1f
+  val shape = RoundedCornerShape(12.dp)
+
+  var iconCenterGlobal by remember { mutableStateOf(Offset.Zero) }
+
+  Box(
+    contentAlignment = Alignment.BottomCenter,
+    modifier = modifier
+      .width(barWidth)
+      .clip(shape)
+  ) {
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(Color.DarkGray)
+    )
+
+    Box(
+      modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight(progress)
+        .align(Alignment.BottomCenter)
+        .background(
+          brush = Brush.linearGradient(
+            0.0f to Color(0xFFFF5722),
+            0.5f to Color(0xFFFF5722),
+            0.5f to Color(0xFFFF0741),
+            1.0f to Color(0xFFFF0741),
+            start = Offset.Zero,
+            end = Offset(40f, 40f),
+            tileMode = androidx.compose.ui.graphics.TileMode.Repeated
+          )
+        )
+    )
+
+    if (isFull && isTurn) {
+      Box(
+        modifier = Modifier
+          .align(Alignment.Center)
+          .size(48.dp)
+          .onGloballyPositioned { coordinates ->
+            val size = coordinates.size
+            val position = coordinates.positionInRoot()
+            iconCenterGlobal = Offset(
+              x = position.x + size.width / 2f,
+              y = position.y + size.height / 2f
+            )
+          }
+          .pointerInput(Unit) {
+            detectDragGestures(
+              onDragStart = { _ ->
+                onDragStart(iconCenterGlobal)
+              },
+              onDrag = { change, dragAmount ->
+                change.consume()
+                onDrag(dragAmount)
+              },
+              onDragEnd = { onDragEnd() }
+            )
+          },
+        contentAlignment = Alignment.Center
+      ) {
+        if (!isDragging) {
+          Icon(
+            painter = painterResource(id = R.drawable.ultimate),
+            contentDescription = "Ready Ultimate",
+            tint = Color.Black,
+            modifier = Modifier.size(30.dp)
+          )
+        }
+      }
+    }
   }
 }
 
@@ -244,84 +335,5 @@ fun LineCanvas(dragStart: Offset, dragCurrent: Offset, color: Color) {
       end = dragCurrent,
       strokeWidth = 8f
     )
-  }
-}
-
-@Composable
-fun RageBar(
-  rage: Float,
-  maxRage: Float,
-  isTurn: Boolean,
-  isDragging: Boolean,
-  onDragStart: (Offset) -> Unit,
-  onDrag: (Offset) -> Unit,
-  onDragEnd: () -> Unit,
-  modifier: Modifier = Modifier
-) {
-  val barWidth = 24.dp
-  val progress = (rage / maxRage).coerceIn(0f, 1f)
-  val isFull = progress >= 1f
-
-  var iconCenterGlobal by remember { mutableStateOf(Offset.Zero) }
-
-  Box(
-    contentAlignment = Alignment.BottomCenter,
-    modifier = modifier.width(barWidth)
-  ) {
-    Box(
-      modifier = Modifier
-        .fillMaxSize()
-        .background(Color.DarkGray)
-    )
-
-    Box(
-      modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight(progress)
-        .align(Alignment.BottomCenter)
-        .background(
-          brush = Brush.verticalGradient(
-            colors = listOf(Color(0xFFFF5722), Color(0xFFFF0741))
-          )
-        )
-    )
-
-    if (isFull && isTurn) {
-      Box(
-        modifier = Modifier
-          .align(Alignment.Center)
-          .size(48.dp)
-          .onGloballyPositioned { coordinates ->
-            val size = coordinates.size
-            val position = coordinates.positionInRoot()
-            iconCenterGlobal = Offset(
-              x = position.x + size.width / 2f,
-              y = position.y + size.height / 2f
-            )
-          }
-          .pointerInput(Unit) {
-            detectDragGestures(
-              onDragStart = { _ ->
-                onDragStart(iconCenterGlobal)
-              },
-              onDrag = { change, dragAmount ->
-                change.consume()
-                onDrag(dragAmount)
-              },
-              onDragEnd = { onDragEnd() }
-            )
-          },
-        contentAlignment = Alignment.Center
-      ) {
-        if (!isDragging) {
-          Icon(
-            painter = painterResource(id = R.drawable.ultimate),
-            contentDescription = "Ready Ultimate",
-            tint = Color.Black,
-            modifier = Modifier.size(24.dp)
-          )
-        }
-      }
-    }
   }
 }
