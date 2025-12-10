@@ -7,10 +7,14 @@ import androidx.annotation.StringRes
 interface Translatable {
   @get:StringRes
   val nameRes: Int
+
   @get:StringRes
   val descriptionRes: Int
   val formatArgs: List<Any>
     get() = emptyList()
+
+  val isPositive: Boolean
+    get() = true
 
   fun getName(context: Context): String {
     return context.getString(nameRes)

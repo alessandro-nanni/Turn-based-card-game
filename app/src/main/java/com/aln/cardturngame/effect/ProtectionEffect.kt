@@ -9,8 +9,8 @@ class ProtectionEffect(duration: Int) : StatusEffect(
   descriptionRes = descriptionRes,
   iconRes = iconRes,
   initialDuration = duration,
-  isPositive = true,
-  formatArgs = listOf(DAMAGE_REDUCTION_PERCENTAGE)
+  isPositive = isPositive,
+  formatArgs = formatArgs
 ) {
   override fun modifyIncomingDamage(
     owner: EntityViewModel,
@@ -21,10 +21,12 @@ class ProtectionEffect(duration: Int) : StatusEffect(
   }
 
   companion object Spec : Translatable {
+    val iconRes = R.drawable.effect_protection
     override val formatArgs = listOf(DAMAGE_REDUCTION_PERCENTAGE)
-    private const val DAMAGE_REDUCTION_PERCENTAGE = 25f
     override val nameRes = R.string.effect_protection
     override val descriptionRes = R.string.effect_protection_desc
-    val iconRes = R.drawable.effect_protection
+    override val isPositive = true
+
+    private const val DAMAGE_REDUCTION_PERCENTAGE = 25f
   }
 }

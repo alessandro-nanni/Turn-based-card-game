@@ -9,11 +9,12 @@ class TauntEffect(duration: Int) : StatusEffect(
   descriptionRes = descriptionRes,
   iconRes = iconRes,
   initialDuration = duration,
-  isPositive = false,
+  isPositive = isPositive,
 ) {
   companion object Spec : Translatable {
+    val iconRes = R.drawable.effect_taunt
     override val nameRes = R.string.effect_taunt
     override val descriptionRes = R.string.effect_taunt_desc
-    val iconRes = R.drawable.effect_taunt
+    override val isPositive = false
   }
 }

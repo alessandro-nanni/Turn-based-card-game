@@ -12,8 +12,8 @@ class PainLinkEffect(
   descriptionRes = descriptionRes,
   iconRes = iconRes,
   initialDuration = duration,
-  isPositive = true,
-  formatArgs = listOf(SPLIT_PERCENTAGE)
+  formatArgs = formatArgs,
+  isPositive = isPositive
 
 ) {
   override fun modifyIncomingDamage(
@@ -32,10 +32,12 @@ class PainLinkEffect(
   }
 
   companion object Spec : Translatable {
+    val iconRes = R.drawable.effect_pain_link
     override val formatArgs = listOf(SPLIT_PERCENTAGE)
-    private const val SPLIT_PERCENTAGE = 50
     override val nameRes = R.string.effect_pain_link
     override val descriptionRes = R.string.effect_pain_link_desc
-    val iconRes = R.drawable.effect_pain_link
+    override val isPositive = false
+
+    private const val SPLIT_PERCENTAGE = 50
   }
 }

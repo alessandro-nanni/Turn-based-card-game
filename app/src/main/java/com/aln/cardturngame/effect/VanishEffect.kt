@@ -8,11 +8,12 @@ class VanishEffect(duration: Int) : StatusEffect(
   descriptionRes = descriptionRes,
   iconRes = iconRes,
   initialDuration = duration,
-  isPositive = true
+  isPositive = isPositive
 ) {
   companion object Spec : Translatable {
+    val iconRes = R.drawable.effect_vanish
     override val nameRes = R.string.effect_vanish
     override val descriptionRes = R.string.effect_vanish_desc
-    val iconRes = R.drawable.effect_vanish
+    override val isPositive = true
   }
 }

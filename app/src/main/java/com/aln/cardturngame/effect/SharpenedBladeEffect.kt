@@ -10,8 +10,8 @@ class SharpenedBladeEffect(duration: Int) : StatusEffect(
   descriptionRes = descriptionRes,
   iconRes = iconRes,
   initialDuration = duration,
-  isPositive = true,
-  formatArgs = listOf(DAMAGE_INCREASE)
+  isPositive = isPositive,
+  formatArgs = formatArgs
 ) {
   private var ownerDamageType: DamageType? = null
 
@@ -28,10 +28,12 @@ class SharpenedBladeEffect(duration: Int) : StatusEffect(
   }
 
   companion object Spec : Translatable {
+    val iconRes = R.drawable.effect_sharpened_blade
+
     override val formatArgs = listOf(DAMAGE_INCREASE)
-    private const val DAMAGE_INCREASE = 15f
     override val nameRes = R.string.effect_sharpened_blade
     override val descriptionRes = R.string.effect_sharpened_blade_desc
-    val iconRes = R.drawable.effect_sharpened_blade
+    override val isPositive = true
+    private const val DAMAGE_INCREASE = 15f
   }
 }

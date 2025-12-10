@@ -13,7 +13,7 @@ abstract class StatusEffect(
   @field:StringRes override val descriptionRes: Int,
   @field:DrawableRes val iconRes: Int,
   initialDuration: Int,
-  val isPositive: Boolean = false,
+  override val isPositive: Boolean,
   override val formatArgs: List<Any> = emptyList()
 ) : Translatable {
   var duration by mutableIntStateOf(initialDuration)

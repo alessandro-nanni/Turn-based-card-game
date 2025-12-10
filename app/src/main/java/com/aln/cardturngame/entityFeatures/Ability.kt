@@ -26,7 +26,8 @@ data class Ability(
         val name = context.getString(arg.nameRes)
         val descArgs = arg.formatArgs.toTypedArray()
         val desc = context.getString(arg.descriptionRes, *descArgs)
-        val isPositive = if (arg is StatusEffect) arg.isPositive else true
+        val isPositive = arg.isPositive
+
         "[[$name|$desc|$isPositive]]"
       } else {
         arg

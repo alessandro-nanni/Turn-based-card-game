@@ -9,8 +9,8 @@ class BurningEffect(duration: Int) : StatusEffect(
   descriptionRes = descriptionRes,
   iconRes = iconRes,
   initialDuration = duration,
-  isPositive = false,
-  formatArgs = listOf(HEALTH_PERCENTAGE)
+  isPositive = isPositive,
+  formatArgs = formatArgs
 ) {
   override suspend fun onStartTurn(target: EntityViewModel) {
     val damage = target.maxHealth / HEALTH_PERCENTAGE
@@ -18,10 +18,12 @@ class BurningEffect(duration: Int) : StatusEffect(
   }
 
   companion object Spec : Translatable {
+    val iconRes = R.drawable.effect_burning
     override val formatArgs = listOf(HEALTH_PERCENTAGE)
-    private const val HEALTH_PERCENTAGE = 10
     override val nameRes = R.string.effect_burning
     override val descriptionRes = R.string.effect_burning_desc
-    val iconRes = R.drawable.effect_burning
+    override val isPositive = false
+
+    private const val HEALTH_PERCENTAGE = 10
   }
 }
