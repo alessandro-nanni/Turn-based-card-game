@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,11 +38,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.aln.cardturngame.entityFeatures.Ability
+import kotlinx.coroutines.delay
 
 
 @Composable
 fun CharacterAbility(context: Context, label: String, ability: Ability, color: Color) {
   var popupControl by remember { mutableStateOf<Pair<String, Offset>?>(null) }
+
+  LaunchedEffect(popupControl) {
+    if (popupControl != null) {
+      delay(2000)
+      popupControl = null
+    }
+  }
 
   Column(modifier = Modifier.padding(bottom = 12.dp)) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -132,14 +141,14 @@ fun CharacterAbility(context: Context, label: String, ability: Ability, color: C
             elevation = CardDefaults.cardElevation(8.dp),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
-              .widthIn(max = 200.dp)
+              .widthIn(min = 280.dp, max = 400.dp)
               .border(1.dp, Color.Gray.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
           ) {
             Text(
               text = desc,
               color = Color.White,
               fontSize = 12.sp,
-              modifier = Modifier.padding(8.dp)
+              modifier = Modifier.padding(12.dp)
             )
           }
         }
