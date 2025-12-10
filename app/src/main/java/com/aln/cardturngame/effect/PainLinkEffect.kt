@@ -32,6 +32,7 @@ class PainLinkEffect(
   }
 
   companion object Spec : Translatable {
+    override val formatArgs = listOf(SPLIT_PERCENTAGE)
     private const val SPLIT_PERCENTAGE = 50
     override val nameRes = R.string.effect_pain_link
     override val descriptionRes = R.string.effect_pain_link_desc

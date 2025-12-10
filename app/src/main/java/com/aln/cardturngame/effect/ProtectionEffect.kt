@@ -21,6 +21,7 @@ class ProtectionEffect(duration: Int) : StatusEffect(
   }
 
   companion object Spec : Translatable {
+    override val formatArgs = listOf(DAMAGE_REDUCTION_PERCENTAGE)
     private const val DAMAGE_REDUCTION_PERCENTAGE = 25f
     override val nameRes = R.string.effect_protection
     override val descriptionRes = R.string.effect_protection_desc

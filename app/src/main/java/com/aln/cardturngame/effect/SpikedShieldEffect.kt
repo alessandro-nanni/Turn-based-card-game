@@ -30,6 +30,7 @@ class SpikedShieldEffect(duration: Int) : StatusEffect(
   }
 
   companion object Spec : Translatable {
+    override val formatArgs = listOf(DAMAGE_REFLECTED)
     private const val DAMAGE_REFLECTED = 20f
     override val nameRes = R.string.effect_spiked_shield
     override val descriptionRes = R.string.effect_spiked_shield_desc

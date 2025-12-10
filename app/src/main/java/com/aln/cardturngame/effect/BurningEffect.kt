@@ -18,6 +18,7 @@ class BurningEffect(duration: Int) : StatusEffect(
   }
 
   companion object Spec : Translatable {
+    override val formatArgs = listOf(HEALTH_PERCENTAGE)
     private const val HEALTH_PERCENTAGE = 10
     override val nameRes = R.string.effect_burning
     override val descriptionRes = R.string.effect_burning_desc

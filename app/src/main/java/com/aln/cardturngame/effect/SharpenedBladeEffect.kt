@@ -28,6 +28,7 @@ class SharpenedBladeEffect(duration: Int) : StatusEffect(
   }
 
   companion object Spec : Translatable {
+    override val formatArgs = listOf(DAMAGE_INCREASE)
     private const val DAMAGE_INCREASE = 15f
     override val nameRes = R.string.effect_sharpened_blade
     override val descriptionRes = R.string.effect_sharpened_blade_desc
