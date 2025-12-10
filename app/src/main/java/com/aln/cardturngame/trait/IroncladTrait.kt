@@ -1,6 +1,5 @@
 package com.aln.cardturngame.trait
 
-import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
 import com.aln.cardturngame.viewModel.EntityViewModel
 

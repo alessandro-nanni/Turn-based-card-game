@@ -26,7 +26,7 @@ abstract class StatusEffect(
 
   open fun modifyDamage(currentDamage: Float): Float = currentDamage
 
-  open fun modifyIncomingDamage(
+  open suspend fun modifyIncomingDamage(
     owner: EntityViewModel,
     currentDamage: Float,
     source: EntityViewModel?

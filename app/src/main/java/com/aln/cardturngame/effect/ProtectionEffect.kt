@@ -12,7 +12,7 @@ class ProtectionEffect(duration: Int) : StatusEffect(
   isPositive = isPositive,
   formatArgs = formatArgs
 ) {
-  override fun modifyIncomingDamage(
+  override suspend fun modifyIncomingDamage(
     owner: EntityViewModel,
     currentDamage: Float,
     source: EntityViewModel?

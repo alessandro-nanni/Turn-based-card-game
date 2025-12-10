@@ -16,7 +16,7 @@ class PainLinkEffect(
   isPositive = isPositive
 
 ) {
-  override fun modifyIncomingDamage(
+  override suspend fun modifyIncomingDamage(
     owner: EntityViewModel,
     currentDamage: Float,
     source: EntityViewModel?

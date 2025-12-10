@@ -8,6 +8,7 @@ import com.aln.cardturngame.effect.StunnedEffect
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
+import com.aln.cardturngame.trait.MeltdownTrait
 
 class Robot : Entity(
   name = R.string.entity_robot,
@@ -15,6 +16,7 @@ class Robot : Entity(
   initialStats = Stats(maxHealth = MAX_HEALTH, damage = DAMAGE),
   color = Color(0xFF44F7FD),
   damageType = DamageType.Magic,
+  traits = listOf(MeltdownTrait()),
   activeAbility = Ability(
     nameRes = R.string.ability_shock_attack,
     descriptionRes = R.string.ability_shock_attack_desc,

@@ -91,13 +91,12 @@ class EntityViewModel(
     addPopup("$sign${amount.toInt()}", color, isStatus = false)
   }
 
-  fun receiveDamage(amount: Float, source: EntityViewModel? = null): Float {
+  suspend fun receiveDamage(amount: Float, source: EntityViewModel? = null): Float {
     var actualDamage = amount
 
     statusEffects.toList().forEach { effect ->
       actualDamage = effect.modifyIncomingDamage(this, actualDamage, source)
     }
-
 
     traits.forEach { trait ->
       actualDamage = trait.modifyIncomingDamage(this, source, actualDamage)
@@ -113,6 +112,12 @@ class EntityViewModel(
       addPopup(actualDamage, Color.Red)
 
       if (!isAlive) {
+        traits.forEach { trait ->
+          trait.onDidReceiveDamage(this, source, actualDamage)
+        }
+        traits.forEach { trait ->
+          trait.onDeath(this)
+        }
         clearAllEffects()
       }
 

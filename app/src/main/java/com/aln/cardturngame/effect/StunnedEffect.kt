@@ -10,7 +10,6 @@ class StunnedEffect(duration: Int) : StatusEffect(
   initialDuration = duration,
   isPositive = isPositive,
 ) {
-
   companion object Spec : Translatable {
     val iconRes = R.drawable.effect_stunned
     override val nameRes = R.string.effect_stunned

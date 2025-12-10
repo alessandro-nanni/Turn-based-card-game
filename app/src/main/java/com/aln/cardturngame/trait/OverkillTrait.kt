@@ -7,7 +7,7 @@ class OverkillTrait : Trait {
   override val nameRes: Int = R.string.trait_overkill
   override val descriptionRes: Int = R.string.trait_overkill_desc
 
-  override fun onDidDealDamage(owner: EntityViewModel, target: EntityViewModel, amount: Float, overkill: Float) {
+  override suspend fun onDidDealDamage(owner: EntityViewModel, target: EntityViewModel, amount: Float, overkill: Float) {
     if (overkill > 0f) {
       val aliveTeammates = target.getAliveTeamMembers()
       

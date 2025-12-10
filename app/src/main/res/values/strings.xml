@@ -93,4 +93,6 @@
     <string name="ability_shutdown_desc">Apply %s to all Electrified enemies for %s turns</string>
     <string name="effect_stunned">Stunned</string>
     <string name="effect_stunned_desc">Cannot perform any action</string>
+    <string name="trait_meltdown">Meltdown</string>
+    <string name="trait_meltdown_desc">Deal %s damage to all enemies before dying</string>
 </resources>

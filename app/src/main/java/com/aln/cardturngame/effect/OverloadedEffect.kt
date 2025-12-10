@@ -17,7 +17,7 @@ class OverloadedEffect(duration: Int) : StatusEffect(
     return currentDamage * ((100 + DAMAGE_INCREASE) / 100)
   }
 
-  override fun modifyIncomingDamage(
+  override suspend fun modifyIncomingDamage(
     owner: EntityViewModel,
     currentDamage: Float,
     source: EntityViewModel?
