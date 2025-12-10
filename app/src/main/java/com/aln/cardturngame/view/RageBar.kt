@@ -1,6 +1,5 @@
 package com.aln.cardturngame.view
 
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -9,14 +8,10 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,11 +32,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aln.cardturngame.R
-
-import androidx.compose.foundation.shape.CircleShape
 
 @Composable
 fun RageBar(
@@ -71,16 +63,6 @@ fun RageBar(
       repeatMode = RepeatMode.Reverse
     ),
     label = "lava"
-  )
-
-  val flamePulse by infiniteTransition.animateFloat(
-    initialValue = 0.85f,
-    targetValue = 1.15f,
-    animationSpec = infiniteRepeatable(
-      animation = tween(800, easing = FastOutSlowInEasing),
-      repeatMode = RepeatMode.Reverse
-    ),
-    label = "flame"
   )
 
   val barBrush = if (isFull) {
@@ -125,7 +107,7 @@ fun RageBar(
       Box(
         modifier = Modifier
           .align(Alignment.Center)
-          .size(48.dp)
+          .size(64.dp)
           .onGloballyPositioned { coordinates ->
             val size = coordinates.size
             val position = coordinates.positionInRoot()
@@ -136,9 +118,7 @@ fun RageBar(
           }
           .pointerInput(Unit) {
             detectDragGestures(
-              onDragStart = { _ ->
-                onDragStart(iconCenterGlobal)
-              },
+              onDragStart = { _ -> onDragStart(iconCenterGlobal) },
               onDrag = { change, dragAmount ->
                 change.consume()
                 onDrag(dragAmount)
@@ -149,61 +129,14 @@ fun RageBar(
         contentAlignment = Alignment.Center
       ) {
         if (!isDragging) {
-          Box(
-            modifier = Modifier
-              .size(42.dp * flamePulse)
-              .clip(CircleShape)
-              .background(
-                brush = Brush.radialGradient(
-                  colors = listOf(Color.Red.copy(alpha = 0.6f), Color.Transparent),
-                  center = Offset.Unspecified,
-                  radius = 80f
-                )
-              )
-          )
-
           Icon(
             painter = painterResource(id = R.drawable.ultimate),
             contentDescription = null,
             tint = Color.Black,
-            modifier = Modifier.size(30.dp)
+            modifier = Modifier.size(56.dp)
           )
         }
       }
     }
-  }
-}
-
-@Preview
-@Composable
-fun RageBarPreview() {
-  Row(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(20.dp),
-    horizontalArrangement = Arrangement.SpaceEvenly,
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-    RageBar(
-      rage = 50f,
-      maxRage = 100f,
-      isTurn = true,
-      isDragging = false,
-      onDragStart = {},
-      onDrag = {},
-      onDragEnd = {},
-      modifier = Modifier.height(200.dp)
-    )
-
-    RageBar(
-      rage = 100f,
-      maxRage = 100f,
-      isTurn = true,
-      isDragging = false,
-      onDragStart = {},
-      onDrag = {},
-      onDragEnd = {},
-      modifier = Modifier.height(200.dp)
-    )
   }
 }

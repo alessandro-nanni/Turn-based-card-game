@@ -5,7 +5,7 @@ import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class SharpenedBladeEffect(duration: Int) : StatusEffect(
+class StrengthEffect(duration: Int) : StatusEffect(
   nameRes = nameRes,
   descriptionRes = descriptionRes,
   iconRes = iconRes,
@@ -28,10 +28,10 @@ class SharpenedBladeEffect(duration: Int) : StatusEffect(
   }
 
   companion object Spec : Translatable {
-    val iconRes = R.drawable.effect_sharpened_blade
+    val iconRes = R.drawable.effect_strength
     override val formatArgs = listOf(DAMAGE_INCREASE)
-    override val nameRes = R.string.effect_sharpened_blade
-    override val descriptionRes = R.string.effect_sharpened_blade_desc
+    override val nameRes = R.string.effect_strength
+    override val descriptionRes = R.string.effect_strength_desc
 
     override val isPositive = true
     private const val DAMAGE_INCREASE = 15f

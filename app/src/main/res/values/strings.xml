@@ -6,8 +6,8 @@
     <string name="entity_ninja">Ninja</string>
     <string name="ability_slash">Slash</string>
     <string name="ability_slash_desc">Performs %s rapid strikes</string>
-    <string name="effect_sharpened_blade">Sharpened Blade</string>
-    <string name="effect_sharpened_blade_desc">Melee damage is increased by %s%%</string>
+    <string name="effect_strength">Strength</string>
+    <string name="effect_strength_desc">Melee damage is increased by %s%%</string>
     <string name="ability_warriors_blessing">Warrior\'s Blessing</string>
     <string name="ability_warriors_blessing_desc">Apply %s to the target for %s turns</string>
     <string name="effect_vanish">Vanish</string>
@@ -95,4 +95,15 @@
     <string name="effect_stunned_desc">Cannot perform any action</string>
     <string name="trait_meltdown">Meltdown</string>
     <string name="trait_meltdown_desc">Deal %s damage to all enemies before dying</string>
+    <string name="effect_precision">Precision</string>
+    <string name="effect_precision_desc">Ranged damage is increased by %s%%</string>
+    <string name="trait_quick_draw">Quick Draw</string>
+    <string name="trait_quick_draw_desc">Deal %s damage to a random enemy at the end of each turn</string>
+    <string name="entity_rouge">Rouge</string>
+    <string name="ability_bullseye" >Bullseye</string>
+    <string name="ability_bullseye_desc">Shoot the target</string>
+    <string name="ability_take_aim">Take Aim</string>
+    <string name="ability_take_aim_desc">Apply %s to the target for %s turns</string>
+    <string name="ability_barrage">Barrage</string>
+    <string name="ability_barrage_desc">All ranged teammates perform their active ability %s times on random enemies</string>
 </resources>

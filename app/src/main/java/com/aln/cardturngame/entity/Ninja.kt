@@ -2,7 +2,7 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.SharpenedBladeEffect
+import com.aln.cardturngame.effect.StrengthEffect
 import com.aln.cardturngame.effect.VanishEffect
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
@@ -27,11 +27,11 @@ class Ninja : Entity(
     nameRes = R.string.ability_warriors_blessing,
     descriptionRes = R.string.ability_warriors_blessing_desc,
     formatArgs = listOf(
-      SharpenedBladeEffect.Spec,
+      StrengthEffect.Spec,
       PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addEffect(SharpenedBladeEffect(PASSIVE_DURATION), source = source)
+    target.addEffect(StrengthEffect(PASSIVE_DURATION), source = source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_vanish,

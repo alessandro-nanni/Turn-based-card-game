@@ -5,8 +5,8 @@
     <string name="entity_ninja">Ninja</string>
     <string name="ability_slash">Fendente</string>
     <string name="ability_slash_desc">Esegue %s colpi rapidi</string>
-    <string name="effect_sharpened_blade">Lama Affilata</string>
-    <string name="effect_sharpened_blade_desc">Il danno in mischia è aumentato del %s%%</string>
+    <string name="effect_strength">Forza</string>
+    <string name="effect_strength_desc">Il danno in mischia è aumentato del %s%%</string>
     <string name="ability_warriors_blessing">Benedizione del Guerriero</string>
     <string name="ability_warriors_blessing_desc">Applica %s al bersaglio per %s turni</string>
     <string name="effect_vanish">Sparizione</string>
@@ -94,4 +94,15 @@
     <string name="effect_stunned_desc">Non può eseguire alcuna azione</string>
     <string name="trait_meltdown">Fusione</string>
     <string name="trait_meltdown_desc">Infligge %s danni a tutti i nemici prima di morire</string>
+    <string name="effect_precision">Precisione</string>
+    <string name="effect_precision_desc">Danno a distanza aumentato del %s%%</string>
+    <string name="ability_bullseye">Centro</string>
+    <string name="ability_bullseye_desc">Colpisci il bersaglio</string>
+    <string name="ability_take_aim">Prendi mira</string>
+    <string name="trait_quick_draw_desc">Infliggi % danno ad un nemico casuale al termine di ogni turno</string>
+    <string name="trait_quick_draw">Estrazione Rapida</string>
+    <string name="entity_rouge">Furfante</string>
+    <string name="ability_take_aim_desc">Applica %s al bersaglio per %s turni</string>
+    <string name="ability_barrage">Raffica</string>
+    <string name="ability_barrage_desc">Tutti gli alleati a distanza eseguono la loro abilità attiva %s volte su nemici casuali</string>
 </resources>
