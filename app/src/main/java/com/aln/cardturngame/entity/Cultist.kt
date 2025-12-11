@@ -2,11 +2,11 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.WatchedEffect
+import com.aln.cardturngame.effect.Watched
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
-import com.aln.cardturngame.trait.ForsakenTrait
+import com.aln.cardturngame.trait.Forsaken
 
 class Cultist : Entity(
   name = R.string.entity_cultist,
@@ -14,14 +14,14 @@ class Cultist : Entity(
   initialStats = Stats(maxHealth = MAX_HEALTH, damage = DAMAGE),
   color = Color(0xFFE91E63),
   damageType = DamageType.Magic,
-  traits = listOf(ForsakenTrait()),
+  traits = listOf(Forsaken()),
   activeAbility = Ability(
     nameRes = R.string.ability_bewitched,
     descriptionRes = R.string.ability_bewitched_desc,
-    formatArgs = listOf(WatchedEffect.Spec, ACTIVE_REPEATS)
+    formatArgs = listOf(Watched.Spec, ACTIVE_REPEATS)
   ) { source, target ->
     source.applyDamage(target)
-    target.addEffect(WatchedEffect(ACTIVE_REPEATS), source)
+    target.addEffect(Watched(ACTIVE_REPEATS), source)
   },
   passiveAbility = Ability(
     nameRes = R.string.ability_reckoning,
@@ -29,7 +29,7 @@ class Cultist : Entity(
     formatArgs = listOf(PASSIVE_HEAL, PASSIVE_DAMAGE)
   ) { source, target ->
     val watchedEnemies = target.getEnemies().filter { member ->
-      member.statusEffects.any { it is WatchedEffect }
+      member.statusEffects.any { it is Watched }
     }
 
     target.heal(PASSIVE_HEAL * watchedEnemies.size, source)
@@ -42,7 +42,7 @@ class Cultist : Entity(
     formatArgs = listOf(ULTIMATE_MULTIPLIER, ULTIMATE_HEAL)
   ) { source, randomEnemy ->
     val watchedDuration = randomEnemy.getAllTeamMembers().sumOf { member ->
-      member.statusEffects.find { it is WatchedEffect }?.duration ?: 0
+      member.statusEffects.find { it is Watched }?.duration ?: 0
     }
     val dmgDealt = source.applyDamage(randomEnemy, watchedDuration * ULTIMATE_MULTIPLIER)
     source.heal(dmgDealt * ULTIMATE_HEAL / 100, source)

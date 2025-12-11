@@ -5,7 +5,7 @@ import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class StrengthEffect(duration: Int) : StatusEffect(
+class Strength(duration: Int) : StatusEffect(
   nameRes = nameRes,
   descriptionRes = descriptionRes,
   iconRes = iconRes,

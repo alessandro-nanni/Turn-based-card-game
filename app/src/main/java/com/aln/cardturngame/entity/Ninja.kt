@@ -2,12 +2,12 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.StrengthEffect
-import com.aln.cardturngame.effect.VanishEffect
+import com.aln.cardturngame.effect.Strength
+import com.aln.cardturngame.effect.Vanish
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
-import com.aln.cardturngame.trait.SidestepTrait
+import com.aln.cardturngame.trait.Sidestep
 
 class Ninja : Entity(
   name = R.string.entity_ninja,
@@ -27,23 +27,23 @@ class Ninja : Entity(
     nameRes = R.string.ability_warriors_blessing,
     descriptionRes = R.string.ability_warriors_blessing_desc,
     formatArgs = listOf(
-      StrengthEffect.Spec,
+      Strength.Spec,
       PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addEffect(StrengthEffect(PASSIVE_DURATION), source = source)
+    target.addEffect(Strength(PASSIVE_DURATION), source = source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_vanish,
     descriptionRes = R.string.ability_vanish_desc,
     formatArgs = listOf(
-      VanishEffect.Spec,
+      Vanish.Spec,
       ULTIMATE_DURATION
     )
   ) { source, _ ->
-    source.addEffect(VanishEffect(ULTIMATE_DURATION), source = source)
+    source.addEffect(Vanish(ULTIMATE_DURATION), source = source)
   },
-  traits = listOf(SidestepTrait()),
+  traits = listOf(Sidestep()),
   damageType = DamageType.Melee
 ) {
   private companion object {

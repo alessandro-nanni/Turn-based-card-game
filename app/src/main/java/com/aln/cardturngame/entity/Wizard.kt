@@ -5,7 +5,7 @@ import com.aln.cardturngame.R
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
-import com.aln.cardturngame.trait.OverkillTrait
+import com.aln.cardturngame.trait.Overkill
 
 class Wizard : Entity(
   name = R.string.entity_wizard,
@@ -47,7 +47,7 @@ class Wizard : Entity(
     }
   },
   damageType = DamageType.Magic,
-  traits = listOf(OverkillTrait())
+  traits = listOf(Overkill())
 ) {
   private companion object {
     const val MAX_HEALTH = 150f

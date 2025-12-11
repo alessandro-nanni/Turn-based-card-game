@@ -2,11 +2,11 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.SpikedShieldEffect
+import com.aln.cardturngame.effect.SpikedShield
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
-import com.aln.cardturngame.trait.IroncladTrait
+import com.aln.cardturngame.trait.Ironclad
 
 class Monk : Entity(
   name = R.string.entity_monk,
@@ -14,7 +14,7 @@ class Monk : Entity(
   initialStats = Stats(maxHealth = MAX_HEALTH, damage = DAMAGE),
   color = Color(0xFFDA855D),
   damageType = DamageType.Magic,
-  traits = listOf(IroncladTrait()),
+  traits = listOf(Ironclad()),
   activeAbility = Ability(
     nameRes = R.string.ability_syphon,
     descriptionRes = R.string.ability_syphon_desc,
@@ -26,11 +26,11 @@ class Monk : Entity(
     nameRes = R.string.ability_iron_will,
     descriptionRes = R.string.ability_iron_will_desc,
     formatArgs = listOf(
-      SpikedShieldEffect.Spec,
+      SpikedShield.Spec,
       PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addEffect(SpikedShieldEffect(PASSIVE_DURATION), source)
+    target.addEffect(SpikedShield(PASSIVE_DURATION), source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_liberation,

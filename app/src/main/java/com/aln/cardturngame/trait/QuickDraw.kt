@@ -3,7 +3,7 @@ package com.aln.cardturngame.trait
 import com.aln.cardturngame.R
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class QuickDrawTrait : Trait {
+class QuickDraw : Trait {
   override val nameRes: Int = R.string.trait_quick_draw
   override val descriptionRes: Int = R.string.trait_quick_draw_desc
   override val formatArgs: List<Any> = listOf(DAMAGE)

@@ -3,7 +3,7 @@ package com.aln.cardturngame.trait
 import com.aln.cardturngame.R
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class IroncladTrait : Trait {
+class Ironclad : Trait {
   override val nameRes: Int = R.string.trait_ironclad
   override val descriptionRes: Int = R.string.trait_ironclad_desc
   override val formatArgs: List<Any> = listOf(DAMAGE_IGNORED)

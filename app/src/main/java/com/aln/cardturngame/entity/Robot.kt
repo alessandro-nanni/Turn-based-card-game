@@ -2,13 +2,13 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.ElectrifiedEffect
-import com.aln.cardturngame.effect.OverloadedEffect
-import com.aln.cardturngame.effect.StunnedEffect
+import com.aln.cardturngame.effect.Electrified
+import com.aln.cardturngame.effect.Overloaded
+import com.aln.cardturngame.effect.Stunned
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
-import com.aln.cardturngame.trait.MeltdownTrait
+import com.aln.cardturngame.trait.Meltdown
 
 class Robot : Entity(
   name = R.string.entity_robot,
@@ -16,29 +16,29 @@ class Robot : Entity(
   initialStats = Stats(maxHealth = MAX_HEALTH, damage = DAMAGE),
   color = Color(0xFF44F7FD),
   damageType = DamageType.Magic,
-  traits = listOf(MeltdownTrait()),
+  traits = listOf(Meltdown()),
   activeAbility = Ability(
     nameRes = R.string.ability_shock_attack,
     descriptionRes = R.string.ability_shock_attack_desc,
-    formatArgs = listOf(ElectrifiedEffect.Spec, ACTIVE_DURATION)
+    formatArgs = listOf(Electrified.Spec, ACTIVE_DURATION)
   ) { source, target ->
-    target.addEffect(ElectrifiedEffect(ACTIVE_DURATION, source), source)
+    target.addEffect(Electrified(ACTIVE_DURATION, source), source)
   },
   passiveAbility = Ability(
     nameRes = R.string.ability_overload,
     descriptionRes = R.string.ability_overload_desc,
-    formatArgs = listOf(OverloadedEffect.Spec, PASSIVE_DURATION)
+    formatArgs = listOf(Overloaded.Spec, PASSIVE_DURATION)
   ) { source, target ->
-    target.addEffect(OverloadedEffect(PASSIVE_DURATION), source = source)
+    target.addEffect(Overloaded(PASSIVE_DURATION), source = source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_shutdown,
     descriptionRes = R.string.ability_shutdown_desc,
-    formatArgs = listOf(StunnedEffect.Spec, ULTIMATE_STUNNED_DURATION)
+    formatArgs = listOf(Stunned.Spec, ULTIMATE_STUNNED_DURATION)
   ) { source, randomEnemy ->
     randomEnemy.getAliveTeamMembers()
-      .filter { it.statusEffects.any { effect -> effect is ElectrifiedEffect } }
-      .forEach { it.addEffect(StunnedEffect(ULTIMATE_STUNNED_DURATION), source) }
+      .filter { it.statusEffects.any { effect -> effect is Electrified } }
+      .forEach { it.addEffect(Stunned(ULTIMATE_STUNNED_DURATION), source) }
   }
 ) {
   private companion object {

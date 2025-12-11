@@ -2,8 +2,8 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.BurningEffect
-import com.aln.cardturngame.effect.PainLinkEffect
+import com.aln.cardturngame.effect.Burning
+import com.aln.cardturngame.effect.PainLink
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
@@ -28,21 +28,21 @@ class Archer : Entity(
   passiveAbility = Ability(
     nameRes = R.string.ability_cover,
     descriptionRes = R.string.ability_cover_desc,
-    formatArgs = listOf(PainLinkEffect.Spec, PASSIVE_DURATION)
+    formatArgs = listOf(PainLink.Spec, PASSIVE_DURATION)
   ) { source, target ->
-    source.addEffect(PainLinkEffect(PASSIVE_DURATION, target), source = source)
+    source.addEffect(PainLink(PASSIVE_DURATION, target), source = source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_rain_fire,
     descriptionRes = R.string.ability_rain_fire_desc,
-    formatArgs = listOf(ULTIMATE_REPEATS, BurningEffect.Spec, ULTIMATE_BURN_DURATION)
+    formatArgs = listOf(ULTIMATE_REPEATS, Burning.Spec, ULTIMATE_BURN_DURATION)
   ) { source, randomEnemy ->
     source.applyDamage(
       randomEnemy,
       repeats = ULTIMATE_REPEATS,
       delayTime = 150L
     )
-    randomEnemy.addEffect(BurningEffect(ULTIMATE_BURN_DURATION), source)
+    randomEnemy.addEffect(Burning(ULTIMATE_BURN_DURATION), source)
   }
 ) {
   private companion object {

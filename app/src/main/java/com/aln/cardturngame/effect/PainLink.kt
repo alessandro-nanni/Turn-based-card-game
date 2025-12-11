@@ -4,7 +4,7 @@ import com.aln.cardturngame.R
 import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class PainLinkEffect(
+class PainLink(
   duration: Int,
   private val linkedTarget: EntityViewModel
 ) : StatusEffect(

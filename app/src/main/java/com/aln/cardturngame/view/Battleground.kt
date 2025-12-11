@@ -36,6 +36,8 @@ import com.aln.cardturngame.view.character.CharacterInfoCard
 import com.aln.cardturngame.viewModel.BattleViewModel
 import kotlin.collections.get
 import kotlin.math.roundToInt
+import androidx.compose.runtime.key
+import com.aln.cardturngame.view.character.PopupView
 
 @Composable
 fun BattleScreen(viewModel: BattleViewModel) {
@@ -61,6 +63,24 @@ fun BattleScreen(viewModel: BattleViewModel) {
     }
 
     BattleLayout(viewModel, finalCardHeight, finalCardWidth)
+
+    viewModel.cardBounds.forEach { (entity, rect) ->
+      entity.popups.forEach { popup ->
+        key(popup.id) {
+          Box(
+            modifier = Modifier
+              .offset { IntOffset(rect.center.x.toInt(), rect.center.y.toInt()) }
+          ) {
+            PopupView(
+              popup = popup,
+              parentTranslation = Offset.Zero
+            ) {
+              entity.popups.remove(popup)
+            }
+          }
+        }
+      }
+    }
 
 
     viewModel.ultimateDragState?.let { ultState ->
@@ -100,7 +120,6 @@ fun BattleScreen(viewModel: BattleViewModel) {
     }
   }
 }
-
 
 
 @Composable

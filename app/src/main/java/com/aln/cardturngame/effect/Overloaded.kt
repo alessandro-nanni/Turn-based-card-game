@@ -4,7 +4,7 @@ import com.aln.cardturngame.R
 import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class OverloadedEffect(duration: Int) : StatusEffect(
+class Overloaded(duration: Int) : StatusEffect(
   nameRes = nameRes,
   descriptionRes = descriptionRes,
   iconRes = iconRes,

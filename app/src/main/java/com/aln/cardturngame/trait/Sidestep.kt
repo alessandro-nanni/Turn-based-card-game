@@ -4,7 +4,7 @@ import com.aln.cardturngame.R
 import com.aln.cardturngame.viewModel.EntityViewModel
 import kotlin.random.Random
 
-class SidestepTrait : Trait {
+class Sidestep : Trait {
   override val nameRes: Int = R.string.trait_sidestep
   override val descriptionRes: Int = R.string.trait_sidestep_desc
   override val formatArgs: List<Any> = listOf(DODGE_CHANCE)

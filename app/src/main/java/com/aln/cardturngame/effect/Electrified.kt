@@ -4,7 +4,7 @@ import com.aln.cardturngame.R
 import com.aln.cardturngame.entityFeatures.Translatable
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class ElectrifiedEffect(
+class Electrified(
   duration: Int, private val applier: EntityViewModel
 ) : StatusEffect(
   nameRes = nameRes,
@@ -19,16 +19,16 @@ class ElectrifiedEffect(
   override suspend fun onStartTurn(target: EntityViewModel) {
     target.applyDamage(target, amount = DAMAGE_AMOUNT)
     val electrifiedDuration =
-      target.statusEffects.find { it is ElectrifiedEffect }?.duration?.minus(
+      target.statusEffects.find { it is Electrified }?.duration?.minus(
         1
       )
-    target.removeEffect<ElectrifiedEffect>()
+    target.removeEffect<Electrified>()
 
     val potentialTargets = target.getAliveTeamMembers().filter { it != target }
     val newTarget = potentialTargets.randomOrNull()
 
     if (newTarget != null && electrifiedDuration != null && electrifiedDuration > 0) {
-      newTarget.addEffect(ElectrifiedEffect(electrifiedDuration, applier), applier)
+      newTarget.addEffect(Electrified(electrifiedDuration, applier), applier)
     }
   }
 

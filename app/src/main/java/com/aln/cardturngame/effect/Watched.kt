@@ -3,7 +3,7 @@ package com.aln.cardturngame.effect
 import com.aln.cardturngame.R
 import com.aln.cardturngame.entityFeatures.Translatable
 
-class WatchedEffect(duration: Int) : StatusEffect(
+class Watched(duration: Int) : StatusEffect(
   nameRes = nameRes,
   descriptionRes = descriptionRes,
   iconRes = iconRes,

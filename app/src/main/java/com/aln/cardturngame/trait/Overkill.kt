@@ -3,7 +3,7 @@ package com.aln.cardturngame.trait
 import com.aln.cardturngame.R
 import com.aln.cardturngame.viewModel.EntityViewModel
 
-class OverkillTrait : Trait {
+class Overkill : Trait {
   override val nameRes: Int = R.string.trait_overkill
   override val descriptionRes: Int = R.string.trait_overkill_desc
 

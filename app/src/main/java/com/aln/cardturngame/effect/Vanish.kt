@@ -3,7 +3,7 @@ package com.aln.cardturngame.effect
 import com.aln.cardturngame.R
 import com.aln.cardturngame.entityFeatures.Translatable
 
-class VanishEffect(duration: Int) : StatusEffect(
+class Vanish(duration: Int) : StatusEffect(
   nameRes = nameRes,
   descriptionRes = descriptionRes,
   iconRes = iconRes,

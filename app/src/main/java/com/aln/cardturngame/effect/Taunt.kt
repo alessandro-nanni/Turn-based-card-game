@@ -4,7 +4,7 @@ import com.aln.cardturngame.R
 import com.aln.cardturngame.entityFeatures.Translatable
 
 
-class TauntEffect(duration: Int) : StatusEffect(
+class Taunt(duration: Int) : StatusEffect(
   nameRes = nameRes,
   descriptionRes = descriptionRes,
   iconRes = iconRes,

@@ -10,12 +10,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.aln.cardturngame.effect.StatusEffect
-import com.aln.cardturngame.effect.StunnedEffect
+import com.aln.cardturngame.effect.Stunned
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entity.Entity
 import com.aln.cardturngame.entityFeatures.Popup
 import com.aln.cardturngame.entityFeatures.Team
-import com.aln.cardturngame.trait.ForsakenTrait
+import com.aln.cardturngame.trait.Forsaken
 import com.aln.cardturngame.trait.Trait
 import kotlinx.coroutines.delay
 import kotlin.random.Random
@@ -107,11 +107,13 @@ class EntityViewModel(
         hitAnimTrigger++
       }
 
+      val wasAlive = isAlive
+
       val overkill = (actualDamage - health).coerceAtLeast(0f)
       health = (health - actualDamage).coerceAtLeast(0f)
       addPopup(actualDamage, Color.Red)
 
-      if (!isAlive) {
+      if (wasAlive && !isAlive) {
         traits.forEach { trait ->
           trait.onDidReceiveDamage(this, source, actualDamage)
         }
@@ -119,10 +121,10 @@ class EntityViewModel(
           trait.onDeath(this)
         }
         clearAllEffects()
-      }
-
-      traits.forEach { trait ->
-        trait.onDidReceiveDamage(this, source, actualDamage)
+      } else if (isAlive) {
+        traits.forEach { trait ->
+          trait.onDidReceiveDamage(this, source, actualDamage)
+        }
       }
 
       source?.let { attacker ->
@@ -141,7 +143,7 @@ class EntityViewModel(
     repeats: Int = 1,
     delayTime: Long = 400
   ) {
-    if (traits.any { it is ForsakenTrait } && source != this) {
+    if (traits.any { it is Forsaken } && source != this) {
       return
     }
 
@@ -250,7 +252,7 @@ class EntityViewModel(
 
   // EFFECTS
   val isStunned: Boolean
-    get() = statusEffects.any { it is StunnedEffect }
+    get() = statusEffects.any { it is Stunned }
 
   fun addEffect(effect: StatusEffect, source: EntityViewModel?) {
     val existingEffect = statusEffects.find { it::class == effect::class }

@@ -35,7 +35,6 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -89,7 +88,6 @@ fun CharacterCard(
   val scaleX = remember { Animatable(1f) }
   val scaleY = remember { Animatable(1f) }
 
-  // Hit Animation
   LaunchedEffect(viewModel.hitAnimTrigger) {
     if (viewModel.hitAnimTrigger > 0) {
       launch {
@@ -221,17 +219,6 @@ fun CharacterCard(
 
         if (viewModel.statusEffects.isNotEmpty()) {
           ActiveEffects(viewModel)
-        }
-      }
-    }
-
-    viewModel.popups.forEach { popup ->
-      key(popup.id) {
-        PopupView(
-          popup = popup,
-          parentTranslation = animatedOffset
-        ) {
-          viewModel.popups.remove(popup)
         }
       }
     }

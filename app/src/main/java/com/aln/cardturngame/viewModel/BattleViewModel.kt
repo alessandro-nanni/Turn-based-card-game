@@ -10,8 +10,8 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aln.cardturngame.effect.TauntEffect
-import com.aln.cardturngame.effect.VanishEffect
+import com.aln.cardturngame.effect.Taunt
+import com.aln.cardturngame.effect.Vanish
 import com.aln.cardturngame.entityFeatures.Team
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -170,13 +170,13 @@ class BattleViewModel(
         val isTargetLeft = leftTeam.entities.contains(entity)
         val isEnemy = isSourceLeft != isTargetLeft
 
-        if (isEnemy && entity.statusEffects.any { it is VanishEffect }) {
+        if (isEnemy && entity.statusEffects.any { it is Vanish }) {
           return@firstOrNull false
         }
 
-        val tauntEffect = currentDrag.source.statusEffects.find { it is TauntEffect }
-        if (tauntEffect != null && tauntEffect.source?.isAlive == true) {
-          if (isEnemy && entity != tauntEffect.source) {
+        val taunt = currentDrag.source.statusEffects.find { it is Taunt }
+        if (taunt != null && taunt.source?.isAlive == true) {
+          if (isEnemy && entity != taunt.source) {
             return@firstOrNull false
           }
         }

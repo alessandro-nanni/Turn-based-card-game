@@ -2,11 +2,11 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.PrecisionEffect
+import com.aln.cardturngame.effect.Precision
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
-import com.aln.cardturngame.trait.QuickDrawTrait
+import com.aln.cardturngame.trait.QuickDraw
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -18,7 +18,7 @@ class Rouge : Entity(
   initialStats = Stats(maxHealth = MAX_HEALTH, damage = DAMAGE),
   color = Color(0xFFFF5722),
   damageType = DamageType.Ranged,
-  traits = listOf(QuickDrawTrait()),
+  traits = listOf(QuickDraw()),
   activeAbility = Ability(
     nameRes = R.string.ability_bullseye,
     descriptionRes = R.string.ability_bullseye_desc
@@ -29,11 +29,11 @@ class Rouge : Entity(
     nameRes = R.string.ability_take_aim,
     descriptionRes = R.string.ability_take_aim_desc,
     formatArgs = listOf(
-      PrecisionEffect.Spec,
+      Precision.Spec,
       PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addEffect(PrecisionEffect(PASSIVE_DURATION), source)
+    target.addEffect(Precision(PASSIVE_DURATION), source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_barrage,

@@ -2,13 +2,13 @@ package com.aln.cardturngame.entity
 
 import androidx.compose.ui.graphics.Color
 import com.aln.cardturngame.R
-import com.aln.cardturngame.effect.ProtectionEffect
-import com.aln.cardturngame.effect.SpikedShieldEffect
-import com.aln.cardturngame.effect.TauntEffect
+import com.aln.cardturngame.effect.Protection
+import com.aln.cardturngame.effect.SpikedShield
+import com.aln.cardturngame.effect.Taunt
 import com.aln.cardturngame.entityFeatures.Ability
 import com.aln.cardturngame.entityFeatures.DamageType
 import com.aln.cardturngame.entityFeatures.Stats
-import com.aln.cardturngame.trait.SpiteTrait
+import com.aln.cardturngame.trait.Spite
 
 class Paladin : Entity(
   name = R.string.entity_paladin,
@@ -16,42 +16,42 @@ class Paladin : Entity(
   initialStats = Stats(maxHealth = MAX_HEALTH, damage = DAMAGE),
   color = Color(0xFF8BC34A),
   damageType = DamageType.Melee,
-  traits = listOf(SpiteTrait()),
+  traits = listOf(Spite()),
   activeAbility = Ability(
     nameRes = R.string.ability_challenge,
     descriptionRes = R.string.ability_challenge_desc,
     formatArgs = listOf(
-      TauntEffect.Spec,
+      Taunt.Spec,
       ACTIVE_DURATION
     )
   ) { source, target ->
     source.applyDamage(target)
-    target.addEffect(TauntEffect(ACTIVE_DURATION), source)
+    target.addEffect(Taunt(ACTIVE_DURATION), source)
   },
   passiveAbility = Ability(
     nameRes = R.string.ability_guard,
     descriptionRes = R.string.ability_guard_desc,
     formatArgs = listOf(
-      ProtectionEffect.Spec,
+      Protection.Spec,
       PASSIVE_DURATION
     )
   ) { source, target ->
-    target.addEffect(ProtectionEffect(PASSIVE_DURATION), source)
+    target.addEffect(Protection(PASSIVE_DURATION), source)
   },
   ultimateAbility = Ability(
     nameRes = R.string.ability_martyr,
     descriptionRes = R.string.ability_martyr_desc,
     formatArgs = listOf(
-      SpikedShieldEffect.Spec,
+      SpikedShield.Spec,
       ULTIMATE_SHIELD_DURATION,
-      TauntEffect.Spec,
+      Taunt.Spec,
       ULTIMATE_TAUNT_DURATION
     )
   ) { source, randomEnemy ->
     randomEnemy.getAliveTeamMembers().forEach { enemy ->
-      enemy.addEffect(TauntEffect(ULTIMATE_TAUNT_DURATION), source)
+      enemy.addEffect(Taunt(ULTIMATE_TAUNT_DURATION), source)
     }
-    source.addEffect(SpikedShieldEffect(ULTIMATE_SHIELD_DURATION), source)
+    source.addEffect(SpikedShield(ULTIMATE_SHIELD_DURATION), source)
   }
 ) {
   private companion object {
