@@ -157,13 +157,24 @@ class EntityViewModel(
     }
   }
 
+  var onGetAttackOffset: ((EntityViewModel) -> Offset?)? = null
+
   suspend fun applyDamage(
     target: EntityViewModel,
     amount: Float = damage,
     repeats: Int = 1,
-    delayTime: Long = 400
+    delayTime: Long = 400,
+    playAttackAnimation: Boolean = true
   ): Float {
     var totalDamage = 0f
+
+    if (playAttackAnimation) {
+      onGetAttackOffset?.invoke(target)?.let {
+        attackAnimOffset = it
+        delay(200)
+      }
+    }
+
     repeat(repeats) {
       if (!target.isAlive) return totalDamage
 
@@ -176,6 +187,44 @@ class EntityViewModel(
 
       if (repeats > 1) delay(delayTime)
     }
+
+    if (playAttackAnimation && attackAnimOffset != null) {
+      attackAnimOffset = null
+      delay(200)
+    }
+
+    return totalDamage
+  }
+
+  suspend fun applyDamageToTargets(
+    targets: List<EntityViewModel>,
+    amount: Float = damage,
+    repeats: Int = 1,
+    delayTime: Long = 400,
+    playAttackAnimation: Boolean = true
+  ): Float {
+    var totalDamage = 0f
+
+    if (playAttackAnimation && targets.isNotEmpty()) {
+      onGetAttackOffset?.invoke(targets.random())?.let {
+        attackAnimOffset = it
+        delay(200)
+      }
+    }
+
+    repeat(repeats) {
+      targets.forEach { target ->
+        totalDamage += applyDamage(target, amount, repeats = 1, delayTime = 0, playAttackAnimation = false)
+      }
+
+      if (repeats > 1) delay(delayTime)
+    }
+
+    if (playAttackAnimation && attackAnimOffset != null) {
+      attackAnimOffset = null
+      delay(200)
+    }
+
     return totalDamage
   }
 
@@ -187,22 +236,7 @@ class EntityViewModel(
     return getEnemies().random()
   }
 
-  suspend fun applyDamageToTargets(
-    targets: List<EntityViewModel>,
-    amount: Float = damage,
-    repeats: Int = 1,
-    delayTime: Long = 400
-  ): Float {
-    var totalDamage = 0f
-    repeat(repeats) {
-      targets.forEach { target ->
-        totalDamage += applyDamage(target, amount, repeats = 1, delayTime = 0)
-      }
 
-      if (repeats > 1) delay(delayTime)
-    }
-    return totalDamage
-  }
 
   suspend fun withTemporaryDamage(tempDamage: Float, block: suspend () -> Unit) {
     val originalDamage = damage

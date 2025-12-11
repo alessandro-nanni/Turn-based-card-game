@@ -49,7 +49,7 @@ class Rouge : Entity(
         rangers.forEach { ranger ->
           delay(200)
           val target = randomEnemy.getAliveTeamMembers().randomOrNull()
-          target?.let { ranger.applyDamage(it) }
+          target?.let { ranger.entity.activeAbility.effect(ranger, target) }
         }
       }
     }

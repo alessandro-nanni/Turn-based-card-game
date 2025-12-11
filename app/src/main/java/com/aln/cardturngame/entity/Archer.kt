@@ -47,10 +47,10 @@ class Archer : Entity(
 ) {
   private companion object {
     const val MAX_HEALTH = 110f
-    const val DAMAGE = 6f
-    const val ACTIVE_REPEATS = 3
+    const val DAMAGE = 8f
+    const val ACTIVE_REPEATS = 2
     const val PASSIVE_DURATION = 2
-    const val ULTIMATE_REPEATS = 8
+    const val ULTIMATE_REPEATS = 6
     const val ULTIMATE_BURN_DURATION = 3
   }
 }

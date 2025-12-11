@@ -32,7 +32,7 @@ class Team(
   val maxRage = 100f
 
   fun increaseRage(amount: Float) {
-    rage = (rage + amount).coerceAtMost(maxRage)
+    rage = (rage + 100).coerceAtMost(maxRage)
   }
 
   @Composable

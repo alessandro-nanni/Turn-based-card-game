@@ -75,14 +75,25 @@ class BattleViewModel(
     leftTeam.enemyTeam = rightTeam
     rightTeam.enemyTeam = leftTeam
 
-    // Reset game state
+    val allEntities = leftTeam.entities + rightTeam.entities
+    allEntities.forEach { entity ->
+      entity.onGetAttackOffset = { target ->
+        val sourceBounds = cardBounds[entity]
+        val targetBounds = cardBounds[target]
+        if (sourceBounds != null && targetBounds != null) {
+          (targetBounds.center - sourceBounds.center) * 0.7f
+        } else {
+          null
+        }
+      }
+    }
+
     isLeftTeamTurn = Random.nextBoolean()
     isActionPlaying = false
     winner = null
     actionsTaken.clear()
     cardBounds.clear()
 
-    // Reset Rage
     leftTeam.rage = 0f
     rightTeam.rage = 0f
   }
@@ -330,18 +341,7 @@ class BattleViewModel(
       source.entity.passiveAbility.effect(source, target)
       delay(150)
     } else {
-      val sourceBounds = cardBounds[source]
-      val targetBounds = cardBounds[target]
-
-      if (sourceBounds != null && targetBounds != null) {
-        val direction = targetBounds.center - sourceBounds.center
-        source.attackAnimOffset = direction * 0.7f
-        delay(200)
-      }
-
       source.entity.activeAbility.effect(source, target)
-
-      source.attackAnimOffset = null
       delay(200)
     }
   }
