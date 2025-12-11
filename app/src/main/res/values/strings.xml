@@ -106,4 +106,6 @@
     <string name="ability_take_aim_desc">Apply %s to the target for %s turns</string>
     <string name="ability_barrage">Barrage</string>
     <string name="ability_barrage_desc">All ranged teammates perform their active ability %s times on random enemies</string>
+    <string name="ui_how_to_play">How to play</string>
+    <string name="ui_how_to_play_desc">In this turn-based combat, the first turn is decided randomly. During your turn, your cards can perform abilities. Active abilities are used by dragging a card towards an enemy target. Passive abilities are used by dragging a card towards a teammate. To cast a passive on the card itself, drag it out and then back in. After all your cards performed one of these abilities, your turn ends and the other player\'s starts.\n\nThe Rage bar gradually fills up each turn. When full, a flame icon will appear. Drag the flame onto a card to perform its Ultimate Ability. The team that defeats all opposing cards wins.\n\nHold a card to see its info, including health, damage, abilities, traits, and active effects. Traits are permanent abilities that influence gameplay. Status effects can be beneficial or harmful and have a duration that decreases each turn. Tap an effect\'s name in the info card to see exactly what it does.</string>
 </resources>
